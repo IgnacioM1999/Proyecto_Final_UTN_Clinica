@@ -3,10 +3,23 @@
 </div>
 <div class="container text-center mt-5">
   <div class="row row-cols-1 row-cols-md-2 g-4">
-    <div class="col" *ngFor="let item of secciones">
-      <button class="btn btn-primary w-100 py-3">
-        {{ item.nombre }}
-      </button>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100" (click)="gestionarTurnos()">Gestionar Turnos</button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">Gestionar Sesiones</button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">Gestionar Especialistas</button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">Gestionar Alumnos</button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">Gestionar Pacientes</button>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary w-100">Gestionar Instrumentos</button>
     </div>
   </div>
   <div class="container mt-5">

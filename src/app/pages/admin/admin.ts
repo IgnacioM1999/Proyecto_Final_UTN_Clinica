@@ -27,4 +27,8 @@ export class Admin {
     this.router.navigate(["/"]); //Navega a la ruta laiz, que seria el login
   }
 
+  gestionarTurnos(){
+    this.router.navigate(["/admin/gestionar-turnos"]);
+  }
+
 }

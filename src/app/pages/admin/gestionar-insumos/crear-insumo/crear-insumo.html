@@ -1,0 +1,44 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Crear Insumo</h1>
+</div>
+<div class="container mt-4">
+
+    <div class="card shadow p-4">
+        <!-- Nombre-->
+        <div class="mb-4">
+            <label for="nombre" class="form-label fw-bold">Nombre</label>
+            <input type="text" id="nombre" class="form-control" required>
+            <div class="invalid-feedback">
+                Por favor ingrese un nombre.
+            </div>
+        </div>
+
+        <!-- Descripcion -->
+        <div class="mb-4">
+            <label for="hora" class="form-label fw-bold">Descripcion</label>
+            <input type="text" id="descripcion" class="form-control" required>
+            <div class="invalid-feedback">
+                Por favor ingrese una descripcion.
+            </div>
+        </div>
+
+        <!-- Selección de cantidad -->
+        <div class="mb-4">
+            <label for="cantidad" class="form-label fw-bold">Cantidad</label>
+            <input type="number" id="cantidad" class="form-control" required>
+            <div class="invalid-feedback">
+                Por favor ingrese una cantidad.
+            </div>
+        </div>
+
+        <!-- Botón de acción -->
+        <div class="text-end">
+            <button class="btn btn-success">Guardar Insumo</button>
+        </div>
+    </div>
+
+    <!-- Botón Volver -->
+    <div class="mt-3">
+        <a routerLink="/admin/gestionar-insumos" class="btn btn-secondary">Volver</a>
+    </div>
+</div>

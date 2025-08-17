@@ -31,4 +31,8 @@ export class Admin {
     this.router.navigate(["/admin/gestionar-turnos"]);
   }
 
+  gestionarInsumos(){
+    this.router.navigate(["/admin/gestionar-insumos"])
+  }
+
 }

@@ -35,4 +35,8 @@ export class Admin {
     this.router.navigate(["/admin/gestionar-insumos"])
   }
 
+  gestionarPasantes(){
+    this.router.navigate(["/admin/gestionar-pasantes"])
+  }
+
 }

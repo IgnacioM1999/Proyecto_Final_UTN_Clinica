@@ -1,0 +1,35 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Eliminar Pasante</h1>
+</div>
+<div class="container mt-4">
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>Legajo</th>
+        <th>Nombre y Apellido</th>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Contraseña</th>
+        <th>Accion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pasante of pasantes">
+        <td>{{ pasante.legajo }}</td>
+        <td>{{ pasante.nombreYapellido }}</td>
+        <td>{{ pasante.usuario }}</td>
+        <td>{{ pasante.email }}</td>
+        <td>{{ pasante.contrasenia }}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" (click)="eliminarPasante(pasante.legajo)">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btn btn-secondary mt-3" routerLink="/admin/gestionar-pasantes">
+    Volver
+  </button>
+</div>

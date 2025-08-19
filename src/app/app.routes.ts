@@ -11,6 +11,11 @@ import { CrearInsumo } from './pages/admin/gestionar-insumos/crear-insumo/crear-
 import { ModificarInsumo } from './pages/admin/gestionar-insumos/modificar-insumo/modificar-insumo';
 import { EliminarInsumo } from './pages/admin/gestionar-insumos/eliminar-insumo/eliminar-insumo';
 import { ListarInsumo } from './pages/admin/gestionar-insumos/listar-insumo/listar-insumo';
+import { GestionarPasantes } from './pages/admin/gestionar-pasantes/gestionar-pasantes';
+import { CrearPasante } from './pages/admin/gestionar-pasantes/crear-pasante/crear-pasante';
+import { ModificarPasante } from './pages/admin/gestionar-pasantes/modificar-pasante/modificar-pasante';
+import { EliminarPasante } from './pages/admin/gestionar-pasantes/eliminar-pasante/eliminar-pasante';
+import { ListarPasante } from './pages/admin/gestionar-pasantes/listar-pasante/listar-pasante';
 
 export const routes: Routes = [
     {path: '', component: LoginComponent},
@@ -25,5 +30,10 @@ export const routes: Routes = [
     {path: 'admin/gestionar-insumos/crear-insumo', component:CrearInsumo},
     {path: 'admin/gestionar-insumos/modificar-insumo', component: ModificarInsumo},
     {path: 'admin/gestionar-insumos/eliminar-insumo', component: EliminarInsumo},
-    {path: 'admin/gestionar-insumos/listar-insumo', component: ListarInsumo}
+    {path: 'admin/gestionar-insumos/listar-insumo', component: ListarInsumo},
+    {path: 'admin/gestionar-pasantes', component: GestionarPasantes},
+    {path: 'admin/gestionar-pasantes/crear-pasante', component: CrearPasante},
+    {path: 'admin/gestionar-pasantes/modificar-pasante', component: ModificarPasante},
+    {path: 'admin/gestionar-pasantes/eliminar-pasante', component: EliminarPasante},
+    {path: 'admin/gestionar-pasantes/listar-pasante', component: ListarPasante}
 ];

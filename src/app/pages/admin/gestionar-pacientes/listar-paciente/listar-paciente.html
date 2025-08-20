@@ -1,0 +1,36 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Listar pacientes</h1>
+</div>
+<div class="container mt-4">
+  <div class="card shadow p-4">
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>DNI</th>
+          <th>Nombre y Apellido</th>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Contraseña</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paciente of pacientes">
+          <td>{{ paciente.dni }}</td>
+          <!-- Nombre -->
+          <td>{{paciente.nombreYapellido}}</td>
+          <!-- Usuario -->
+          <td>{{paciente.usuario}}</td>
+          <!-- Email -->
+          <td>{{paciente.email}}</td>
+          <!--Contraseña-->
+          <td>{{paciente.contrasenia}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Botón Volver -->
+  <div class="mt-3">
+    <a routerLink="/admin/gestionar-pacientes" class="btn btn-secondary">Volver</a>
+  </div>
+</div>

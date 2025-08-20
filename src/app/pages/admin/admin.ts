@@ -39,4 +39,8 @@ export class Admin {
     this.router.navigate(["/admin/gestionar-pasantes"])
   }
 
+    gestionarPacientes(){
+    this.router.navigate(["/admin/gestionar-pacientes"])
+  }
+
 }

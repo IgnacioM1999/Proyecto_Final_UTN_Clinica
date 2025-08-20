@@ -16,6 +16,11 @@ import { CrearPasante } from './pages/admin/gestionar-pasantes/crear-pasante/cre
 import { ModificarPasante } from './pages/admin/gestionar-pasantes/modificar-pasante/modificar-pasante';
 import { EliminarPasante } from './pages/admin/gestionar-pasantes/eliminar-pasante/eliminar-pasante';
 import { ListarPasante } from './pages/admin/gestionar-pasantes/listar-pasante/listar-pasante';
+import { GestionarPacientes } from './pages/admin/gestionar-pacientes/gestionar-pacientes';
+import { CrearPaciente } from './pages/admin/gestionar-pacientes/crear-paciente/crear-paciente';
+import { ModificarPaciente } from './pages/admin/gestionar-pacientes/modificar-paciente/modificar-paciente';
+import { EliminarPaciente } from './pages/admin/gestionar-pacientes/eliminar-paciente/eliminar-paciente';
+import { ListarPaciente } from './pages/admin/gestionar-pacientes/listar-paciente/listar-paciente';
 
 export const routes: Routes = [
     {path: '', component: LoginComponent},
@@ -35,5 +40,10 @@ export const routes: Routes = [
     {path: 'admin/gestionar-pasantes/crear-pasante', component: CrearPasante},
     {path: 'admin/gestionar-pasantes/modificar-pasante', component: ModificarPasante},
     {path: 'admin/gestionar-pasantes/eliminar-pasante', component: EliminarPasante},
-    {path: 'admin/gestionar-pasantes/listar-pasante', component: ListarPasante}
+    {path: 'admin/gestionar-pasantes/listar-pasante', component: ListarPasante},
+    {path: 'admin/gestionar-pacientes', component: GestionarPacientes},
+    {path: 'admin/gestionar-pacientes/crear-paciente', component:CrearPaciente},
+    {path: 'admin/gestionar-pacientes/modificar-paciente', component:ModificarPaciente},
+    {path: 'admin/gestionar-pacientes/eliminar-paciente', component:EliminarPaciente},
+    {path: 'admin/gestionar-pacientes/listar-paciente', component:ListarPaciente}
 ];

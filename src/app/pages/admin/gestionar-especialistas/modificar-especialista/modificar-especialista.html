@@ -1,0 +1,56 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Modificar especialista</h1>
+</div>
+<div class="container mt-4">
+  <div class="card shadow p-4">
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>Legajo</th>
+          <th>Usuario</th>
+          <th>Nombre y apellido</th>
+          <th>Email</th>
+          <th>Contraseña</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let especialista of especialistas">
+          <td>{{ especialista.legajo }}</td>
+
+          <!-- Usuario -->
+          <td>
+            <input type="text" [(ngModel)]="especialista.usuario" class="form-control">
+          </td>
+
+          <!-- Nombre y Apellido -->
+          <td>
+            <input type="text" [(ngModel)]="especialista.nombreYapellido" class="form-control">
+          </td>
+
+          <!-- Email -->
+          <td>
+            <input [(ngModel)]="especialista.email" class="form-control">
+          </td>
+
+          <!-- Contraseña -->
+          <td>
+            <input [(ngModel)]="especialista.contrasenia" class="form-control">
+          </td>
+
+          <!-- Botón Guardar -->
+          <td>
+            <button class="btn btn-success btn-sm" (click)="guardarEspecialista(especialista)">
+              Guardar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Botón Volver -->
+  <div class="mt-3">
+    <a routerLink="/admin/gestionar-especialistas" class="btn btn-secondary">Volver</a>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Listar especialistas</h1>
+</div>
+<div class="container mt-4">
+  <div class="card shadow p-4">
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>Legajo</th>
+          <th>Nombre y Apellido</th>
+          <th>Usuario</th>
+          <th>Email</th>
+          <th>Contraseña</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let especialista of especialistas">
+          <td>{{ especialista.legajo }}</td>
+          <!-- Nombre y Apellido -->
+          <td>{{especialista.nombreYapellido}}</td>
+          <!-- Usuario -->
+          <td>{{especialista.usuario}}</td>
+          <!-- Email -->
+          <td>{{especialista.email}}</td>
+          <!--Contraseña-->
+          <td>{{especialista.contrasenia}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Botón Volver -->
+  <div class="mt-3">
+    <a routerLink="/admin/gestionar-especialistas" class="btn btn-secondary">Volver</a>
+  </div>
+</div>

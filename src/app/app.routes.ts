@@ -26,6 +26,11 @@ import { CrearEspecialista } from './pages/admin/gestionar-especialistas/crear-e
 import { ModificarEspecialista } from './pages/admin/gestionar-especialistas/modificar-especialista/modificar-especialista';
 import { EliminarEspecialista } from './pages/admin/gestionar-especialistas/eliminar-especialista/eliminar-especialista';
 import { ListarEspecialista } from './pages/admin/gestionar-especialistas/listar-especialista/listar-especialista';
+import { GestionarSesiones } from './pages/admin/gestionar-sesiones/gestionar-sesiones';
+import { ListarSesion } from './pages/admin/gestionar-sesiones/listar-sesion/listar-sesion';
+import { HistorialClinico } from './pages/admin/historial-clinico/historial-clinico';
+import { ListadoSesionesPaciente } from './pages/admin/historial-clinico/listado-sesiones-paciente/listado-sesiones-paciente';
+import { DetallesSesion } from './pages/admin/historial-clinico/detalles-sesion/detalles-sesion';
 
 export const routes: Routes = [
     {path: '', component: LoginComponent},
@@ -55,5 +60,10 @@ export const routes: Routes = [
     {path: 'admin/gestionar-especialistas/crear-especialista', component:CrearEspecialista},
     {path: 'admin/gestionar-especialistas/modificar-especialista', component:ModificarEspecialista},
     {path: 'admin/gestionar-especialistas/eliminar-especialista', component:EliminarEspecialista},
-    {path: 'admin/gestionar-especialistas/listar-especialista', component:ListarEspecialista}
+    {path: 'admin/gestionar-especialistas/listar-especialista', component:ListarEspecialista},
+    {path: 'admin/gestionar-sesiones', component:GestionarSesiones},
+    {path: 'admin/gestionar-sesiones/listar-sesion', component:ListarSesion},
+    {path: 'admin/historial-clinico', component:HistorialClinico},
+    {path: 'admin/historial-clinico/:pacienteDni', component:ListadoSesionesPaciente},
+    {path: 'admin/historial-clinico/:pacienteDni/detalles-sesion/:idSesion', component:DetallesSesion}
 ];

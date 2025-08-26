@@ -1,0 +1,36 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Historial Clinico</h1>
+</div>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>DNI</th>
+                    <th>Nombre y Apellido</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let paciente of pacientes">
+                    <td>{{ paciente.dni }}</td>
+                    <!-- Nombre -->
+                    <td>{{paciente.nombreYapellido}}</td>
+                    <!-- Usuario -->
+                    <td class="text-center align-middle">
+    
+                            <input class="form-check-input" type="radio" name="pacienteSeleccionado" (change)="pacienteDniSeleccionado = paciente.dni">
+                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--Botones-->
+    <div class="mt-5 d-flex justify-content-center gap-5">
+        <button class="btn btn-primary" [routerLink]="['/admin/historial-clinico',pacienteDniSeleccionado]" [disabled]="!pacienteDniSeleccionado">Continuar</button>
+
+        <button class="btn btn-secondary" routerLink="/admin" >Volver</button>
+    </div>
+
+</div>

@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<!-- Título -->
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Gestión de Sesiones</h1>
+</div>
+<div class="container py-5">
+  <!-- Opciones -->
+  <div class="row g-4 justify-content-center">
+    <div class="col-md-5 col-lg-4">
+      <button class="btn btn-info text-white w-100 py-3 fs-5 shadow-sm" routerLink="/admin/gestionar-sesiones/listar-sesion">
+        <i class="bi bi-list-ul me-2"></i> Listar Sesiones
+      </button>
+    </div>
+  </div>
+    <!-- Botón Volver -->
+  <div class="mt-5 text-center">
+    <button class="btn btn-secondary btn-lg px-5" (click)="volver()">
+      <i class="bi bi-arrow-left me-2"></i> Volver
+    </button>
+  </div>
+</div>

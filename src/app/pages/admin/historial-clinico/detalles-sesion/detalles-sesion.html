@@ -1,0 +1,38 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Dettale de la sesion con id: {{idSesionSelect}}</h1>
+</div>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <table class="table table-bordered table-striped align-middle">
+            <tbody>
+                <tr>
+                    <th>Fecha</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Especialista</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Paciente</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Sintomas</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Tratamiento realizado</th>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--Botones-->
+    <div class="mt-5 d-flex justify-content-center gap-5">
+        <button class="btn btn-primary" routerLink='/admin/historial-clinico/'>Volver al menu</button>
+
+        <button class="btn btn-secondary" [routerLink]="['/admin/historial-clinico',dniPaciente]">Atras</button>
+    </div>
+
+</div>

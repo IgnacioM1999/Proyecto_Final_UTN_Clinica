@@ -43,8 +43,16 @@ export class Admin {
     this.router.navigate(["/admin/gestionar-pacientes"])
   }
 
-      gestionarEspecialistas(){
+    gestionarEspecialistas(){
     this.router.navigate(["/admin/gestionar-especialistas"])
+  }
+
+    gestionarSesiones(){
+    this.router.navigate(["/admin/gestionar-sesiones"])
+  }
+
+  historialClinico(){
+    this.router.navigate(["/admin/historial-clinico"])
   }
 
 }

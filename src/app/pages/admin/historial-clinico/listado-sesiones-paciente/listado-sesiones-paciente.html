@@ -1,0 +1,38 @@
+<div class="p-5 bg-primary text-white text-center">
+    <h1 class="fw-bold">Listado sesiones del paciente {{dniPaciente}}</h1>
+</div>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>Numero Sesion</th>
+                    <th>Fecha</th>
+                    <th>Especialista</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let sesion of sesionesFiltradas">
+                    <td>{{ sesion.idSesion }}</td>
+                    <!-- Fecha -->
+                    <td>{{sesion.fecha}}</td>
+                    <!-- Nombre y Apellido -->
+                    <td>{{sesion.nomApeEspecialista}}</td>
+                    <!-- Seleccionar -->
+                    <td class="text-center align-middle">
+                        <input class="form-check-input" type="radio" name="pacienteSeleccionado" (change)="sesionIdSeleccionado = sesion.idSesion">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--Botones-->
+    <div class="mt-5 d-flex justify-content-center gap-5">
+        <button class="btn btn-primary" [routerLink]="['/admin/historial-clinico',dniPaciente,'detalles-sesion',sesionIdSeleccionado]"
+            [disabled]="!sesionIdSeleccionado">Continuar</button>
+
+        <button class="btn btn-secondary" routerLink="/admin/historial-clinico">Atras</button>
+    </div>
+
+</div>

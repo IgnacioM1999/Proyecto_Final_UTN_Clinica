@@ -1,0 +1,14 @@
+{
+  "pasantes": [
+    {
+      "id": 1,
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "email": "juan@example.com",
+      "codigoMaquina": "M123",
+      "codigoUsuario": "U123",
+      "legajo": "1001",
+      "password": "123456"
+    }
+  ]
+}

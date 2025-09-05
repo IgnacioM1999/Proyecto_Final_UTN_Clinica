@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Estado de Horas de Pasantes</h2>
+
+  <!-- Aquí podrías agregar un selector para elegir el pasante -->
+  <div class="mb-3">
+    <label for="pasanteSelect" class="form-label">Seleccionar Pasante</label>
+    <select class="form-select" id="pasanteSelect">
+      <option selected>Elija un pasante...</option>
+      <!-- Los pasantes se cargarían aquí dinámicamente -->
+      <option value="1">Juan Pérez (valperez123)</option>
+      <option value="2">Ana Gómez (anagomez456)</option>
+    </select>
+  </div>
+
+  <hr>
+
+  <!-- Tabla para mostrar las sesiones del pasante seleccionado -->
+  <h4 class="mt-4">Sesiones Registradas</h4>
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Fecha</th>
+        <th>Hora de Inicio</th>
+        <th>Hora de Fin</th>
+        <th>Horas Trabajadas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Los datos de las sesiones se mostrarían aquí -->
+      <tr><td colspan="4" class="text-center">Seleccione un pasante para ver sus horas.</td></tr>
+    </tbody>
+  </table>
+</div>

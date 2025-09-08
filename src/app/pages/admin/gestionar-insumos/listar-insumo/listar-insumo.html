@@ -1,5 +1,5 @@
 <div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Listar insumos</h1>
+  <h1 class="fw-bold">Listar insumos</h1>
 </div>
 <div class="container mt-4">
   <div class="card shadow p-4">
@@ -13,14 +13,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let insumo of insumos">
-          <td>{{ insumo.id }}</td>
+        <tr *ngFor="let insumo of insumosBack">
+          <td>{{ insumo.idInsumos }}</td>
           <!-- Nombre -->
           <td>{{insumo.nombre}}</td>
           <!-- Descripcion -->
           <td>{{insumo.descripcion}}</td>
           <!-- Cantidad -->
           <td>{{insumo.cantidad}}</td>
+        </tr>
+        <tr *ngIf="insumosBack.length === 0">
+          <td colspan="4" class="text-center text-muted">No hay insumos cargados</td>
         </tr>
       </tbody>
     </table>

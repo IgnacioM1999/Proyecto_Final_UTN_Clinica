@@ -13,16 +13,19 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let insumo of insumos">
-        <td>{{ insumo.id }}</td>
+      <tr *ngFor="let insumo of insumosBack">
+        <td>{{ insumo.idInsumos }}</td>
         <td>{{ insumo.nombre }}</td>
         <td>{{ insumo.descripcion }}</td>
         <td>{{ insumo.cantidad }}</td>
         <td>
-          <button class="btn btn-danger btn-sm" (click)="eliminarInsumo(insumo.id)">
+          <button class="btn btn-danger btn-sm" (click)="eliminarInsumo(insumo.idInsumos)">
             Eliminar
           </button>
         </td>
+      </tr>
+      <tr *ngIf="insumosBack.length === 0">
+        <td colspan="5" class="text-center text-muted">No hay insumos cargados</td>
       </tr>
     </tbody>
   </table>

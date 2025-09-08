@@ -7,33 +7,24 @@
         <!-- Nombre-->
         <div class="mb-4">
             <label for="nombre" class="form-label fw-bold">Nombre</label>
-            <input type="text" id="nombre" class="form-control" required>
-            <div class="invalid-feedback">
-                Por favor ingrese un nombre.
-            </div>
+            <input type="text" id="nombre" class="form-control" [(ngModel)]="nuevoInsumo.nombre" required>
         </div>
 
         <!-- Descripcion -->
         <div class="mb-4">
             <label for="hora" class="form-label fw-bold">Descripcion</label>
-            <input type="text" id="descripcion" class="form-control" required>
-            <div class="invalid-feedback">
-                Por favor ingrese una descripcion.
-            </div>
+            <input type="text" id="descripcion" class="form-control" [(ngModel)]="nuevoInsumo.descripcion" required>
         </div>
 
         <!-- Selección de cantidad -->
         <div class="mb-4">
             <label for="cantidad" class="form-label fw-bold">Cantidad</label>
-            <input type="number" id="cantidad" class="form-control" required>
-            <div class="invalid-feedback">
-                Por favor ingrese una cantidad.
-            </div>
+            <input type="number" id="cantidad" class="form-control" [(ngModel)]="nuevoInsumo.cantidad" required>
         </div>
 
         <!-- Botón de acción -->
         <div class="text-end">
-            <button class="btn btn-success">Guardar Insumo</button>
+            <button class="btn btn-success" (click)="guardarInsumo()">Guardar Insumo</button>
         </div>
     </div>
 

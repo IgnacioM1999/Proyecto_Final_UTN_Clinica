@@ -1,6 +1,7 @@
 // c:\Users\valer\Proyecto_Final_UTN_Clinica\backend\server.js
 
 // servidor.js
+const path = require('path');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const express = require('express');
@@ -9,12 +10,23 @@ const db = require('./db'); // Importamos la conexión a la BD
 const app = express();
 const puerto = 3000;
 
+// Servir archivos estáticos desde la carpeta 'frontend'
+app.use(express.static(path.join(__dirname, '../src')));
+
 // Middleware para que Express pueda entender JSON en el cuerpo de las peticiones
 app.use(express.json());
 
 // Ruta pública (no necesita autenticación)
 app.get('/', (req, res) => {
-  res.send('¡Bienvenido a la Clínica!');
+  res.send('¡Bienvenido a la Clínica! Visita /login para iniciar sesión.');
+});
+
+// Ruta para servir la página de login
+// c:\Users\valer\Proyecto_Final_UTN_Clinica\backend\server.js
+// ...
+// Ruta para servir la página de login
+app.get('/iniciar-sesion', (req, res) => {
+  res.sendFile(path.join(__dirname, '../src/app/pages/login/login.html'));
 });
 
 // Rutas protegidas

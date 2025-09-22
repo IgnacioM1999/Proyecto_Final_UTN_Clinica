@@ -17,7 +17,7 @@ export class ListarInsumo implements OnInit{
   
   constructor(private insumosService: InsumosServices){}
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.cargarInsumos();
   }
 

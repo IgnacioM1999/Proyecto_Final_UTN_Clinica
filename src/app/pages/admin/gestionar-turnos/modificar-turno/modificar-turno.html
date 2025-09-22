@@ -1,5 +1,5 @@
 <div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Modificar turno</h1>
+  <h1 class="fw-bold">Modificar turno</h1>
 </div>
 <div class="container mt-4">
   <div class="card shadow p-4">
@@ -7,39 +7,50 @@
       <thead class="table-primary">
         <tr>
           <th>ID</th>
-          <th>Día</th>
+          <th>Fecha</th>
           <th>Hora</th>
+          <th>Estado</th>
           <th>Especialista</th>
+          <th>Paciente</th>
           <th>Acción</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let turno of turnos">
-          <td>{{ turno.id }}</td>
+          <td>{{ turno.idTurno }}</td>
 
-          <!-- Día -->
+          <!-- Fecha -->
           <td>
-            <select [(ngModel)]="turno.dia" class="form-select">
-              <option>Lunes</option>
-              <option>Martes</option>
-              <option>Miércoles</option>
-              <option>Jueves</option>
-              <option>Viernes</option>
-            </select>
+            <input type="date" [(ngModel)]="turno.fecha" class="form-control">
           </td>
 
           <!-- Hora -->
           <td>
-            <input type="time" [(ngModel)]="turno.hora" class="form-control">
+            <input type="time" [(ngModel)]="turno.horario" class="form-control">
+          </td>
+
+          <!--Estado-->
+          <td>
+            <select [(ngModel)]="turno.estado" class="form-select">
+              <option>Disponible</option>
+              <option>Ocupado</option>
+              <option>Cancelado</option>
+            </select>
           </td>
 
           <!-- Especialista -->
           <td>
-            <select [(ngModel)]="turno.especialista" class="form-select">
-              <option>Dr. Juan Pérez</option>
-              <option>Lic. Ana Gómez</option>
-              <option>Dr. Carlos Rodríguez</option>
+            <select class="form-select" [(ngModel)]="turno.dniEspecialista" name="especialista-{{ turno.idTurno }}">
+              <option selected disabled>Seleccione un especialista</option>
+              <option *ngFor="let esp of especialistas" [value]="esp.dniUsuario">
+                {{ esp.nombreYApellido }}
+              </option>
             </select>
+          </td>
+
+          <!--Paciente-->
+          <td>
+            {{ turno.nombrePaciente }}
           </td>
 
           <!-- Botón Guardar -->
@@ -58,4 +69,3 @@
     <a routerLink="/admin/gestionar-turnos" class="btn btn-secondary">Volver</a>
   </div>
 </div>
-

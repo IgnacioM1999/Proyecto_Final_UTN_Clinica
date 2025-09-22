@@ -1,22 +1,29 @@
 <div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Listar turnos</h1>
+  <h1 class="fw-bold">Listar turnos</h1>
 </div>
 <div class="container mt-4">
   <table class="table table-striped table-bordered">
     <thead class="table-dark">
       <tr>
         <th>ID</th>
-        <th>Día</th>
+        <th>Fecha</th>
         <th>Hora</th>
+        <th>Estado</th>
         <th>Especialista</th>
+        <th>Paciente</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let turno of turnos">
-        <td>{{ turno.id }}</td>
-        <td>{{ turno.dia }}</td>
-        <td>{{ turno.hora }}</td>
-        <td>{{ turno.especialista }}</td>
+        <td>{{ turno.idTurno }}</td>
+        <td>{{ turno.fecha | date:'dd-MM-yyyy' }}</td>
+        <td>{{ turno.horario }}</td>
+        <td>{{ turno.estado }}</td>
+        <td>{{ turno.nombreEspecialista }}</td>
+        <td>{{ turno.nombrePaciente}}</td>
+      </tr>
+      <tr *ngIf="turnos.length === 0">
+        <td colspan="4" class="text-center text-muted">No hay insumos cargados</td>
       </tr>
     </tbody>
   </table>
@@ -25,4 +32,3 @@
     Volver
   </button>
 </div>
-

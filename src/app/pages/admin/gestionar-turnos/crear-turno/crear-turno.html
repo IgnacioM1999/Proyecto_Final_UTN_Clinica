@@ -1,51 +1,55 @@
 <div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Crear turno</h1>
+  <h1 class="fw-bold">Crear turno</h1>
 </div>
 <div class="container mt-4">
   <!--<h2 class="mb-4 text-center">Crear Turno</h2>-->
 
   <div class="card shadow p-4">
-    <!-- Selección de días -->
+    <!-- Selección de Fecha -->
     <div class="mb-4">
-      <label class="form-label fw-bold">Días disponibles</label>
-      <div class="btn-group w-100" role="group" aria-label="Días de la semana">
-        <input type="radio" class="btn-check" name="dia" id="lunes" autocomplete="off">
-        <label class="btn btn-outline-primary" for="lunes">Lunes</label>
-
-        <input type="radio" class="btn-check" name="dia" id="martes" autocomplete="off">
-        <label class="btn btn-outline-primary" for="martes">Martes</label>
-
-        <input type="radio" class="btn-check" name="dia" id="miercoles" autocomplete="off">
-        <label class="btn btn-outline-primary" for="miercoles">Miércoles</label>
-
-        <input type="radio" class="btn-check" name="dia" id="jueves" autocomplete="off">
-        <label class="btn btn-outline-primary" for="jueves">Jueves</label>
-
-        <input type="radio" class="btn-check" name="dia" id="viernes" autocomplete="off">
-        <label class="btn btn-outline-primary" for="viernes">Viernes</label>
-      </div>
+      <label for="fecha" class="form-label fw-bold">Fecha</label>
+      <input type="date" id="fecha" class="form-control" [(ngModel)]="nuevoTurno.fecha" name="fecha">
     </div>
+
 
     <!-- Selección de hora -->
     <div class="mb-4">
       <label for="hora" class="form-label fw-bold">Hora</label>
-      <input type="time" id="hora" class="form-control">
+      <input type="time" id="hora" class="form-control" [(ngModel)]="nuevoTurno.horario" name="hora">
     </div>
 
+    <!-- Asignacion de estado Disponible-->
+    <div class="mb-4">
+      <label for="estado" class="form-label fw-bold">Estado</label>
+      <input 
+        type="text" 
+        id="estado" 
+        class="form-control" 
+        [(ngModel)]="nuevoTurno.estado"
+        name="estado"
+        readonly
+      >
+    </div>
+    
     <!-- Selección de especialista -->
     <div class="mb-4">
       <label for="especialista" class="form-label fw-bold">Especialista</label>
-      <select id="especialista" class="form-select">
+      <select 
+        id="especialista" 
+        class="form-select" 
+        [(ngModel)]="nuevoTurno.dniEspecialista" 
+        name="especialista"
+      >
         <option selected disabled>Seleccione un especialista</option>
-        <option value="1">Dr. Juan Pérez</option>
-        <option value="2">Lic. Ana Gómez</option>
-        <option value="3">Dr. Carlos Rodríguez</option>
+        <option *ngFor="let esp of especialistas" [value]="esp.dniUsuario">
+          {{ esp.nombreYApellido }}
+        </option>
       </select>
     </div>
 
     <!-- Botón de acción -->
     <div class="text-end">
-      <button class="btn btn-success">Guardar Turno</button>
+      <button class="btn btn-success" (click)="guardarTurno()">Guardar Turno</button>
     </div>
   </div>
 
@@ -54,4 +58,3 @@
     <a routerLink="/admin/gestionar-turnos" class="btn btn-secondary">Volver</a>
   </div>
 </div>
-

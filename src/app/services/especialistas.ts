@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 // Interfaz que representa un especialista
 export interface Especialista {
-  dniEspecialista: number;
+  dniEspecialista: string;
   horasSupervisor: number;
   titulos: string;
 }

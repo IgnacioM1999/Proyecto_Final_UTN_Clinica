@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,8 @@ export class LoginComponent {
   password?: string;
   remember: boolean = false;
 
+  constructor(private router: Router){}
+
   onSubmit() {
     console.log('Usuario:', this.usuario);
     console.log('Contraseña:', this.password);
@@ -22,6 +25,10 @@ export class LoginComponent {
     } else {
       alert('❌ Usuario o contraseña incorrectos');
     }
+  }
+
+  goToRegister() {
+    this.router.navigate(['/register']); // <- ruta hacia el componente de registro
   }
 
 }

@@ -153,18 +153,17 @@ app.delete('/turnos/:id', (req, res) => {
   });
 });
 
-//Obtener usuarios del tipo especialista
-app.get('/especialistas', (req, res) => {
+//Obtener usuarios 
+app.get('/usuarios', (req, res) => {
   const query = `
-    SELECT dniUsuario AS dniEspecialista, nombreYApellido, telefono, mail, nombreUsuario
-    FROM usuarios
-    WHERE tipoUsuario = 'especialista'
+    SELECT dniUsuario, nombreYApellido, telefono, mail, nombreUsuario
+    FROM usuarios 
   `;
 
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Error al obtener especialistas:', err);
-      return res.status(500).json({ error: 'Error al obtener especialistas' });
+      console.error('Error al obtener usuarios:', err);
+      return res.status(500).json({ error: 'Error al obtener usuarios' });
     }
     res.json(results);
   });
@@ -172,7 +171,7 @@ app.get('/especialistas', (req, res) => {
 
 // Obtener todos los especialistas (usuarios con tipoUsuario = 'especialista')
 app.get('/usuarios/especialistas', (req, res) => {
-  const query =`
+  const query = `
     SELECT * 
     FROM usuarios 
     WHERE tipoUsuario = 'especialista'
@@ -190,7 +189,7 @@ app.get('/usuarios/especialistas', (req, res) => {
 
 //Obtener los datos de los pacientes y especialistas
 app.get('/turnos/especialistas-y-pacientes', (req, res) => {
-  const query =`
+  const query = `
     SELECT t.idTurno,
       t.fecha,
       t.horario,
@@ -211,5 +210,66 @@ app.get('/turnos/especialistas-y-pacientes', (req, res) => {
       return;
     }
     res.json(results);
+  });
+});
+
+// Insertar en la tabla usuarios y pacientes el Registro de USUARIO + PACIENTE
+// ==============================================================================
+app.post('/pacientes', (req, res) => {
+  const { usuario, paciente } = req.body;
+  const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad} = usuario;
+  const { obraSocial, fechaNacimiento, sexo} = paciente;
+
+  // Insertar en tabla usuarios
+  const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad], (err) => {
+    if (err) {
+      console.error('Error al insertar usuario:', err);
+      return res.status(500).json({ error: 'Error al registrar usuario' });
+    }
+
+    // Insertar en tabla pacientes
+    const sqlPaciente = `INSERT INTO pacientes (dniPaciente, obraSocial, fechaNacimiento, sexo) VALUES (?, ?, ?, ?)`;
+    db.query(sqlPaciente, [dniUsuario, obraSocial, fechaNacimiento, sexo], (err2) => {
+      if (err2) {
+        console.error('Error al insertar paciente:', err2);
+        return res.status(500).json({ error: 'Error al registrar paciente' });
+      }
+      res.json({ message: 'Paciente registrado con éxito' });
+    });
+  });
+});
+
+// insertar en la tabla usuarios y pasantes el Registro de USUARIO + PASANTE
+// ==============================================================================
+app.post('/pasantes', (req, res) => {
+  const { usuario, pasante } = req.body;
+
+  const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad } = usuario;
+  const { horasPasante, institucion, mesInicio, anioInicio, docente, mailDocente, categoria } = pasante;
+
+  // Insertar en tabla usuarios
+  const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad], (err) => {
+    if (err) {
+      console.error('Error al insertar usuario:', err);
+      return res.status(500).json({ error: 'Error al registrar usuario' });
+    }
+
+    // Insertar en tabla pasantes
+    const sqlPasante = `INSERT INTO pasantes (dniPasante, horasPasante, institucion, mesInicio, anioInicio, docente, mailDocente, categoria) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    db.query(sqlPasante, [dniUsuario, horasPasante, institucion, mesInicio, anioInicio, docente, mailDocente, categoria], (err2) => {
+      if (err2) {
+        console.error('Error al insertar pasante:', err2);
+        return res.status(500).json({ error: 'Error al registrar pasante' });
+      }
+      res.json({ message: 'Pasante registrado con éxito' });
+    });
   });
 });

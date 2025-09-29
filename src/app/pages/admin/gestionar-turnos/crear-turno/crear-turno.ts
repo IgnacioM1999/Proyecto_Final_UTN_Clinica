@@ -21,9 +21,9 @@ export class CrearTurno {
     fecha:'', 
     horario: '',
     estado:'Disponible', //Un nuevo turno se inicializa en Disponible
-    dniEspecialista: 0,
+    dniEspecialista: '',
     nombreEspecialista:'',
-    dniPaciente: 0,
+    dniPaciente: '',
     nombrePaciente:''
   };
 

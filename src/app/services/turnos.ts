@@ -9,9 +9,9 @@ export interface Turno {
   fecha: string; //asi es mas facil hacer la converison del formato de fecha a dd-mm-aaaa en el Angular
   horario: string;
   estado: string;
-  dniEspecialista: number;
+  dniEspecialista: string;
   nombreEspecialista: string;
-  dniPaciente: number;
+  dniPaciente: string;
   nombrePaciente: string;
 }
 

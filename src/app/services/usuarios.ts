@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 // Interfaz que representa un especialista
 export interface Usuario {
-  dniUsuario: number;
+  dniUsuario: string;
   nombreYApellido: string;
-  telefono: number;
+  telefono: string;
   mail: string;
   nombreUsuario: string;
   contrasenia: string;

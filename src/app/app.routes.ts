@@ -31,11 +31,13 @@ import { ListarSesion } from './pages/admin/gestionar-sesiones/listar-sesion/lis
 import { HistorialClinico } from './pages/admin/historial-clinico/historial-clinico';
 import { ListadoSesionesPaciente } from './pages/admin/historial-clinico/listado-sesiones-paciente/listado-sesiones-paciente';
 import { DetallesSesion } from './pages/admin/historial-clinico/detalles-sesion/detalles-sesion';
+import { Register } from './pages/register/register';
 
 export const routes: Routes = [
     {path: '', component: LoginComponent},
     {path: '', redirectTo: '/login', pathMatch: 'full' },
     {path: 'admin', component: Admin },
+    {path: 'register', component: Register },
     {path: 'admin/gestionar-turnos', component: GestionarTurnos },
     {path: 'admin/gestionar-turnos/crear-turno', component: CrearTurno},
     {path: 'admin/gestionar-turnos/modificar-turno', component: ModificarTurno},

@@ -1,32 +1,42 @@
-<main class="form-signin w-100 m-auto">
-  <form (ngSubmit)="onSubmit()">
-    <img class="mb-4" src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg"
-         alt="Logo" width="100" height="100">
-    <h1 class="h3 mb-3 fw-normal">Bienvenido</h1>
+<div class="d-flex justify-content-center align-items-center vh-100 login-bg">
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%; border-radius: 15px;">
 
-    <div class="form-floating">
-      <input type="email" class="form-control" id="floatingInput"
-             placeholder="name@example.com"
-             [(ngModel)]="usuario" name="usuario" required>
-      <label for="floatingInput">Usuario</label>
+    <div class="text-center">
+      <img class="mb-4" src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        width="100" height="100">
     </div>
 
-    <div class="form-floating">
-      <input type="password" class="form-control" id="floatingPassword"
-             placeholder="Password"
-             [(ngModel)]="password" name="password" required>
-      <label for="floatingPassword">Contraseña</label>
-    </div>
+    <h1 class=" text-center mb-3 fw-normal">Bienvenido</h1>
 
-    <div class="form-check text-start my-3">
-      <input class="form-check-input" type="checkbox" id="checkDefault"
-             [(ngModel)]="remember" name="remember">
-      <label class="form-check-label" for="checkDefault">
-        Recuerdame
-      </label>
-    </div>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" [(ngModel)]="usuario"
+          name="usuario" required>
+        <label for="floatingInput">Usuario</label>
+      </div>
 
-    <button class="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
-    <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2025</p>
-  </form>
-</main>
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" [(ngModel)]="password"
+          name="password" required>
+        <label for="floatingPassword">Contraseña</label>
+      </div>
+
+      <div class="form-check text-start mb-3">
+        <input class="form-check-input" type="checkbox" id="checkDefault" [(ngModel)]="remember" name="remember">
+        <label class="form-check-label" for="checkDefault">
+          Recuerdame
+        </label>
+      </div>
+
+      <button class="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
+
+      <div class="text-center mt-3">
+        <p>¿No tienes una cuenta?</p>
+        <button type="button" class="btn btn-outline-secondary w-100 py-2" (click)="goToRegister()">
+          Registrarse
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

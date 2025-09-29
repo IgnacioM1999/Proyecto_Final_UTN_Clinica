@@ -31,3 +31,9 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.login-bg {
+  background: url('https://i.pinimg.com/736x/e1/a2/15/e1a2158466becabc21c89966ac448df3.jpg');
+  background-size: cover;
+  background-position: center;
+}

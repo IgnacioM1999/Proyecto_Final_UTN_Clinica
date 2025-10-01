@@ -1,31 +1,110 @@
-<div class="p-5 bg-primary text-white text-center">
-  <h1>Panel del Administrador</h1>
-</div>
-<div class="container text-center mt-5">
-  <div class="row row-cols-1 row-cols-md-2 g-4">
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100" (click)="gestionarTurnos()">Gestionar Turnos</button>
+<!--<div class="p-5 bg-primary text-white text-center shadow-sm">
+  <h1 class="fw-bold">Panel del Administrador</h1>
+  <p class="mb-0">Gestiona fácilmente todas las secciones del sistema</p>
+</div>-->
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
+
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Panel del Administrador</span>
     </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100" (click)="gestionarSesiones()" >Gestionar Sesiones</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100" (click)="gestionarEspecialistas()">Gestionar Especialistas</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100" (click)="gestionarPasantes()">Gestionar Pasantes</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100" (click)="gestionarPacientes()">Gestionar Pacientes</button>
-    </div>
-    <div class="col-md-4">
-      <button class="btn btn-primary w-100" (click)="gestionarInsumos()">Gestionar Insumos</button>
-    </div>
-        <div class="col-md-4">
-      <button class="btn btn-primary w-100" (click)="historialClinico()">Historial Clinico</button>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
     </div>
   </div>
-  <div class="container mt-5">
-    <button type="button" class="btn btn-danger" (click)="salir()">Salir</button>
+</nav>
+
+<div class="container my-5">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body">
+          <i class="bi bi-calendar-check display-4 text-primary mb-3"></i>
+          <h5 class="card-title">Turnos</h5>
+          <p class="card-text">Administra los turnos médicos</p>
+          <button class="btn btn-primary w-100" (click)="gestionarTurnos()">Gestionar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body">
+          <i class="bi bi-people display-4 text-success mb-3"></i>
+          <h5 class="card-title">Sesiones</h5>
+          <p class="card-text">Gestiona las sesiones clínicas y actividades.</p>
+          <button class="btn btn-success w-100" (click)="gestionarSesiones()">Gestionar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body">
+          <i class="bi bi-person-badge display-4 text-warning mb-3"></i>
+          <h5 class="card-title">Especialistas</h5>
+          <p class="card-text">Controla la información de los especialistas.</p>
+          <button class="btn btn-warning w-100 text-white" (click)="gestionarEspecialistas()">Gestionar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body">
+          <i class="bi bi-mortarboard display-4 text-info mb-3"></i>
+          <h5 class="card-title">Pasantes</h5>
+          <p class="card-text">Administra los pasantes en formación.</p>
+          <button class="btn btn-info w-100 text-white" (click)="gestionarPasantes()">Gestionar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body">
+          <i class="bi bi-person-heart display-4 text-danger mb-3"></i>
+          <h5 class="card-title">Pacientes</h5>
+          <p class="card-text">Información de los pacientes.</p>
+          <button class="btn btn-danger w-100" (click)="gestionarPacientes()">Gestionar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body">
+          <i class="bi bi-box-seam display-4 text-secondary mb-3"></i>
+          <h5 class="card-title">Insumos</h5>
+          <p class="card-text">Controla los insumos y materiales médicos.</p>
+          <button class="btn btn-secondary w-100" (click)="gestionarInsumos()">Gestionar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body">
+          <i class="bi bi-journal-medical display-4 text-dark mb-3"></i>
+          <h5 class="card-title">Historial Clínico</h5>
+          <p class="card-text">Consulta los historiales médicos registrados.</p>
+          <button class="btn btn-dark w-100" (click)="historialClinico()">Gestionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón de salir -->
+  <div class="text-center mt-5">
+    <button type="button" class="btn btn-outline-danger px-4 py-2" (click)="salir()">
+      <i class="bi bi-box-arrow-right"></i> Salir
+    </button>
   </div>
 </div>

@@ -156,7 +156,7 @@ app.delete('/turnos/:id', (req, res) => {
 //Obtener usuarios 
 app.get('/usuarios', (req, res) => {
   const query = `
-    SELECT dniUsuario, nombreYApellido, telefono, mail, nombreUsuario
+    SELECT dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario
     FROM usuarios 
   `;
 

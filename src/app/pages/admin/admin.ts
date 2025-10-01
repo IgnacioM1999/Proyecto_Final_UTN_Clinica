@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './admin.html',
   styleUrl: './admin.css'
 })
@@ -54,5 +54,9 @@ export class Admin {
   historialClinico(){
     this.router.navigate(["/admin/historial-clinico"])
   }
+
+  verPerfil() {
+  this.router.navigate(['/perfil']); 
+}
 
 }

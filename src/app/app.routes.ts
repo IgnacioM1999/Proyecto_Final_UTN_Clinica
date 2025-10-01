@@ -32,12 +32,14 @@ import { HistorialClinico } from './pages/admin/historial-clinico/historial-clin
 import { ListadoSesionesPaciente } from './pages/admin/historial-clinico/listado-sesiones-paciente/listado-sesiones-paciente';
 import { DetallesSesion } from './pages/admin/historial-clinico/detalles-sesion/detalles-sesion';
 import { Register } from './pages/register/register';
+import { Perfil } from './pages/perfil/perfil';
 
 export const routes: Routes = [
     {path: '', component: LoginComponent},
     {path: '', redirectTo: '/login', pathMatch: 'full' },
     {path: 'admin', component: Admin },
     {path: 'register', component: Register },
+    {path: 'perfil', component: Perfil },
     {path: 'admin/gestionar-turnos', component: GestionarTurnos },
     {path: 'admin/gestionar-turnos/crear-turno', component: CrearTurno},
     {path: 'admin/gestionar-turnos/modificar-turno', component: ModificarTurno},

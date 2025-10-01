@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
+
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Panel del Administrador</span>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="card shadow-lg text-center p-4 " style="max-width: 400px; width: 100%; border-radius: 20px;">
+    <h2 class="mb-3">Perfil del Usuario</h2>
+
+    <div *ngIf="usuario; else noDatos">
+      <p><strong>Nombre y Apellido:</strong> {{ usuario.nombreYApellido }}</p>
+      <p><strong>Email:</strong> {{ usuario.mail }}</p>
+      <p><strong>Telefono:</strong> {{ usuario.telefono }}</p>
+      <p><strong>Usuario:</strong> {{ usuario.nombreUsuario }}</p>
+      <p><strong>Rol:</strong> {{ usuario.tipoUsuario }}</p>
+    </div>
+
+    <ng-template #noDatos>
+      <p>No se encontraron datos de usuario.</p>
+    </ng-template>
+  </div>
+</div>

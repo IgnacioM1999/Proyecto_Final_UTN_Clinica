@@ -11,14 +11,18 @@
     <form (ngSubmit)="onSubmit()">
       <div class="form-floating mb-3">
         <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" [(ngModel)]="usuario"
-          name="usuario" required>
+          name="usuario" required (input)="onInputChange()">
         <label for="floatingInput">Usuario</label>
       </div>
 
       <div class="form-floating mb-3">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" [(ngModel)]="password"
-          name="password" required>
+          name="password" required (input)="onInputChange()">
         <label for="floatingPassword">Contraseña</label>
+
+        <div *ngIf="errorMessage" class="text-danger mt-1">
+          {{ errorMessage }}
+        </div>
       </div>
 
       <div class="form-check text-start mb-3">

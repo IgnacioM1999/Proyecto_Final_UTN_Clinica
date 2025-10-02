@@ -1,35 +1,58 @@
-<div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Crear Insumo</h1>
-</div>
-<div class="container mt-4">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
 
-    <div class="card shadow p-4">
-        <!-- Nombre-->
-        <div class="mb-4">
-            <label for="nombre" class="form-label fw-bold">Nombre</label>
-            <input type="text" id="nombre" class="form-control" [(ngModel)]="nuevoInsumo.nombre" required>
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Gestion de Insumos</span>
         </div>
 
-        <!-- Descripcion -->
-        <div class="mb-4">
-            <label for="hora" class="form-label fw-bold">Descripcion</label>
-            <input type="text" id="descripcion" class="form-control" [(ngModel)]="nuevoInsumo.descripcion" required>
-        </div>
-
-        <!-- Selección de cantidad -->
-        <div class="mb-4">
-            <label for="cantidad" class="form-label fw-bold">Cantidad</label>
-            <input type="number" id="cantidad" class="form-control" [(ngModel)]="nuevoInsumo.cantidad" required>
-        </div>
-
-        <!-- Botón de acción -->
-        <div class="text-end">
-            <button class="btn btn-success" (click)="guardarInsumo()">Guardar Insumo</button>
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
         </div>
     </div>
+</nav>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <form (ngSubmit)="guardarInsumo()">
 
-    <!-- Botón Volver -->
-    <div class="mt-3">
-        <a routerLink="/admin/gestionar-insumos" class="btn btn-secondary">Volver</a>
+            <!-- Nombre-->
+            <div class="mb-4">
+                <label for="nombre" class="form-label fw-bold">Nombre</label>
+                <input type="text" id="nombre" class="form-control" [(ngModel)]="nuevoInsumo.nombre" name="nombre"
+                    required>
+            </div>
+
+            <!-- Descripcion -->
+            <div class="mb-4">
+                <label for="descripcion" class="form-label fw-bold">Descripcion</label>
+                <input type="text" id="descripcion" class="form-control" [(ngModel)]="nuevoInsumo.descripcion"
+                    name="descripcion" maxlength="200" required>
+                <div *ngIf="nuevoInsumo.descripcion.length > 200" class="text-danger mt-1">
+                    Máximo 200 caracteres permitidos (actual: {{ nuevoInsumo.descripcion.length }})
+                </div>
+            </div>
+
+            <!-- Selección de cantidad -->
+            <div class="mb-4">
+                <label for="cantidad" class="form-label fw-bold">Cantidad</label>
+                <input type="number" id="cantidad" class="form-control" [(ngModel)]="nuevoInsumo.cantidad"
+                    name="cantidad" required>
+            </div>
+
+            <!--Botones-->
+            <div class="d-flex justify-content-between">
+                <a routerLink="/admin/gestionar-insumos" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                <button class="btn btn-success" type="submit">
+                    <i class="bi bi-check-circle"></i> Guardar Insumo
+                </button>
+            </div>
+        </form>
     </div>
 </div>

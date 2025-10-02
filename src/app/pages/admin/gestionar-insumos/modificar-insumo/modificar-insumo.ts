@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Insumo, InsumosServices } from '../../../../services/insumos';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modificar-insumo',
@@ -38,11 +39,20 @@ export class ModificarInsumo {
   guardarInsumo(insumo: Insumo) {
     this.insumosService.updateInsumo(insumo.idInsumos, insumo).subscribe({
       next: () => {
-        alert(`Insumo ${insumo.idInsumos} actualizado correctamente`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: 'Insumo modificado con éxito 🎉',
+          confirmButtonText: 'OK'
+        });
       },
       error: (err) => {
         console.error('Error al actualizar insumo:', err);
-        alert('No se pudo actualizar el insumo');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo modificar el insumo, revise los campos.'
+        });
       },
     });
   }

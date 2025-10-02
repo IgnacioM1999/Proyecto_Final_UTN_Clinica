@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Turno, TurnosServices } from '../../../../services/turnos';
 import { Especialista, EspecialistasServices } from '../../../../services/especialistas';
 import { Usuario, UsuariosServices } from '../../../../services/usuarios';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -16,20 +17,20 @@ import { Usuario, UsuariosServices } from '../../../../services/usuarios';
 })
 export class CrearTurno {
   especialistas: Usuario[] = [];
-  nuevoTurno: Turno ={
+  nuevoTurno: Turno = {
     idTurno: 0,
-    fecha:'', 
+    fecha: '',
     horario: '',
-    estado:'Disponible', //Un nuevo turno se inicializa en Disponible
+    estado: 'Disponible', //Un nuevo turno se inicializa en Disponible
     dniEspecialista: '',
-    nombreEspecialista:'',
+    nombreEspecialista: '',
     dniPaciente: '',
-    nombrePaciente:''
+    nombrePaciente: ''
   };
 
-  constructor(private turnosServices:TurnosServices, private especialistasUsuariosServices:UsuariosServices, private router: Router){}
+  constructor(private turnosServices: TurnosServices, private especialistasUsuariosServices: UsuariosServices, private router: Router) { }
 
-    ngOnInit(): void {
+  ngOnInit(): void {
     this.especialistasUsuariosServices.getEspecialistas().subscribe(data => {
       this.especialistas = data;  // guardamos la lista de especialistas en el arreglo
     });
@@ -37,17 +38,26 @@ export class CrearTurno {
   guardarTurno() {
     this.turnosServices.createTurno(this.nuevoTurno).subscribe({
       next: (res) => {
-        alert('Turno creado correctamente ✅');
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: 'Turno registrado con éxito 🎉',
+          confirmButtonText: 'OK'
+        });
       },
       error: (err) => {
         console.error('Error al crear turno:', err);
-        alert('❌ Error al crear turno');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo registrar el turno, revise los campos.'
+        });
       }
     });
   }
 
-  volver(){
+  volver() {
     this.router.navigate(["/admin/gestionar-turnos"])
   }
-  
+
 }

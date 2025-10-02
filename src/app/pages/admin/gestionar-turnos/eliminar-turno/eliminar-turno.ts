@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Turno, TurnosServices } from '../../../../services/turnos';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-eliminar-turno',
@@ -23,7 +24,7 @@ export class EliminarTurno implements OnInit {
 
   constructor(private turnosServices: TurnosServices) { }
 
-    ngOnInit(): void {
+  ngOnInit(): void {
     this.cargarTurnos();
   }
 
@@ -36,10 +37,49 @@ export class EliminarTurno implements OnInit {
   }
 
   eliminarTurno(id: number) {
-    if (confirm('¿Seguro que deseas eliminar este turno?')) {
-      this.turnos = this.turnos.filter(t => t.idTurno !== id); //.filter() recorre cada elemento (t) y devuelve un nuevo arreglo 
-      //solo con los elementos cuyo id sea distinto del id que queremos eliminar.
-    }
-  }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás recuperar este turno una vez eliminado.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'No, cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.turnosServices.deleteTurnos(id).subscribe({
+          next: () => {
+            // Quitar el turno de la lista en el frontend
+            this.turnos = this.turnos.filter(t => t.idTurno !== id);
+            //.filter() recorre cada elemento (t) y devuelve un nuevo arreglo
+            // //solo con los elementos cuyo id sea distinto del id que queremos eliminar.
 
+            Swal.fire({
+              title: 'Eliminado!',
+              text: 'El turno ha sido eliminado correctamente.',
+              icon: 'success',
+              confirmButtonColor: '#198754'
+            });
+          },
+          error: (err) => {
+            console.error('Error al eliminar turno:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo eliminar el turno. Intenta nuevamente.',
+              icon: 'error',
+              confirmButtonColor: '#0d6efd'
+            });
+          }
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: 'Cancelado',
+          text: 'El turno no fue eliminado.',
+          icon: 'info',
+          confirmButtonColor: '#0d6efd'
+        });
+      }
+    });
+  }
 }

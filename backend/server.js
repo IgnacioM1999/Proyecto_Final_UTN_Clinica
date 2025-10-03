@@ -273,3 +273,46 @@ app.post('/pasantes', (req, res) => {
     });
   });
 });
+
+//SESION
+//creacion de una sesion
+app.post('/sesiones', (req, res) => {
+  const { fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente,
+    dniEspecialista, idTratamiento 
+  } = req.body;
+
+  if (!nombre || !cantidad || !descripcion) {
+    return res.status(400).json({ error: 'campos obligatorios' });
+  }
+
+  const query = 'INSERT INTO insumos (fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente, dniEspecialista, idTratamiento) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)';
+  db.query(query, [fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente,
+    dniEspecialista, idTratamiento], (err, result) => {
+    if (err) {
+      console.error('Error al insertar sesion:', err);
+      return res.status(500).json({ error: 'Error al insertar sesion' });
+    }
+    res.json({ message: 'Sesión creada' });
+  });
+});
+
+//listado de sesiones, incluyendo descripcion de especialisa, paciente, sindrome y sesion
+app.get('/sesiones/listadoSesiones', (req, res) => {
+  const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.minutosAgujasPuestas, s.cantidadAgujasUsadas, 
+  s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
+  s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento
+    FROM sesiones s
+    INNER JOIN usuarios e ON e.dniUsuario = s.dniEspecialista
+    INNER JOIN usuarios p ON p.dniUsuario = s.dniPaciente
+    INNER JOIN sindromes si ON si.idSindrome = s.idSindrome
+    INNER JOIN tratamientos t ON t.idTratamiento = s.idTratamiento
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener sesiones:', err);
+      return res.status(500).json({ error: 'Error al obtener sesiones' });
+    }
+    res.json(results);
+  });
+});
+

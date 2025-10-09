@@ -1,0 +1,13 @@
+.icono-ojo {
+  position: absolute;
+  right: 0;   /* separación a la derecha */
+  top: 50%;      /* punto medio del input */
+  /*transform: translateY(-50%); centra verticalmente */
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #6c757d; 
+}
+
+.icono-ojo:hover {
+  color: #000; /* se oscurece al pasar el mouse */
+}

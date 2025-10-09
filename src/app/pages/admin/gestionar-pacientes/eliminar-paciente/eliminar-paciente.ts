@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { Paciente, PacientesServices } from '../../../../services/pacientes';
+import { UsuariosServices } from '../../../../services/usuarios';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-eliminar-paciente',
@@ -9,21 +12,69 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './eliminar-paciente.html',
   styleUrl: './eliminar-paciente.css'
 })
-export class EliminarPaciente {
+export class EliminarPaciente implements OnInit {
 
-  constructor(private router: Router){}
+  constructor(private pacientesServices: PacientesServices, private usuariosServices: UsuariosServices){}
   
-  pacientes = [
+  /*pacientes = [
     {dni: 16889123, usuario: 'Alex1', nombreYapellido: 'Alexis Rodriguez', email:'alex@gmail.com', contrasenia: '523'},
     {dni: 20555333, usuario: 'MariB', nombreYapellido: 'Maria Benjamin', email:'mariab@gmail.com', contrasenia: 'ppp'},
     {dni: 37009008, usuario: 'JoseM', nombreYapellido: 'Josefina Martinez', email:'jo22@gmail.com', contrasenia: 'adios'},
-  ];
+  ];*/
 
-  eliminarPaciente(dni: number) {
-    if (confirm('¿Seguro que deseas eliminar este pasante?')) {
-      this.pacientes = this.pacientes.filter(t => t.dni !== dni); //.filter() recorre cada elemento (t) y devuelve un nuevo arreglo 
-                                                          //solo con los elementos cuyo id sea distinto del id que queremos eliminar.
-    }
+  pacientes: Paciente[] = [];
+
+  ngOnInit(): void {
+    this.cargarPacientes();
   }
 
+  cargarPacientes(): void {
+    this.pacientesServices.getPacientes().subscribe({
+      next: (data) => this.pacientes = data,
+      error: (err) => console.error('Error al cargar insumos:', err)
+    });
+  }
+
+  eliminarPaciente(dni: string) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Vas a dar de baja a este paciente',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, dar de baja',
+      cancelButtonText: 'No, cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usuariosServices.deleteUsuarios(dni).subscribe({
+          next: () => {
+            this.pacientes = this.pacientes.filter(e => e.dniPaciente !== dni);
+            Swal.fire({
+              title: 'Eliminado!',
+              text: 'El paciente ha sido dado de baja',
+              icon: 'success',
+              confirmButtonColor: '#198754'
+            });
+          },
+          error: (err) => {
+            console.error('Error al dar de baja al paciente:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo dar de baja al paciente. Intenta nuevamente.',
+              icon: 'error',
+              confirmButtonColor: '#0d6efd'
+            });
+          }
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: 'Cancelado',
+          text: 'El paciente no fue dado de baja',
+          icon: 'info',
+          confirmButtonColor: '#0d6efd'
+        });
+      }
+    });
+  }
 }

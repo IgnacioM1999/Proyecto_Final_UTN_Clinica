@@ -10,8 +10,9 @@ export interface Usuario {
   mail: string;
   nombreUsuario: string;
   contrasenia: string;
-  tipoUsuario: string;
-  idLocalidad: number;
+  tipoUsuario?: string;  
+  idLocalidad?: number;
+  estado?: string;
 }
 
 @Injectable({
@@ -29,7 +30,7 @@ export class UsuariosServices {
   }
 
   // Obtener un usuario por dni
-  getUsuario(dni: number): Observable<Usuario> {
+  getUsuario(dni: string): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.apiUrl}/${dni}`);
   }
 
@@ -39,12 +40,12 @@ export class UsuariosServices {
   }
 
   // Modificar usuarios
-  updateUsuarios(dni: number, usuario: Usuario): Observable<Usuario> {
+  updateUsuarios(dni: string, usuario: Usuario): Observable<Usuario> {
     return this.http.put<Usuario>(`${this.apiUrl}/${dni}`, usuario);
   }
 
-  // Eliminar usuarios
-  deleteUsuarios(dni: number): Observable<any> {
+  // Eliminar Logicamente Usuarios
+  deleteUsuarios(dni: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${dni}`);
   }
 

@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Especialista, EspecialistasServices } from '../../../../services/especialistas';
+import { UsuariosServices } from '../../../../services/usuarios';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-eliminar-especialista',
@@ -9,21 +12,70 @@ import { Router, RouterModule } from '@angular/router';
   templateUrl: './eliminar-especialista.html',
   styleUrl: './eliminar-especialista.css'
 })
-export class EliminarEspecialista {
+export class EliminarEspecialista implements OnInit {
 
-  constructor(private router: Router) { }
-
-  especialistas = [
+  /*especialistas = [
     { legajo: 1, usuario: 'Robert!', nombreYapellido: 'Roberto Melendez', email: 'roberto@gmail.com', contrasenia: '123' },
     { legajo: 2, usuario: 'Pablo3', nombreYapellido: 'Pablo Hernandez', email: 'pablo@gmail.com', contrasenia: '456' },
     { legajo: 3, usuario: 'Marti1', nombreYapellido: 'Martin Martinez', email: 'martin@gmail.com', contrasenia: 'hola' },
-  ];
+  ];*/
 
-  eliminarEspecialista(legajo: number) {
-    if (confirm('¿Seguro que deseas eliminar este especialista?')) {
-      this.especialistas = this.especialistas.filter(t => t.legajo !== legajo); //.filter() recorre cada elemento (t) y devuelve un nuevo arreglo 
-      //solo con los elementos cuyo id sea distinto del id que queremos eliminar.
-    }
+  especialistas: Especialista[] = [];
+
+  constructor(private especialistasServices: EspecialistasServices, private usuariosServices: UsuariosServices) { }
+
+  ngOnInit(): void {
+    this.cargarEspecialistas();
+  }
+
+  cargarEspecialistas(): void {
+    this.especialistasServices.getEspecialistas().subscribe({
+      next: (data) => this.especialistas = data,
+      error: (err) => console.error('Error al cargar especialistas:', err)
+    });
+  }
+
+  eliminarEspecialista(dni: string) {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Daras de baja al especialista',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, dar baja',
+      cancelButtonText: 'No, cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.usuariosServices.deleteUsuarios(dni).subscribe({ //se hace la eliminacion logica seteando en el campo estado a inactivo en la tabla usuarios
+          next: () => {
+            this.especialistas = this.especialistas.filter(e => e.dniEspecialista !== dni);
+            Swal.fire({
+              title: 'Éxito!',
+              text: 'El especialista ha sido dado de baja correctamente.',
+              icon: 'success',
+              confirmButtonColor: '#198754'
+            });
+          },
+          error: (err) => {
+            console.error('Error al dar de baja al especialista:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo dar de baja el especialista. Intenta nuevamente.',
+              icon: 'error',
+              confirmButtonColor: '#0d6efd'
+            });
+          }
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          title: 'Cancelado',
+          text: 'El especialista no fue dado de baja.',
+          icon: 'info',
+          confirmButtonColor: '#0d6efd'
+        });
+      }
+    });
   }
 
 }

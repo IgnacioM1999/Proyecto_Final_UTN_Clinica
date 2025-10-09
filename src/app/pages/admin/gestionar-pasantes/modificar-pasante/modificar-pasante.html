@@ -1,46 +1,92 @@
-<div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Modificar pasante</h1>
-</div>
-<div class="container mt-4">
-  <div class="card shadow p-4">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
+
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Modificar Pasantes</span>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid mt-4">
+  <div class="table-responsive">
     <table class="table table-bordered table-striped align-middle">
-      <thead class="table-primary">
+      <thead class="table-warning text-center">
         <tr>
-          <th>Legajo</th>
-          <th>Usuario</th>
-          <th>Nombre y apellido</th>
-          <th>Email</th>
-          <th>Contraseña</th>
-          <th>Acción</th>
+          <th>DNI</th>
+          <th style="min-width: 200px;">Nombre y Apellido</th>
+          <th style="min-width: 120px;">Telefono</th>
+          <th style="min-width: 250px;">Email</th>
+          <th style="min-width: 150px;">Usuario</th>
+          <th style="min-width: 180px;">Contraseña</th>
+          <th style="min-width: 100px;">Horas</th>
+          <th style="min-width: 150px;">Mes</th>
+          <th style="min-width: 100px;">Año</th>
+          <th style="min-width: 200px;">Docente</th>
+          <th style="min-width: 250px;">Mail Docente</th>
+          <th style="min-width: 150px;">Categoria</th>
+          <th style="min-width: 100px;">Accion</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let pasante of pasantes">
-          <td>{{ pasante.legajo }}</td>
-
-          <!-- Usuario -->
-          <td>
-            <input type="text" [(ngModel)]="pasante.usuario" class="form-control">
-          </td>
-
+          <td>{{ pasante.dniPasante }}</td>
           <!-- Nombre y Apellido -->
           <td>
-            <input type="text" [(ngModel)]="pasante.nombreYapellido" class="form-control">
+            <input type="text" [(ngModel)]="pasante.nombreYApellido" class="form-control">
           </td>
-
+          <!-- Telefono -->
+          <td>
+            <input type="text" [(ngModel)]="pasante.telefono" class="form-control">
+          </td>
           <!-- Email -->
           <td>
-            <input [(ngModel)]="pasante.email" class="form-select">
+            <input type="email" [(ngModel)]="pasante.mail" class="form-control">
           </td>
-
+          <!-- Usuario -->
+          <td>
+            <input type="text" [(ngModel)]="pasante.nombreUsuario" class="form-control">
+          </td>
           <!-- Contraseña -->
           <td>
-            <input [(ngModel)]="pasante.contrasenia" class="form-select">
+            <input type="text" [(ngModel)]="pasante.contrasenia" class="form-control">
+          </td>
+          <!-- Hora -->
+          <td>
+            <input type="number" [(ngModel)]="pasante.horasPasante" class="form-control">
+          </td>
+          <!-- Mes -->
+          <td>
+            <input type="text" [(ngModel)]="pasante.mesInicio" class="form-control">
+          </td>
+          <!-- Año -->
+          <td>
+            <input type="number" [(ngModel)]="pasante.anioInicio" class="form-control">
+          </td>
+          <!-- Docente -->
+          <td>
+            <input type="text" [(ngModel)]="pasante.docente" class="form-control">
+          </td>
+          <!-- Mail Docente -->
+          <td>
+            <input type="email" [(ngModel)]="pasante.mailDocente" class="form-control">
+          </td>
+          <!-- Categoria -->
+          <td>
+            <input type="text" [(ngModel)]="pasante.categoria" class="form-control">
           </td>
 
           <!-- Botón Guardar -->
           <td>
-            <button class="btn btn-success btn-sm" (click)="guardarPasante(pasante)">
+            <button class="btn btn-success btn-sm" (click)="guardarPasantes(pasante)">
               Guardar
             </button>
           </td>
@@ -54,4 +100,3 @@
     <a routerLink="/admin/gestionar-pasantes" class="btn btn-secondary">Volver</a>
   </div>
 </div>
-

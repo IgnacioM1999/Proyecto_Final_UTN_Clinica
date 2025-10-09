@@ -38,7 +38,7 @@ export class EliminarInsumo implements OnInit {
   eliminarInsumo(id: number) {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: 'No podrás recuperar este insumo una vez eliminado.',
+      text: 'Vas a eliminar el insumo.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',

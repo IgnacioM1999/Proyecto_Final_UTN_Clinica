@@ -8,6 +8,7 @@ export interface Insumo {
   nombre: string;
   descripcion: string;
   cantidad: number;
+  estado: string;
 }
 
 @Injectable({

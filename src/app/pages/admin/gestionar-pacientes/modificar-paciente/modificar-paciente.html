@@ -1,43 +1,73 @@
-<div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Modificar paciente</h1>
-</div>
-<div class="container mt-4">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
+
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Eliminar Pacientes</span>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid mt-4">
   <div class="card shadow p-4">
     <table class="table table-bordered table-striped align-middle">
-      <thead class="table-primary">
+      <thead class="table-warning text-center">
         <tr>
-          <th>DNI</th>
-          <th>Usuario</th>
-          <th>Nombre y apellido</th>
-          <th>Email</th>
-          <th>Contraseña</th>
-          <th>Acción</th>
+          <th style="width: 80px;">DNI</th>
+          <th style="width: 160px;">Nombre y Apellido</th>
+          <th style="width: 140px;">Telefono</th>
+          <th style="width: 200px;">Email</th>
+          <th style="width: 120px;">Usuario</th>
+          <th style="width: 140px;">Obra Social</th>
+          <th style="width: 80px;">Nacimiento</th>
+          <th style="width: 140px;">Sexo</th>
+          <th style="width: 90px;">Accion</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let paciente of pacientes">
-          <td>{{ paciente.dni }}</td>
-
-          <!-- Usuario -->
-          <td>
-            <input type="text" [(ngModel)]="paciente.usuario" class="form-control">
-          </td>
-
+          <!-- DNI -->
+          <td>{{ paciente.dniPaciente }}</td>
           <!-- Nombre y Apellido -->
           <td>
-            <input type="text" [(ngModel)]="paciente.nombreYapellido" class="form-control">
+            <input type="text" [(ngModel)]="paciente.nombreYApellido" class="form-control">
           </td>
-
+          <!-- Telefono -->
+          <td>
+            <input type="text" [(ngModel)]="paciente.telefono" class="form-control">
+          </td>
           <!-- Email -->
           <td>
-            <input type="email" [(ngModel)]="paciente.email" class="form-control">
+            <input type="email" [(ngModel)]="paciente.mail" class="form-control">
           </td>
-
-          <!-- Contraseña -->
+          <!-- Usuario -->
           <td>
-            <input type="text" [(ngModel)]="paciente.contrasenia" class="form-control">
+            <input type="text" [(ngModel)]="paciente.nombreUsuario" class="form-control">
           </td>
-
+          <!-- Obra Social -->
+          <td>
+            <input type="text" [(ngModel)]="paciente.obraSocial" class="form-control">
+          </td>
+          <!-- Fecha Nacimiento -->
+          <td>
+            <input type="date" [(ngModel)]="paciente.fechaNacimiento" class="form-control">
+          </td>
+          <!-- Sexo -->
+          <td>
+            <select [(ngModel)]="paciente.sexo" class="form-select">
+              <option value="" disabled selected>Seleccione sexo</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+            </select>
+          </td>
           <!-- Botón Guardar -->
           <td>
             <button class="btn btn-success btn-sm" (click)="guardarPaciente(paciente)">
@@ -51,6 +81,8 @@
 
   <!-- Botón Volver -->
   <div class="mt-3">
-    <a routerLink="/admin/gestionar-pacientes" class="btn btn-secondary">Volver</a>
+    <a routerLink="/admin/gestionar-pacientes" class="btn btn-secondary">
+      <i class="bi bi-arrow-left me-2"></i>Volver
+    </a>
   </div>
 </div>

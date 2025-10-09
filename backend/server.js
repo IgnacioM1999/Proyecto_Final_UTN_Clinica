@@ -27,14 +27,15 @@ const db = mysql.createConnection({
 
 //creacion de un insumo
 app.post('/insumos', (req, res) => {
-  const { nombre, descripcion, cantidad } = req.body;
+  const { nombre, descripcion, cantidad} = req.body;
+  const estado = 'activo';
 
   if (!nombre || !cantidad || !descripcion) {
     return res.status(400).json({ error: 'nombre, descripcion y cantidad son obligatorios' });
   }
 
-  const query = 'INSERT INTO insumos (nombre, descripcion, cantidad) VALUES ( ?, ?, ?)';
-  db.query(query, [nombre, descripcion, cantidad], (err, result) => {
+  const query = 'INSERT INTO insumos (nombre, descripcion, cantidad, estado) VALUES ( ?, ?, ?, ?)';
+  db.query(query, [nombre, descripcion, cantidad, estado], (err, result) => {
     if (err) {
       console.error('Error al insertar insumo:', err);
       return res.status(500).json({ error: 'Error al insertar insumo' });
@@ -61,10 +62,11 @@ app.put('/insumos/:id', (req, res) => {
   });
 });
 
-//eliminacion de un insumo
+//eliminacion de un insumo (se hace la baja logica, editando el campo estado de 'activo' a 'inactivo')
+//No se cambia el delete por el update porque habria que cambiar todo el frontend
 app.delete('/insumos/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE FROM insumos WHERE idInsumos = ?';
+  const query = 'UPDATE insumos SET estado = "inactivo" WHERE idInsumos = ?'; 
   db.query(query, [id], (err, result) => {
     if (err) {
       console.error('Error al eliminar insumo:', err);
@@ -79,7 +81,7 @@ app.delete('/insumos/:id', (req, res) => {
 
 //listado de insumos
 app.get('/insumos', (req, res) => {
-  const query = 'SELECT * FROM insumos';
+  const query = `SELECT * FROM insumos WHERE estado ="activo" `;
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error al obtener insumos:', err);
@@ -153,6 +155,7 @@ app.delete('/turnos/:id', (req, res) => {
   });
 });
 
+//USUARIO
 //Obtener usuarios 
 app.get('/usuarios', (req, res) => {
   const query = `
@@ -169,12 +172,35 @@ app.get('/usuarios', (req, res) => {
   });
 });
 
+//Eliminar Logicamente Usuarios (setear en el atributo estado='inactivo'). 
+// Se usa para eliminar ESPECIALISTAS, PASANTES Y PACIENTES
+//Se deja el delete, no se cambia a update, para no cambiar todo el frontend
+app.delete('/usuarios/:dni', (req, res) => {
+  const { dni } = req.params;
+  //Actualizacion del atributo estado de 'activo' a 'inactivo'
+  const queryUsuario = 'UPDATE usuarios SET estado = "inactivo" WHERE dniUsuario = ?';
+
+  db.query(queryUsuario, [dni], (err, result) => {
+    if (err) {
+      console.error('Error al dar de baja al usuario:', err);
+      return res.status(500).json({ error: 'Error al dar de baja al usuario' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.json({ message: 'Usuario dado de baja correctamente ✅' });
+  });
+});
+
 // Obtener todos los especialistas (usuarios con tipoUsuario = 'especialista')
+//Se usa para la listar los nombres de los especialistas en el Crear Turno
 app.get('/usuarios/especialistas', (req, res) => {
   const query = `
     SELECT * 
     FROM usuarios 
-    WHERE tipoUsuario = 'especialista'
+    WHERE tipoUsuario = 'especialista' and estado = 'activo'
   `;
 
   db.query(query, (err, results) => {
@@ -188,6 +214,7 @@ app.get('/usuarios/especialistas', (req, res) => {
 });
 
 //Obtener los datos de los pacientes y especialistas
+//Usado en el metodo getEspecialistasYPacientes del servicio turnos.ts en el componente modificar-turno
 app.get('/turnos/especialistas-y-pacientes', (req, res) => {
   const query = `
     SELECT t.idTurno,
@@ -200,7 +227,7 @@ app.get('/turnos/especialistas-y-pacientes', (req, res) => {
       p.nombreYApellido AS nombrePaciente
     FROM turnos t
     JOIN usuarios e ON t.dniEspecialista = e.dniUsuario
-    JOIN usuarios p ON t.dniPaciente = p.dniUsuario
+    LEFT JOIN usuarios p ON t.dniPaciente = p.dniUsuario
   `;
 
   db.query(query, (err, results) => {
@@ -213,12 +240,12 @@ app.get('/turnos/especialistas-y-pacientes', (req, res) => {
   });
 });
 
+//PACIENTE 
 // Insertar en la tabla usuarios y pacientes el Registro de USUARIO + PACIENTE
-// ==============================================================================
 app.post('/pacientes', (req, res) => {
   const { usuario, paciente } = req.body;
-  const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad} = usuario;
-  const { obraSocial, fechaNacimiento, sexo} = paciente;
+  const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad } = usuario;
+  const { obraSocial, fechaNacimiento, sexo } = paciente;
 
   // Insertar en tabla usuarios
   const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad) 
@@ -242,6 +269,65 @@ app.post('/pacientes', (req, res) => {
   });
 });
 
+//Listar los pacientes (informacion de la tabla usuarios y especialistas)
+app.get('/pacientes', (req, res) => {
+  const query = `SELECT u.dniUsuario as dniPaciente, u.nombreYApellido, u.telefono, u.mail, 
+                u.nombreUsuario, u.contrasenia, p.obraSocial, p.fechaNacimiento, p.sexo
+                 FROM usuarios u 
+                 INNER JOIN pacientes p ON p.dniPaciente = u.dniUsuario
+                 WHERE u.estado = 'activo'`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener pacientes:', err);
+      return res.status(500).json({ error: 'Error al obtener pacientes' });
+    }
+    res.json(results);
+  });
+});
+
+//Modificar pacientes (informacion de la tabla usuarios y pacientes)
+app.put('/pacientes/:dni', (req, res) => {
+  const { dni } = req.params;
+  const { usuario, paciente } = req.body;
+
+  const queryUsuarios = `
+    UPDATE usuarios 
+    SET nombreYApellido = ?, telefono = ?, mail = ?, nombreUsuario = ?, contrasenia = ?
+    WHERE dniUsuario = ?`;
+
+  const queryPacientes = `
+    UPDATE pacientes 
+    SET obraSocial = ?, fechaNacimiento = ?, sexo = ?
+    WHERE dniPaciente = ?`;
+
+  db.query(queryUsuarios, [usuario.nombreYApellido, usuario.telefono, usuario.mail, usuario.nombreUsuario,
+  usuario.contrasenia, dni], (err, resultUsuarios) => {
+    if (err) {
+      console.error('Error al actualizar usuario:', err);
+      return res.status(500).json({ error: 'Error al actualizar usuario' });
+    }
+
+    if (resultUsuarios.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    db.query(queryPacientes, [paciente.obraSocial, paciente.fechaNacimiento, paciente.sexo, dni],
+      (err2, resultPacientes) => {
+        if (err2) {
+          console.error('Error al actualizar Paciente:', err2);
+          return res.status(500).json({ error: 'Error al actualizar Paciente' });
+        }
+
+        res.json({
+          message: 'Paciente y usuario actualizados correctamente ✅',
+        });
+      }
+    );
+  }
+  );
+});
+
+//PASANTE
 // insertar en la tabla usuarios y pasantes el Registro de USUARIO + PASANTE
 // ==============================================================================
 app.post('/pasantes', (req, res) => {
@@ -274,11 +360,162 @@ app.post('/pasantes', (req, res) => {
   });
 });
 
+//Listar los pasantes (informacion de la tabla usuarios y pasantes)
+app.get('/pasantes', (req, res) => {
+  const query = `SELECT u.dniUsuario as dniPasante, u.nombreYApellido, u.telefono, u.mail, 
+                u.nombreUsuario, u.contrasenia, p.horasPasante, p.institucion, p.mesInicio,
+                p.anioInicio, p.docente, p.mailDocente, p.categoria
+                 FROM usuarios u 
+                 INNER JOIN pasantes p ON p.dniPasante = u.dniUsuario
+                 WHERE u.estado = 'activo'`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener pasantes:', err);
+      return res.status(500).json({ error: 'Error al obtener pasantes' });
+    }
+    res.json(results);
+  });
+});
+
+//Modificar pasantes (informacion de la tabla usuarios y pasantes)
+app.put('/pasantes/:dni', (req, res) => {
+  const { dni } = req.params;
+  const { usuario, pasante } = req.body;
+
+  const queryUsuarios = `
+    UPDATE usuarios 
+    SET nombreYApellido = ?, telefono = ?, mail = ?, nombreUsuario = ?, contrasenia = ?
+    WHERE dniUsuario = ?`;
+
+  const queryPasantes = `
+    UPDATE pasantes 
+    SET horasPasante = ?, institucion = ?, mesInicio = ?, anioInicio = ?, docente = ?, mailDocente = ?, categoria = ?
+    WHERE dniPasante = ?`;
+
+  db.query(queryUsuarios, [usuario.nombreYApellido, usuario.telefono, usuario.mail, usuario.nombreUsuario,
+  usuario.contrasenia, dni], (err, resultUsuarios) => {
+    if (err) {
+      console.error('Error al actualizar usuario:', err);
+      return res.status(500).json({ error: 'Error al actualizar usuario' });
+    }
+
+    if (resultUsuarios.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    db.query(queryPasantes, [pasante.horasPasante, pasante.institucion, pasante.mesInicio, pasante.anioInicio, pasante.docente, pasante.mailDocente, pasante.categoria, dni],
+      (err2, resultPasantes) => {
+        if (err2) {
+          console.error('Error al actualizar pasante:', err2);
+          return res.status(500).json({ error: 'Error al actualizar pasante' });
+        }
+
+        res.json({
+          message: 'Pasante y usuario actualizados correctamente',
+        });
+      }
+    );
+  }
+  );
+});
+
+//ESPECIALISTA
+// insertar en la tabla usuarios y especialistas el Registro de USUARIO + ESPECIALISTA (usado en el crear especialista)
+// ===================================================================================
+app.post('/especialistas', (req, res) => {
+  const { usuario, especialista } = req.body;
+
+  const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad } = usuario;
+  const { horasSupervisor, titulos } = especialista;
+
+  // Insertar en tabla usuarios
+  const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad, estado) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad,'activo'], (err) => {
+    if (err) {
+      console.error('Error al insertar usuario:', err);
+      return res.status(500).json({ error: 'Error al registrar usuario' });
+    }
+
+    // Insertar en tabla especialistas
+    const sqlEspecialista = `INSERT INTO especialistas (dniEspecialista, horasSupervisor, titulos) 
+                        VALUES (?, ?, ?)`;
+
+    db.query(sqlEspecialista, [dniUsuario, horasSupervisor, titulos], (err2) => {
+      if (err2) {
+        console.error('Error al insertar especialista:', err2);
+        return res.status(500).json({ error: 'Error al registrar especialista' });
+      }
+      res.json({ message: 'Especialista registrado con éxito' });
+    });
+  });
+});
+
+//Listar los especialistas (informacion de la tabla usuarios y especialistas)
+app.get('/especialistas', (req, res) => {
+  const query = `SELECT u.dniUsuario as dniEspecialista, u.nombreYApellido, u.telefono, u.mail, 
+                u.nombreUsuario, u.contrasenia, e.horasSupervisor, e.titulos
+                 FROM usuarios u 
+                 INNER JOIN especialistas e ON e.dniEspecialista = u.dniUsuario
+                 WHERE u.estado = 'activo'`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener especialistas:', err);
+      return res.status(500).json({ error: 'Error al obtener especialistas' });
+    }
+    res.json(results);
+  });
+});
+
+//modificar especialistas (informacion de la tabla usuarios y especialistas)
+app.put('/especialistas/:dni', (req, res) => {
+  const { dni } = req.params;
+  const { usuario, especialista } = req.body;
+
+  const queryUsuarios = `
+    UPDATE usuarios 
+    SET nombreYApellido = ?, telefono = ?, mail = ?, nombreUsuario = ?, contrasenia = ?
+    WHERE dniUsuario = ?`;
+
+  const queryEspecialistas = `
+    UPDATE especialistas 
+    SET horasSupervisor = ?, titulos = ?
+    WHERE dniEspecialista = ?`;
+
+  db.query(queryUsuarios, [usuario.nombreYApellido, usuario.telefono, usuario.mail, usuario.nombreUsuario,
+  usuario.contrasenia, dni], (err, resultUsuarios) => {
+    if (err) {
+      console.error('Error al actualizar usuario:', err);
+      return res.status(500).json({ error: 'Error al actualizar usuario' });
+    }
+
+    if (resultUsuarios.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    db.query(queryEspecialistas, [especialista.horasSupervisor, especialista.titulos, dni],
+      (err2, resultEspecialistas) => {
+        if (err2) {
+          console.error('Error al actualizar especialista:', err2);
+          return res.status(500).json({ error: 'Error al actualizar especialista' });
+        }
+
+        res.json({
+          message: 'Especialista y usuario actualizados correctamente ✅',
+        });
+      }
+    );
+  }
+  );
+});
+
+
 //SESION
 //creacion de una sesion
 app.post('/sesiones', (req, res) => {
   const { fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente,
-    dniEspecialista, idTratamiento 
+    dniEspecialista, idTratamiento
   } = req.body;
 
   if (!nombre || !cantidad || !descripcion) {
@@ -288,12 +525,12 @@ app.post('/sesiones', (req, res) => {
   const query = 'INSERT INTO insumos (fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente, dniEspecialista, idTratamiento) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)';
   db.query(query, [fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente,
     dniEspecialista, idTratamiento], (err, result) => {
-    if (err) {
-      console.error('Error al insertar sesion:', err);
-      return res.status(500).json({ error: 'Error al insertar sesion' });
-    }
-    res.json({ message: 'Sesión creada' });
-  });
+      if (err) {
+        console.error('Error al insertar sesion:', err);
+        return res.status(500).json({ error: 'Error al insertar sesion' });
+      }
+      res.json({ message: 'Sesión creada' });
+    });
 });
 
 //listado de sesiones, incluyendo descripcion de especialisa, paciente, sindrome y sesion

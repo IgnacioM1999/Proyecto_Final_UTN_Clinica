@@ -37,7 +37,15 @@
           <td>{{ turno.horario }}</td>
           <td>{{ turno.estado }}</td>
           <td>{{ turno.nombreEspecialista }}</td>
-          <td>{{ turno.nombrePaciente}}</td>
+          <td>
+            <span *ngIf="turno.nombrePaciente && turno.nombrePaciente.trim() !== ''">
+              <!--el metodo trim() de JS elimina los espacios en blanco al principio y al final del texto-->
+              {{ turno.nombrePaciente }}
+            </span>
+            <span *ngIf="!turno.nombrePaciente || turno.nombrePaciente.trim() === ''" class="text-muted fst-italic">
+              No asignado
+            </span>
+          </td>
         </tr>
         <tr *ngIf="turnos.length === 0">
           <td colspan="4" class="text-center text-muted">No hay insumos cargados</td>

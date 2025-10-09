@@ -33,7 +33,8 @@ export class Register implements OnInit {
     nombreUsuario: '',
     contrasenia: '',
     tipoUsuario: '',
-    idLocalidad: 0
+    idLocalidad: 0,
+    estado:'activo'
   };
 
   paciente: Paciente = {

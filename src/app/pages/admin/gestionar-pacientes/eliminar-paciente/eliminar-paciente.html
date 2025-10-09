@@ -1,36 +1,57 @@
-<div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Eliminar Paciente</h1>
-</div>
-<div class="container mt-4">
-  <table class="table table-striped table-bordered">
-    <thead class="table-dark">
-      <tr>
-        <th>DNI</th>
-        <th>Nombre y Apellido</th>
-        <th>Usuario</th>
-        <th>Email</th>
-        <th>Contraseña</th>
-        <th>Accion</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let paciente of pacientes">
-        <td>{{ paciente.dni }}</td>
-        <td>{{ paciente.nombreYapellido }}</td>
-        <td>{{ paciente.usuario }}</td>
-        <td>{{ paciente.email }}</td>
-        <td>{{ paciente.contrasenia }}</td>
-        <td>
-          <button class="btn btn-danger btn-sm" (click)="eliminarPaciente(paciente.dni)">
-            Eliminar
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
 
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Eliminar Pacientes</span>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container mt-4">
+  <div class="card shadow p-4">
+    <table class="table table-striped table-bordered">
+      <thead class="table-warning text-center">
+        <tr>
+          <th>DNI</th>
+          <th>Nombre y Apellido</th>
+          <th>Telefono</th>
+          <th>Email</th>
+          <th>Usuario</th>
+          <th>Obra Social</th>
+          <th>Nacimiento</th>
+          <th>Sexo</th>
+          <th>Accion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paciente of pacientes">
+          <td>{{ paciente.dniPaciente }}</td>
+          <td>{{ paciente.nombreYApellido }}</td>
+          <td>{{ paciente.telefono }}</td>
+          <td>{{ paciente.mail }}</td>
+          <td>{{ paciente.nombreUsuario }}</td>
+          <td>{{ paciente.obraSocial }}</td>
+          <td>{{ paciente.fechaNacimiento | date:'dd-MM-yyyy' }}</td>
+          <td>{{ paciente.sexo }}</td>
+          <td>
+            <button class="btn btn-danger btn-sm" (click)="eliminarPaciente(paciente.dniPaciente)">
+              Dar baja
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <button class="btn btn-secondary mt-3" routerLink="/admin/gestionar-pacientes">
-    Volver
+    <i class="bi bi-arrow-left me-2"></i>Volver
   </button>
 </div>
-

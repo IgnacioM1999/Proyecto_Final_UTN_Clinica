@@ -50,6 +50,7 @@ export class TurnosServices {
   }
 
   //Obtener todos los pacientes y especialistas (usuarios donde el tipoUsuario = "especialista" o "pacientes")
+  //usado en modificar-turno
   getEspecialistasYPacientes(): Observable<Turno[]> {
     return this.http.get<Turno[]>(`${this.apiUrl}/especialistas-y-pacientes`);
   }

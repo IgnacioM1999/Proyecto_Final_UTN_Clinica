@@ -19,7 +19,8 @@ export class Perfil implements OnInit {
     nombreUsuario: '',
     contrasenia: '',
     tipoUsuario: '',
-    idLocalidad: 0
+    idLocalidad: 0,
+    estado:''
   };
 
   constructor(private router: Router) {}

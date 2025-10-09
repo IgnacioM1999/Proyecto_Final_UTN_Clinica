@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { Especialista, EspecialistasServices } from '../../../../services/especialistas';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-modificar-especialista',
@@ -9,19 +11,67 @@ import { Router, RouterModule } from '@angular/router';
   templateUrl: './modificar-especialista.html',
   styleUrl: './modificar-especialista.css'
 })
-export class ModificarEspecialista {
+export class ModificarEspecialista implements OnInit {
 
-    constructor(private router: Router){}
-  
-  especialistas = [
+  /*especialistas = [
     {legajo: 1, usuario: 'Robert!', nombreYapellido: 'Roberto Melendez', email:'roberto@gmail.com', contrasenia: '123'},
     {legajo: 2, usuario: 'Pablo3', nombreYapellido: 'Pablo Hernandez', email:'pablo@gmail.com', contrasenia: '456'},
     {legajo: 3, usuario: 'Marti1', nombreYapellido: 'Martin Martinez', email:'martin@gmail.com', contrasenia: 'hola'},
-  ];
+  ];*/
 
-  guardarEspecialista(especialista: any) {
-    console.log('Especialista guardado:', especialista);
-    alert(`Especialista ${especialista.id} actualizado`);
+  especialistas: Especialista[] = [];
+
+  constructor(private especialistasServices: EspecialistasServices) { }
+
+  ngOnInit(): void {
+    this.cargarEspecialistas();
   }
 
+  cargarEspecialistas(): void {
+    this.especialistasServices.getEspecialistas().subscribe({
+      next: (data) => this.especialistas = data,
+      error: (err) => console.error('Error al cargar insumos:', err)
+    });
+  }
+
+  //Metodo que al apretar el boton Guardar, guarde los cambios del especialista en la base de datos
+    guardarEspecialista(especialista: any): void {
+    //Armar los objetos usuario y especialista igual que en el backend
+    const data = {
+      usuario: {
+        dniUsuario: especialista.dniEspecialista,
+        nombreYApellido: especialista.nombreYApellido,
+        telefono: especialista.telefono,
+        mail: especialista.mail,
+        nombreUsuario: especialista.nombreUsuario,
+        contrasenia: especialista.contrasenia,
+      },
+      especialista: {
+        dniEspecialista: especialista.dniEspecialista,
+        horasSupervisor: especialista.horasSupervisor,
+        titulos: especialista.titulos
+      }
+    };
+
+    // Llamar al servicio para actualizar
+    this.especialistasServices.updateEspecialistas(especialista.dniEspecialista, data).subscribe({
+      next: (res) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Especialista actualizado',
+          text: `El especialista ${especialista.nombreYApellido} fue actualizado correctamente.`,
+          confirmButtonText: 'OK'
+        });
+      },
+      error: (err) => {
+        console.error('Error al actualizar especialista:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al actualizar',
+          text: 'Hubo un problema al intentar guardar los cambios.',
+          confirmButtonText: 'Cerrar'
+        });
+      }
+    });
+  }
 }

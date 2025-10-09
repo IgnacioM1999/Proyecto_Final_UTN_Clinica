@@ -18,7 +18,8 @@ export class CrearInsumo {
     idInsumos: 0,   // no lo enviamos porque lo genera MySQL ya que esta declarado como AUTO-INCREMENT
     nombre: '',
     descripcion: '',
-    cantidad: 0
+    cantidad: 0,
+    estado: 'activo'
   };
 
   constructor(private insumosService: InsumosServices, private router: Router) { }

@@ -1,47 +1,80 @@
-<div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Modificar especialista</h1>
-</div>
-<div class="container mt-4">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
+
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Modificar Especialistas</span>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid mt-4">
   <div class="card shadow p-4">
     <table class="table table-bordered table-striped align-middle">
-      <thead class="table-primary">
+      <thead class="table-warning text-center">
         <tr>
-          <th>Legajo</th>
-          <th>Usuario</th>
-          <th>Nombre y apellido</th>
+          <th>DNI</th>
+          <th>Nombre y Apellido</th>
+          <th>Telefono</th>
           <th>Email</th>
+          <th>Usuario</th>
           <th>Contraseña</th>
-          <th>Acción</th>
+          <th style="width: 80px;">Horas Supervisor</th>
+          <th>Titulos</th>
+          <th>Accion</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let especialista of especialistas">
-          <td>{{ especialista.legajo }}</td>
-
-          <!-- Usuario -->
-          <td>
-            <input type="text" [(ngModel)]="especialista.usuario" class="form-control">
-          </td>
+          <td>{{ especialista.dniEspecialista }}</td>
 
           <!-- Nombre y Apellido -->
           <td>
-            <input type="text" [(ngModel)]="especialista.nombreYapellido" class="form-control">
+            <input type="text" [(ngModel)]="especialista.nombreYApellido" class="form-control">
+          </td>
+
+          <!-- Telefono -->
+          <td>
+            <input type="text" [(ngModel)]="especialista.telefono" class="form-control">
           </td>
 
           <!-- Email -->
           <td>
-            <input [(ngModel)]="especialista.email" class="form-control">
+            <input type="text" [(ngModel)]="especialista.mail" class="form-control">
+          </td>
+
+          <!-- Usuario -->
+          <td>
+            <input type="text" [(ngModel)]="especialista.nombreUsuario" class="form-control">
           </td>
 
           <!-- Contraseña -->
           <td>
-            <input [(ngModel)]="especialista.contrasenia" class="form-control">
+            <input type="text" [(ngModel)]="especialista.contrasenia" class="form-control">
+          </td>
+
+          <!-- Horas supervisor -->
+          <td style="width: 80px;">
+            <input type="number" [(ngModel)]="especialista.horasSupervisor" class="form-control">
+          </td>
+
+          <!-- Titulos -->
+          <td>
+            <input type="text" [(ngModel)]="especialista.titulos" class="form-control">
           </td>
 
           <!-- Botón Guardar -->
           <td>
             <button class="btn btn-success btn-sm" (click)="guardarEspecialista(especialista)">
-              Guardar
+            Guardar
             </button>
           </td>
         </tr>
@@ -51,6 +84,8 @@
 
   <!-- Botón Volver -->
   <div class="mt-3">
-    <a routerLink="/admin/gestionar-especialistas" class="btn btn-secondary">Volver</a>
+    <a routerLink="/admin/gestionar-especialistas" class="btn btn-secondary">
+      <i class="bi bi-arrow-left me-2"></i>Volver
+    </a>
   </div>
 </div>

@@ -33,6 +33,7 @@ import { ListadoSesionesPaciente } from './pages/admin/historial-clinico/listado
 import { DetallesSesion } from './pages/admin/historial-clinico/detalles-sesion/detalles-sesion';
 import { Register } from './pages/register/register';
 import { Perfil } from './pages/perfil/perfil';
+import { Password } from './pages/password/password';
 
 export const routes: Routes = [
     {path: '', component: LoginComponent},
@@ -40,6 +41,7 @@ export const routes: Routes = [
     {path: 'admin', component: Admin },
     {path: 'register', component: Register },
     {path: 'perfil', component: Perfil },
+    {path: 'password', component: Password },
     {path: 'admin/gestionar-turnos', component: GestionarTurnos },
     {path: 'admin/gestionar-turnos/crear-turno', component: CrearTurno},
     {path: 'admin/gestionar-turnos/modificar-turno', component: ModificarTurno},

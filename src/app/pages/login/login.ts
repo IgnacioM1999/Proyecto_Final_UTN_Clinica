@@ -59,6 +59,10 @@ export class LoginComponent {
     this.router.navigate(['/register']); // <- ruta hacia el componente de registro
   }
 
+  goToPassword() {
+    this.router.navigate(['/password']);
+  }
+
   onInputChange() { //Para limpiar el mensaje de usuario y contrasela incorrectos al volver a escribir
     this.errorMessage = '';
   }

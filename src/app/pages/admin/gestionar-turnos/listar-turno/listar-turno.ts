@@ -16,6 +16,8 @@ export class ListarTurno implements OnInit {
 
   turnos: Turno[]= []
   usuarios: Usuario[]= []
+  fechaFiltro: string = ''; //fecha seleccionada en el input
+  turnosFiltrados: Turno[] = []; 
 
   constructor(private turnosServices: TurnosServices, private usuariosServices: UsuariosServices){}
 
@@ -31,10 +33,31 @@ export class ListarTurno implements OnInit {
 
   cargarTurnos(): void{
     this.turnosServices.getEspecialistasYPacientes().subscribe({
-      next: (data) => this.turnos = data,
+      next: (data) =>{
+        this.turnos = data;
+        this.turnosFiltrados = [...this.turnos]; // inicializa con todos los turnos
+      },
       error: (err) => console.error('Error al cargar turnos:', err)
     }
     )
+  }
+
+  filtrarPorFecha(): void {
+    if (!this.fechaFiltro) {
+      this.turnosFiltrados = [...this.turnos];
+      return;
+    }
+
+    // Comparamos fechas en formato ISO (yyyy-MM-dd)
+    this.turnosFiltrados = this.turnos.filter(turno => {
+      const fechaTurno = new Date(turno.fecha).toISOString().split('T')[0];
+      return fechaTurno === this.fechaFiltro;
+    });
+  }
+
+  limpiarFiltro(): void {
+    this.fechaFiltro = '';
+    this.turnosFiltrados = [...this.turnos];
   }
 
 }

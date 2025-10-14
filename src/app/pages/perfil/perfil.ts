@@ -23,12 +23,32 @@ export class Perfil implements OnInit {
     estado:''
   };
 
+  rutaInicio: string = '/';
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     const datos = localStorage.getItem('usuario');
     if (datos) {
       this.usuario = JSON.parse(datos);
+
+            // Definir la ruta según el tipo de usuario
+      switch (this.usuario.tipoUsuario) {
+        case 'administrador':
+          this.rutaInicio = '/admin';
+          break;
+        case 'pasante':
+          this.rutaInicio = '/pasante';
+          break;
+        case 'paciente':
+          this.rutaInicio = '/paciente';
+          break;
+        case 'especialista':
+          this.rutaInicio = '/especialista';
+          break;
+        default:
+          this.rutaInicio = '/';
+          break;
+      }
     }
   }
 

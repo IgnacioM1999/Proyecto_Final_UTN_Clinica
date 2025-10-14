@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 // Interfaz que representa un especialista
 export interface Usuario {
@@ -52,6 +52,11 @@ export class UsuariosServices {
   // Obtener todos los especialistas (usuarios donde el tipoUsuario = "especialista")
   getEspecialistas(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.apiUrl}/especialistas`);
+  }
+
+  // Servicio para recuperar contraseña
+  recuperarPassword(nombreUsuario: string, email: string){
+    
   }
 
 }

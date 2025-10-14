@@ -246,12 +246,13 @@ app.post('/pacientes', (req, res) => {
   const { usuario, paciente } = req.body;
   const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad } = usuario;
   const { obraSocial, fechaNacimiento, sexo } = paciente;
+  const estado = "activo"
 
   // Insertar en tabla usuarios
-  const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad, estado) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad], (err) => {
+  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad, estado], (err) => {
     if (err) {
       console.error('Error al insertar usuario:', err);
       return res.status(500).json({ error: 'Error al registrar usuario' });
@@ -335,12 +336,13 @@ app.post('/pasantes', (req, res) => {
 
   const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad } = usuario;
   const { horasPasante, institucion, mesInicio, anioInicio, docente, mailDocente, categoria } = pasante;
+  const estado = "activo"
 
   // Insertar en tabla usuarios
-  const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+  const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad, estado) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad], (err) => {
+  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad, estado], (err) => {
     if (err) {
       console.error('Error al insertar usuario:', err);
       return res.status(500).json({ error: 'Error al registrar usuario' });
@@ -424,15 +426,15 @@ app.put('/pasantes/:dni', (req, res) => {
 // ===================================================================================
 app.post('/especialistas', (req, res) => {
   const { usuario, especialista } = req.body;
-
   const { dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad } = usuario;
   const { horasSupervisor, titulos } = especialista;
+  const estado = "activo"
 
   // Insertar en tabla usuarios
   const sqlUsuario = `INSERT INTO usuarios (dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad, estado) 
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad,'activo'], (err) => {
+  db.query(sqlUsuario, [dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, idLocalidad, estado], (err) => {
     if (err) {
       console.error('Error al insertar usuario:', err);
       return res.status(500).json({ error: 'Error al registrar usuario' });
@@ -510,7 +512,6 @@ app.put('/especialistas/:dni', (req, res) => {
   );
 });
 
-
 //SESION
 //creacion de una sesion
 app.post('/sesiones', (req, res) => {
@@ -533,7 +534,8 @@ app.post('/sesiones', (req, res) => {
     });
 });
 
-//listado de sesiones, incluyendo descripcion de especialisa, paciente, sindrome y sesion
+//HISTORIAL CLINICO
+//Traer las sesiones con los especialistas, pacientes, sindromes y tratamiento 
 app.get('/sesiones/listadoSesiones', (req, res) => {
   const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.minutosAgujasPuestas, s.cantidadAgujasUsadas, 
   s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
@@ -548,6 +550,52 @@ app.get('/sesiones/listadoSesiones', (req, res) => {
     if (err) {
       console.error('Error al obtener sesiones:', err);
       return res.status(500).json({ error: 'Error al obtener sesiones' });
+    }
+    res.json(results);
+  });
+});
+
+//Traer las sesiones correspondientes de un paciente
+app.get('/sesiones/dniPaciente/:dni', (req, res) => {
+  const { dni } = req.params;
+  const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.minutosAgujasPuestas, s.cantidadAgujasUsadas, 
+  s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
+  s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento
+    FROM sesiones s
+    INNER JOIN usuarios e ON e.dniUsuario = s.dniEspecialista
+    INNER JOIN usuarios p ON p.dniUsuario = s.dniPaciente
+    INNER JOIN sindromes si ON si.idSindrome = s.idSindrome
+    INNER JOIN tratamientos t ON t.idTratamiento = s.idTratamiento
+    WHERE s.dniPaciente = ? 
+    ORDER BY s.fecha desc;
+  `;
+  db.query(query, [dni], (err, results) => {
+    if (err) {
+      console.error('Error al obtener sesiones:', err);
+      return res.status(500).json({ error: 'Error al obtener sesiones' });
+    }
+    res.json(results);
+  });
+});
+
+//Traer los sintomas que se presento en la sesion correspondiente.
+//Se usa en la pagina detalle-sesion
+app.get('/sesiones/:idSesion', (req, res) => {
+  const { idSesion } = req.params;
+  const query = `SELECT se.fecha as fecha, p.nombreYApellido AS nombreYApellidoPaciente, e.nombreYApellido AS nombreYApellidoEspecialista,
+  s.descripcion as descripcionSintoma, t.nombre as descripcionTratamiento
+    FROM sesiones se
+    INNER JOIN sesiones_sintomas ss ON se.idSesion = ss.idSesion
+    INNER JOIN sintomas s ON ss.idSintoma = s.idSintoma
+    INNER JOIN usuarios e ON e.dniUsuario = se.dniEspecialista
+    INNER JOIN usuarios p ON p.dniUsuario = se.dniPaciente
+    INNER JOIN tratamientos t ON t.idTratamiento = se.idTratamiento
+    WHERE ss.idSesion = ?;
+  `;
+  db.query(query, [idSesion], (err, results) => {
+    if (err) {
+      console.error('Error al obtener sesion con los sintomas:', err);
+      return res.status(500).json({ error: 'Error al obtener sesion con los sintomas' });
     }
     res.json(results);
   });

@@ -1,13 +1,31 @@
-<div class="p-5 bg-primary text-white text-center">
-    <h1 class="fw-bold">Listado sesiones del paciente {{dniPaciente}}</h1>
-</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<!-- Título -->
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/admin" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
+
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Historial Clínico</span>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
+        </div>
+    </div>
+</nav>
 <div class="container mt-4">
     <div class="card shadow p-4">
         <table class="table table-bordered table-striped align-middle">
-            <thead class="table-primary">
+            <thead class="table-warning text-center">
                 <tr>
                     <th>Numero Sesion</th>
                     <th>Fecha</th>
+                    <th>Hora</th>
                     <th>Especialista</th>
                     <th>Seleccionar</th>
                 </tr>
@@ -16,23 +34,33 @@
                 <tr *ngFor="let sesion of sesionesFiltradas">
                     <td>{{ sesion.idSesion }}</td>
                     <!-- Fecha -->
-                    <td>{{sesion.fecha}}</td>
-                    <!-- Nombre y Apellido -->
-                    <td>{{sesion.nomApeEspecialista}}</td>
+                    <td>{{sesion.fecha | date:'dd-MM-yyyy'}}</td>
+                    <!-- Fecha -->
+                    <td>{{sesion.horaInicio}}</td>
+                    <!-- Nombre y Apellido del Especialista -->
+                    <td>{{sesion.nombreYApellidoEspecialista}}</td>
                     <!-- Seleccionar -->
                     <td class="text-center align-middle">
-                        <input class="form-check-input" type="radio" name="pacienteSeleccionado" (change)="sesionIdSeleccionado = sesion.idSesion">
+                        <input class="form-check-input" type="radio" name="pacienteSeleccionado"
+                            (change)="sesionIdSeleccionado = sesion.idSesion">
                     </td>
+                </tr>
+                <tr *ngIf="sesionesFiltradas.length === 0">
+                    <td colspan="5" class="text-center text-muted">No hay sesiones del paciente</td>
                 </tr>
             </tbody>
         </table>
     </div>
     <!--Botones-->
     <div class="mt-5 d-flex justify-content-center gap-5">
-        <button class="btn btn-primary" [routerLink]="['/admin/historial-clinico',dniPaciente,'detalles-sesion',sesionIdSeleccionado]"
-            [disabled]="!sesionIdSeleccionado">Continuar</button>
-
-        <button class="btn btn-secondary" routerLink="/admin/historial-clinico">Atras</button>
+        <button class="btn btn-secondary" routerLink="/admin/historial-clinico">
+            <i class="bi bi-arrow-left me-2"></i>Atras
+        </button>
+        <button class="btn btn-primary"
+            [routerLink]="['/admin/historial-clinico',dniPacienteSeleccionado,'detalles-sesion',sesionIdSeleccionado]"
+            [disabled]="!sesionIdSeleccionado">
+            Continuar <i class="bi bi-arrow-right"></i>
+        </button>
     </div>
 
 </div>

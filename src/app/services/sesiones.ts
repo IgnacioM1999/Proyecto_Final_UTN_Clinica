@@ -17,6 +17,7 @@ export interface Sesion {
   nombreYApellidoEspecialista: string;
   idTratamiento: number;
   descripcionTratamiento: string;
+  descripcionSintoma?: string;
 }
 
 @Injectable({
@@ -34,8 +35,8 @@ export class SesionesServices {
   }
 
   // Obtener una sesion por id
-  getSesion(dni: number): Observable<Sesion> {
-    return this.http.get<Sesion>(`${this.apiUrl}/${dni}`);
+  getSesion(id: number): Observable<Sesion> {
+    return this.http.get<Sesion>(`${this.apiUrl}/${id}`);
   }
 
   // Crear una nueva sesion
@@ -54,7 +55,15 @@ export class SesionesServices {
   }
 
   getSesionesConNombres(): Observable<Sesion[]> {
-    return this.http.get<Sesion[]>(`${this.apiUrl}/listadoSesiones`)
+    return this.http.get<Sesion[]>(`${this.apiUrl}/listadoSesiones`);
+  }
+
+  getSesionesPaciente(dni: string): Observable<Sesion[]>{
+    return this.http.get<Sesion[]>(`${this.apiUrl}/dniPaciente/${dni}`)
+  }
+
+  getSesionSintomas(id: number): Observable<Sesion[]>{
+    return this.http.get<Sesion[]>(`${this.apiUrl}/${id}`)
   }
 
 }

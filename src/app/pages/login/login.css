@@ -32,8 +32,24 @@ body {
   border-top-right-radius: 0;
 }
 
+/*Fondo con la imagen*/
 .login-bg {
   background: url('https://i.pinimg.com/736x/e1/a2/15/e1a2158466becabc21c89966ac448df3.jpg');
   background-size: cover;
   background-position: center;
+}
+
+/* Estilo base de los enlaces */
+.login-link {
+  color: #0d6efd; /* Azul Bootstrap */
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+/* Efecto hover */
+.login-link:hover {
+  color: #084298; /* Azul más oscuro */
+  text-decoration: underline;
 }

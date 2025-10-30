@@ -34,10 +34,19 @@ import { DetallesSesion } from './pages/admin/historial-clinico/detalles-sesion/
 import { Register } from './pages/register/register';
 import { Perfil } from './pages/perfil/perfil';
 import { Password } from './pages/password/password';
+import { Especialista } from './pages/especialista/especialista';
+import { GestionSesiones } from './pages/especialista/gestion-sesiones/gestion-sesiones';
+import { GestionarTurnosHoy } from './pages/especialista/gestionar-turnos-hoy/gestionar-turnos-hoy';
+import { HistorialClinicoEsp } from './pages/especialista/historial-clinico/historial-clinico';
+import { RegistrarSesion } from './pages/especialista/gestion-sesiones/registrar-sesion/registrar-sesion';
+import { RegistrarCuestio } from './pages/especialista/gestion-sesiones/registrar-sesion/registrar-cuestio/registrar-cuestio';
+import { MostrarSindromes } from './pages/especialista/gestion-sesiones/registrar-sesion/mostrar-sindromes/mostrar-sindromes';
+import { MostrarTratamientos } from './pages/especialista/gestion-sesiones/registrar-sesion/mostrar-tratamientos/mostrar-tratamientos';
+import { RegistrarPuntos } from './pages/especialista/gestion-sesiones/registrar-sesion/registrar-puntos/registrar-puntos';
 
 export const routes: Routes = [
     {path: '', component: LoginComponent},
-    {path: '', redirectTo: '/login', pathMatch: 'full' },
+    {path: '', redirectTo: '', pathMatch: 'full' },
     {path: 'admin', component: Admin },
     {path: 'register', component: Register },
     {path: 'perfil', component: Perfil },
@@ -71,5 +80,14 @@ export const routes: Routes = [
     {path: 'admin/gestionar-sesiones/listar-sesion', component:ListarSesion},
     {path: 'admin/historial-clinico', component:HistorialClinico},
     {path: 'admin/historial-clinico/:pacienteDni', component:ListadoSesionesPaciente},
-    {path: 'admin/historial-clinico/:pacienteDni/detalles-sesion/:idSesion', component:DetallesSesion}
+    {path: 'admin/historial-clinico/:pacienteDni/detalles-sesion/:idSesion', component:DetallesSesion},
+    {path: 'especialista', component:Especialista},
+    {path: 'especialista/gestion-sesiones', component:GestionSesiones},
+    {path: 'especialista/gestion-sesiones/registrar-sesion', component:RegistrarSesion},
+    {path: 'especialista/gestion-sesiones/registrar-sesion/registrar-cuestio', component:RegistrarCuestio},
+    {path: 'especialista/gestion-sesiones/registrar-sesion/registrar-cuestio/mostrar-sindromes', component:MostrarSindromes},
+    {path: 'especialista/gestion-sesiones/registrar-sesion/registrar-cuestio/mostrar-sindromes/mostrar-tratamientos', component:MostrarTratamientos},
+    {path: 'especialista/gestion-sesiones/registrar-sesion/registrar-cuestio/mostrar-sindromes/mostrar-tratamientos/registrar-puntos', component:RegistrarPuntos},
+    {path: 'especialista/gestionar-turnos-hoy', component:GestionarTurnosHoy},
+    {path: 'especialista/historial-clinico', component:HistorialClinicoEsp},
 ];

@@ -35,6 +35,7 @@ export class ModificarTurno implements OnInit {
 
   //Cargar turnos desde el backend
   cargarTurnos(): void {
+    console.log('se inicio el cargar turnos antes del getEspecialistasYPacientes');
     this.turnosServices.getEspecialistasYPacientes().subscribe({
       next: (data) => {
         this.turnos = data.map(turno => ({
@@ -43,6 +44,7 @@ export class ModificarTurno implements OnInit {
             ? new Date(turno.fecha).toISOString().split('T')[0] // yyyy-MM-dd
             : ''
         }));
+        console.log('turnos traidos:',this.turnos);
         this.turnosFiltrados = [...this.turnos];
       },
       error: (err) => console.error('Error al cargar turnos:', err)

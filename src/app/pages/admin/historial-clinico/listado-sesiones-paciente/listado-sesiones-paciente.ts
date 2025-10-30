@@ -44,7 +44,7 @@ export class ListadoSesionesPaciente implements OnInit {
 
       // 🔹 Si hay sesiones, guardamos el nombre del paciente desde la primera
       if (data.length > 0) {
-        this.nombrePaciente = data[0].nombreYApellidoPaciente;
+        this.nombrePaciente = data[0].nombreYApellidoPaciente ?? 'Sin nombre registrado';
       } else {
         this.nombrePaciente = 'Sin sesiones registradas';
       }

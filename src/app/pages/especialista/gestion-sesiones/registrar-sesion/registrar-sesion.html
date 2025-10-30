@@ -1,0 +1,126 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/especialista" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
+
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Seleccionar Turno</span>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <h4>Turno</h4>
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="fechaFiltroTurno" class="form-label fw-bold mb-0">Fecha:</label>
+            <input type="date" id="fechaFiltroTurno" [(ngModel)]="fechaFiltro" class="form-control"
+                style="max-width: 200px;">
+
+            <label for="nombrePacienteFiltro" class="form-label fw-bold mb-0">Nombre Paciente:</label>
+            <input type="text" id="nombrePacienteFiltro" [(ngModel)]="nombrePacienteFiltro" class="form-control"
+                style="max-width: 200px;">
+
+            <button class="btn btn-primary" (click)="filtrarTurnos()">Filtrar</button>
+            <button class="btn btn-secondary" (click)="limpiarFiltroTurnos()">Limpiar</button>
+        </div>
+
+        <!-- <div *ngIf="turnos.length > 0; else sinTurnos">-->
+        <div class="tabla-con-scroll">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-warning text-center">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>DNI</th>
+                        <th>Paciente</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let turno of turnosFiltrados"
+                        [class.fila-activa]="pacienteDniSeleccionado === turno.dniPaciente">
+                        <td>{{ turno.fecha | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ turno.horario }}</td>
+                        <td>{{ turno.dniPaciente }}</td>
+                        <td>{{ turno.nombrePaciente }}</td>
+                        <td class="text-center align-middle">
+                            <input class="form-check-input" type="radio" name="pacienteSeleccionado"
+                                [checked]="pacienteDniSeleccionado === turno.dniPaciente && idTurnoSeleccionado === turno.idTurno"
+                                (click)="togglePaciente(turno.dniPaciente, turno.idTurno, $event)">
+                        </td>
+                    </tr>
+                    <tr *ngIf="turnos.length === 0">
+                        <td colspan="7" class="text-center text-muted">No hay turnos cargados</td>
+                    </tr>
+                    <tr *ngIf="turnos.length > 0 && turnosFiltrados.length === 0">
+                        <td colspan="7" class="text-center text-muted">No hay turnos con el filtro ingresado</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <!--</div>
+        <ng-template #sinTurnos>
+            <div class="alert alert-warning text-center">No hay turnos</div>
+        </ng-template>-->
+        <br>
+        <h4>Pasante</h4>
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="nombrePasanteFiltro" class="form-label fw-bold mb-0">Nombre Pasante:</label>
+            <input id="nombrePasanteFiltro" type="text" class="form-control" [(ngModel)]="nombrePasanteFiltro"
+                style="max-width: 200px;" />
+            <button class="btn btn-primary" (click)="filtrarPasantes()">Filtrar</button>
+            <button class="btn btn-secondary" (click)="limpiarFiltroPasantes()">Limpiar</button>
+        </div>
+        <!--<div *ngIf="pasantes.length > 0; else sinPasantes">-->
+        <div id="tablaPasantes" class="tabla-con-scroll">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-warning text-center">
+                    <tr>
+                        <th>DNI</th>
+                        <th>Pasante</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let pasante of pasantesFiltrados"
+                        [class.fila-activa]="pasantesDniSeleccionados.includes(pasante.dniPasante)">
+                        <td>{{ pasante.dniPasante }}</td>
+                        <td>{{ pasante.nombreYApellido }}</td>
+                        <td class="text-center align-middle">
+                            <input class="form-check-input" type="checkbox" name="pasantesSeleccionados"
+                                [checked]="pasantesDniSeleccionados.includes(pasante.dniPasante)"
+                                (change)="togglePasante(pasante.dniPasante, $event)">
+                        </td>
+                    </tr>
+                    <tr *ngIf="pasantes.length === 0">
+                        <td colspan="3" class="text-center text-muted">No hay pasantes cargados</td>
+                    </tr>
+                    <tr *ngIf="pasantes.length > 0 && pasantesFiltrados.length === 0">
+                        <td colspan="3" class="text-center text-muted">No hay pasantes con el filtro ingresado</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- </div>
+        <ng-template #sinPasantes>
+            <div class="alert alert-warning text-center">No hay pasantes</div>
+        </ng-template>-->
+    </div>
+</div>
+<div class="mt-5 d-flex justify-content-center gap-5">
+    <button (click)="volver()" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Volver
+    </button>
+    <button class="btn btn-primary" [disabled]="!pacienteDniSeleccionado" (click)="continuar()">
+        Continuar <i class="bi bi-arrow-right"></i>
+    </button>
+</div>

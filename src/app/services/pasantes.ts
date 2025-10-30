@@ -48,4 +48,10 @@ export class PasantesServices {
     return this.http.put<any>(`${this.apiUrl}/${dni}`, data);
   }
 
+  //Actualizar las horas de pasante.
+  //Este metodo se invoca en el proceso de registrar-sesion en el menu del especialista
+  actualizarHorasPasante(dni: string, horasExtra: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${dni}/horasPasante`, { horasExtra });
+  }
+
 }

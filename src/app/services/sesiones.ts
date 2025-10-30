@@ -7,17 +7,18 @@ export interface Sesion {
   idSesion: number;
   fecha: string;
   horaInicio: string;
-  minutosAgujasPuestas: number;
-  cantidadAgujasUsadas: number;
+  descripcionSesion?: string;
   idSindrome: number;
-  descripcionSindrome: string;
+  descripcionSindrome?: string;
   dniPaciente: string;
-  nombreYApellidoPaciente: string;
+  nombreYApellidoPaciente?: string;
   dniEspecialista: string;
-  nombreYApellidoEspecialista: string;
+  nombreYApellidoEspecialista?: string;
   idTratamiento: number;
-  descripcionTratamiento: string;
+  descripcionTratamiento?: string;
   descripcionSintoma?: string;
+  observacionesSesion?: string;
+  duracionSesion?: string;
 }
 
 @Injectable({
@@ -39,10 +40,24 @@ export class SesionesServices {
     return this.http.get<Sesion>(`${this.apiUrl}/${id}`);
   }
 
-  // Crear una nueva sesion
+  // Crear una nueva sesion. Este metodo se usa en la opcion Registrar-Sesion en el menu del Especialista
   createSesion(sesion: Sesion): Observable<Sesion> {
     return this.http.post<Sesion>(this.apiUrl, sesion);
   }
+
+  // Registrar síntomas asociados a una sesión 
+  createSintomasSesion(idSesion: number, sintomas: any[]): Observable<any> {
+    const payload = { idSesion, sintomas };
+    return this.http.post<any>(`${this.apiUrl}/sintomas`, payload);
+  }
+
+  // Registrar insumos asociados a una sesión
+  createInsumosSesion(idSesion: number, insumos: any[]): Observable<any> {
+    const payload = { idSesion, insumos };
+    return this.http.post<any>(`${this.apiUrl}/insumos`, payload);
+  }
+
+
 
   // Modificar sesiones
   updateSesiones(id: number, sesion: Sesion): Observable<Sesion> {
@@ -54,16 +69,47 @@ export class SesionesServices {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
+  //Listar las sesiones para la opcion Listar-Sesiones del Administrador
   getSesionesConNombres(): Observable<Sesion[]> {
     return this.http.get<Sesion[]>(`${this.apiUrl}/listadoSesiones`);
   }
 
-  getSesionesPaciente(dni: string): Observable<Sesion[]>{
+  getSesionesPaciente(dni: string): Observable<Sesion[]> {
     return this.http.get<Sesion[]>(`${this.apiUrl}/dniPaciente/${dni}`)
   }
 
-  getSesionSintomas(id: number): Observable<Sesion[]>{
+  getSesionSintomas(id: number): Observable<Sesion[]> {
     return this.http.get<Sesion[]>(`${this.apiUrl}/${id}`)
+  }
+
+  // Registrar síntomas asociados a la sesion
+  updateSesionSintomas(idSesion: number, sintomas: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/registrar-sintomas`, { idSesion, sintomas });
+  }
+
+  //Registrar antecedentes
+  updateAntecedentes(antecedentes: any[], dniPaciente: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/registrar-antecedentes`, { antecedentes, dniPaciente });
+  }
+
+  //Registrar insumos usados
+  updateInsumos(idSesion: number, insumos: any[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/registrar-insumos`, { idSesion, insumos });
+  }
+
+  //Actualizar horas de pasantes
+  updateHorasPasantes(pasantes: string[], duracion: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/actualizar-horas-pasantes`, { pasantes, duracion });
+  }
+
+  //Actualizar turno a ocupado
+  updateEstadoTurno(idTurno: number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/actualizar-estado-turno`, { idTurno });
+  }
+
+  //Registrar todo el proceso completo (llama a los otros pasos en el backend)
+  updateSesionCompleta(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/registrar-completo`, data);
   }
 
 }

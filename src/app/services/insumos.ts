@@ -9,6 +9,8 @@ export interface Insumo {
   descripcion: string;
   cantidad: number;
   estado: string;
+  consumible?: string;
+  cantidadUsada?: number;
 }
 
 @Injectable({
@@ -44,5 +46,15 @@ export class InsumosServices {
   deleteInsumo(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  //Obtener insumos consumibles
+  obtenerDescartables(): Observable<Insumo[]> {
+    return this.http.get<Insumo[]>(`${this.apiUrl}/descartables`);
+  }
+
+  //Descontar la cantidad de cada insumo que se uso en la sesion
+  restarInsumosUsados(insumosUsados: { idInsumo: number, cantidadUsada: number }[]) {
+  return this.http.post(`${this.apiUrl}/restarInsumosUsados`, insumosUsados);
+}
   
 }

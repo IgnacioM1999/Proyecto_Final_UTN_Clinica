@@ -52,7 +52,21 @@ export class TurnosServices {
   //Obtener todos los pacientes y especialistas (usuarios donde el tipoUsuario = "especialista" o "pacientes")
   //usado en modificar-turno
   getEspecialistasYPacientes(): Observable<Turno[]> {
-    return this.http.get<Turno[]>(`${this.apiUrl}/especialistas-y-pacientes`);
+    console.log('URL llamada:', `${this.apiUrl}`);
+    return this.http.get<Turno[]>(`${this.apiUrl}`);
+  }
+
+  //Obtener turnos agendados con el especialista
+  //usando en  registrar-sesion en el menu de Especialista
+  getTurnosEsp(dniEspecialista: string): Observable<Turno[]> {
+    console.log('URL llamada:', `${this.apiUrl}/${dniEspecialista}`);
+    return this.http.get<Turno[]>(`${this.apiUrl}/${dniEspecialista}`);
+  }
+
+  //Actualiza el estado del turno a Ocupado
+  //Este metodo se usa cuando se registra una sesion en el menu del especialista
+  actualizarEstadoTurno(idTurno: number, nuevoEstado: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${idTurno}/estado`, { nuevoEstado });
   }
 
 }

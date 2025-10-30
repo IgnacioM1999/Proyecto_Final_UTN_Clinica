@@ -1,0 +1,35 @@
+.zoom-container {
+  width: 100%;
+  max-width: 900px;
+  height: 80vh;
+  overflow: auto;
+  margin: 0 auto;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  cursor: grab;
+  position: relative;
+  background-color: #f8f8f8;
+}
+
+.zoom-container:active {
+  cursor: grabbing;
+}
+
+.zoom-wrapper {
+  display: inline-block;
+  transform-origin: 0 0; /* Necesario para centrar bien el zoom */
+  transition: transform 0.05s ease-out;
+}
+
+.zoom-image {
+  width: 100%;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+}
+
+.container-principal {
+  width: 100%;
+  max-width: 900px; 
+  margin: 0 auto; /* centrado */
+}

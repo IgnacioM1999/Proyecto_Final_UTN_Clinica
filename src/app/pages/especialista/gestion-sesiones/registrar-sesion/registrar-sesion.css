@@ -1,0 +1,11 @@
+.tabla-con-scroll {
+  overflow-x: auto;
+  max-height: 300px; /* límite vertical */
+  overflow-y: auto;
+  border-radius: 10px;
+}
+
+/* Para que el scroll no rompa el borde */
+.tabla-con-scroll table {
+  margin-bottom: 0;
+}

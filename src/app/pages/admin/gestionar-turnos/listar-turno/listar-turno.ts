@@ -34,6 +34,7 @@ export class ListarTurno implements OnInit {
   cargarTurnos(): void{
     this.turnosServices.getEspecialistasYPacientes().subscribe({
       next: (data) =>{
+        console.log('Datos recibidos del backend:', data); 
         this.turnos = data;
         this.turnosFiltrados = [...this.turnos]; // inicializa con todos los turnos
       },

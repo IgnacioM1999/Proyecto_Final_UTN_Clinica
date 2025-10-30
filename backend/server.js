@@ -27,7 +27,7 @@ const db = mysql.createConnection({
 
 //creacion de un insumo
 app.post('/insumos', (req, res) => {
-  const { nombre, descripcion, cantidad} = req.body;
+  const { nombre, descripcion, cantidad } = req.body;
   const estado = 'activo';
 
   if (!nombre || !cantidad || !descripcion) {
@@ -66,7 +66,7 @@ app.put('/insumos/:id', (req, res) => {
 //No se cambia el delete por el update porque habria que cambiar todo el frontend
 app.delete('/insumos/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'UPDATE insumos SET estado = "inactivo" WHERE idInsumos = ?'; 
+  const query = 'UPDATE insumos SET estado = "inactivo" WHERE idInsumos = ?';
   db.query(query, [id], (err, result) => {
     if (err) {
       console.error('Error al eliminar insumo:', err);
@@ -91,6 +91,52 @@ app.get('/insumos', (req, res) => {
   });
 });
 
+//Listar insumos que son descartables
+//Esta llamada se invoca en el paso de Registrar Puntos en la opcion Registrar Sesion de un Especialista
+app.get('/insumos/descartables', (req, res) => {
+  const sql = "SELECT * FROM insumos WHERE consumible= 'si'";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error al obtener insumos:', err);
+      res.status(500).json({ error: 'Error al obtener insumos' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+//Actualizar la cantidad de los insumos que se han utilizado en una sesion
+//Esta llamada se invoca en el paso de Registrar Puntos en la opcion Registrar Sesion del menu del Especialista
+app.post('/insumos/restarInsumosUsados', (req, res) => {
+  const insumos = req.body; // [{ idInsumo: 1, cantidadUsada: 3 }, ...]
+
+  if (!Array.isArray(insumos) || insumos.length === 0) {
+    return res.status(400).json({ message: 'Lista de insumos vacía o inválida' });
+  }
+
+  const promises = insumos.map(insumo => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        UPDATE insumos
+        SET cantidad = cantidad - ?
+        WHERE idInsumos = ?;
+      `;
+      db.query(query, [insumo.cantidadUsada, insumo.idInsumo], (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
+  });
+
+  Promise.all(promises)
+    .then(() => res.json({ message: 'Cantidades de insumos actualizadas correctamente' }))
+    .catch(err => {
+      console.error('Error al restar insumos:', err);
+      res.status(500).json({ message: 'Error al restar insumos', error: err });
+    });
+});
+
+//TURNOS
 //creacion de turnos
 app.post('/turnos', (req, res) => {
   const { fecha, horario, estado, dniEspecialista } = req.body;
@@ -111,7 +157,19 @@ app.post('/turnos', (req, res) => {
 
 //listado de turnos
 app.get('/turnos', (req, res) => {
-  const query = 'SELECT * FROM turnos';
+  const query = `
+    SELECT t.idTurno,
+      t.fecha,
+      t.horario,
+      t.estado,
+      e.dniUsuario AS dniEspecialista,
+      e.nombreYApellido AS nombreEspecialista,
+      p.dniUsuario AS dniPaciente,
+      p.nombreYApellido AS nombrePaciente
+    FROM turnos t
+    JOIN usuarios e ON t.dniEspecialista = e.dniUsuario
+    LEFT JOIN usuarios p ON t.dniPaciente = p.dniUsuario
+  `;
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error al obtener turnos:', err);
@@ -154,6 +212,53 @@ app.delete('/turnos/:id', (req, res) => {
     res.json({ message: 'Turno eliminado correctamente' });
   });
 });
+
+//Listar turnos del especialista que hayan sido solicitados por un paciente
+app.get('/turnos/:dniEspecialista', (req, res) => {
+  const { dniEspecialista } = req.params
+  //console.log('DNI recibido en backend:', dniEspecialista);
+  const query = `
+    SELECT t.idTurno, t.fecha, t.horario, t.estado, 
+    t.dniEspecialista AS dniEspecialista, e.nombreYApellido AS nombreEspecialista,
+    t.dniPaciente AS dniPaciente, p.nombreYApellido AS nombrePaciente
+    FROM turnos t
+    INNER JOIN usuarios p ON t.dniPaciente = p.dniUsuario
+    INNER JOIN usuarios e ON t.dniEspecialista = e.dniUsuario
+    WHERE t.estado = 'Disponible' and dniPaciente is not null and dniEspecialista = ?
+    ORDER BY t.fecha, t.horario;
+  `;
+
+  db.query(query, [dniEspecialista], (err, result) => {
+    if (err) {
+      console.error('Error al obtener turnos:', err);
+      res.status(500).send('Error al obtener turnos');
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+//Actualizar el estado del turno a OCUPADO.
+//Esta consulta se usa cuando se registra una Sesion en el proceso Registrar Sesion en el menu del Especialista
+app.put('/turnos/:idTurno/estado', (req, res) => {
+  const { idTurno } = req.params;
+  const { nuevoEstado } = req.body; // Espera algo como { nuevoEstado: 'Ocupado' }
+
+  const query = 'UPDATE turnos SET estado = ? WHERE idTurno = ?';
+  db.query(query, [nuevoEstado, idTurno], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar estado del turno:', err);
+      return res.status(500).json({ error: 'Error al actualizar el turno' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Turno no encontrado' });
+    }
+
+    res.json({ message: 'Estado del turno actualizado correctamente' });
+  });
+});
+
 
 //USUARIO
 //Obtener usuarios 
@@ -206,33 +311,6 @@ app.get('/usuarios/especialistas', (req, res) => {
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error obteniendo especialistas:', err);
-      res.status(500).send('Error en el servidor');
-      return;
-    }
-    res.json(results);
-  });
-});
-
-//Obtener los datos de los pacientes y especialistas
-//Usado en el metodo getEspecialistasYPacientes del servicio turnos.ts en el componente modificar-turno
-app.get('/turnos/especialistas-y-pacientes', (req, res) => {
-  const query = `
-    SELECT t.idTurno,
-      t.fecha,
-      t.horario,
-      t.estado,
-      e.dniUsuario AS dniEspecialista,
-      e.nombreYApellido AS nombreEspecialista,
-      p.dniUsuario AS dniPaciente,
-      p.nombreYApellido AS nombrePaciente
-    FROM turnos t
-    JOIN usuarios e ON t.dniEspecialista = e.dniUsuario
-    LEFT JOIN usuarios p ON t.dniPaciente = p.dniUsuario
-  `;
-
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error obteniendo los especialistas y pacientes de cada turno:', err);
       res.status(500).send('Error en el servidor');
       return;
     }
@@ -421,6 +499,23 @@ app.put('/pasantes/:dni', (req, res) => {
   );
 });
 
+//Actualizar las horas del pasante sumandole la hora que duro la sesion
+//Esta consulta se usa en el metodo de registrar-sesion en el menu del especialista
+app.put('/pasantes/:dni/horasPasante', (req, res) => {
+  const { dni } = req.params;
+  const { horasExtra } = req.body; // número de horas a sumar
+
+  const query = 'UPDATE pasantes SET horasPasante = horasPasante + ? WHERE dniPasante = ?';
+  db.query(query, [horasExtra, dni], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar horas del pasante:', err);
+      return res.status(500).json({ error: 'Error al actualizar horas del pasante' });
+    }
+    res.json({ message: 'Horas actualizadas correctamente' });
+  });
+});
+
+
 //ESPECIALISTA
 // insertar en la tabla usuarios y especialistas el Registro de USUARIO + ESPECIALISTA (usado en el crear especialista)
 // ===================================================================================
@@ -515,29 +610,75 @@ app.put('/especialistas/:dni', (req, res) => {
 //SESION
 //creacion de una sesion
 app.post('/sesiones', (req, res) => {
-  const { fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente,
-    dniEspecialista, idTratamiento
+  const { fecha, horaInicio, descripcionSesion, idSindrome, dniPaciente,
+    dniEspecialista, idTratamiento, observacionesSesion, duracionSesion
   } = req.body;
 
-  if (!nombre || !cantidad || !descripcion) {
-    return res.status(400).json({ error: 'campos obligatorios' });
-  }
-
-  const query = 'INSERT INTO insumos (fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente, dniEspecialista, idTratamiento) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)';
-  db.query(query, [fecha, horaInicio, minutosAgujasPuestas, cantidadAgujasUsadas, idSindrome, dniPaciente,
-    dniEspecialista, idTratamiento], (err, result) => {
+  const query = 'INSERT INTO sesiones (fecha, horaInicio, descripcionSesion, idSindrome, dniPaciente, dniEspecialista, idTratamiento, observacionesSesion, duracionSesion) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  db.query(query, [fecha, horaInicio, descripcionSesion, idSindrome, dniPaciente,
+    dniEspecialista, idTratamiento, observacionesSesion, duracionSesion], (err, result) => {
       if (err) {
         console.error('Error al insertar sesion:', err);
         return res.status(500).json({ error: 'Error al insertar sesion' });
       }
-      res.json({ message: 'Sesión creada' });
+      res.json({ message: 'Sesión creada', idSesion: result.insertId });
     });
 });
 
+//creacion de un registro en sesiones_sintomas
+app.post('/sesiones/sintomas', (req, res)=>{
+    const { idSesion, sintomas } = req.body;
+
+  if (!idSesion || !Array.isArray(sintomas)) {
+    return res.status(400).json({ error: 'Datos inválidos' });
+  }
+
+  const values = sintomas.map(s => [idSesion, s.idSintoma, s.fechaInicioSintoma, s.nivelMolestia]);
+
+  const query = `
+    INSERT INTO sesiones_sintomas (idSesion, idSintoma, fechaInicioSintoma, nivelMolestia)
+    VALUES ?
+  `;
+
+  db.query(query, [values], (err, result) => {
+    if (err) {
+      console.error('Error al insertar síntomas de sesión:', err);
+      return res.status(500).json({ error: 'Error al insertar síntomas' });
+    }
+    res.json({ message: 'Síntomas registrados correctamente' });
+  });
+});
+
+//creacion de un registro en sesiones_insumos
+app.post('/sesiones/insumos', (req, res) => {
+  const { idSesion, insumos } = req.body;
+
+  if (!idSesion || !Array.isArray(insumos)) {
+    return res.status(400).json({ error: 'Datos inválidos' });
+  }
+
+  const values = insumos.map(i => [idSesion, i.idInsumo, i.cantidadUsada]);
+
+  const query = `
+    INSERT INTO sesiones_insumos (idSesion, idInsumo, cantidadUsada)
+    VALUES ?
+  `;
+
+  db.query(query, [values], (err, result) => {
+    if (err) {
+      console.error('Error al insertar insumos de sesión:', err);
+      return res.status(500).json({ error: 'Error al insertar insumos' });
+    }
+    res.json({ message: 'Insumos registrados correctamente' });
+  });
+});
+
+
 //HISTORIAL CLINICO
-//Traer las sesiones con los especialistas, pacientes, sindromes y tratamiento 
+//Traer las sesiones con los especialistas, pacientes, sindromes y tratamiento
+//Tambien se usa este metodo en la opcion Listado-Sesiones en el menu del Administrador 
 app.get('/sesiones/listadoSesiones', (req, res) => {
-  const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.minutosAgujasPuestas, s.cantidadAgujasUsadas, 
+  const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.descripcionSesion, 
   s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
   s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento
     FROM sesiones s
@@ -558,7 +699,7 @@ app.get('/sesiones/listadoSesiones', (req, res) => {
 //Traer las sesiones correspondientes de un paciente
 app.get('/sesiones/dniPaciente/:dni', (req, res) => {
   const { dni } = req.params;
-  const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.minutosAgujasPuestas, s.cantidadAgujasUsadas, 
+  const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.descripcionSesion, 
   s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
   s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento
     FROM sesiones s
@@ -598,6 +739,78 @@ app.get('/sesiones/:idSesion', (req, res) => {
       return res.status(500).json({ error: 'Error al obtener sesion con los sintomas' });
     }
     res.json(results);
+  });
+});
+
+//SINTOMAS
+//Obtener síntomas
+app.get('/sintomas', (req, res) => {
+  const query = 'SELECT idSintoma, descripcion FROM sintomas';
+  db.query(query, (err, results) => {
+    if (err) return res.status(500).send(err);
+    res.json(results);
+  });
+});
+
+//SINDROMES
+//Obtener sindromes segun coincidencia de lista 
+//Esta consulta es usada para la etapa de mostrar diagnostico en la opcion Registrar Sesion en el usuario Especialista
+app.post('/sindromes/sintomas', (req, res) => {
+  const { idsSintomas } = req.body;
+
+  if (!idsSintomas || idsSintomas.length === 0) {
+    return res.status(400).json({ error: 'No se enviaron síntomas' });
+  }
+
+  const placeholders = idsSintomas.map(() => '?').join(',');
+
+  const sql = `
+    SELECT 
+      s.idSindrome,
+      s.descripcion,
+      COUNT(ss.idSintoma) AS coincidencia,
+      ROUND((COUNT(ss.idSintoma) / total.total_sintomas) * 100, 0) AS porcentajeCoincidencia
+    FROM sindromes s
+    JOIN sindromes_sintomas ss ON s.idSindrome = ss.idSindrome
+    JOIN (
+      SELECT idSindrome, COUNT(idSintoma) AS total_sintomas
+      FROM sindromes_sintomas
+      GROUP BY idSindrome
+    ) AS total ON s.idSindrome = total.idSindrome
+    WHERE ss.idSintoma IN (${placeholders})
+    GROUP BY s.idSindrome
+    ORDER BY porcentajeCoincidencia DESC, coincidencia DESC;
+  `;
+
+  db.query(sql, idsSintomas, (err, results) => {
+    if (err) {
+      console.error('Error al obtener síndromes:', err);
+      return res.status(500).json({ error: 'Error en el servidor' });
+    }
+    console.log('Resultados de la consulta sindromes-por-sintomas:', results);
+    res.json(results);
+  });
+});
+
+//TRATAMIENTOS
+//Obtener tratamientos para el sindrome seleccionado
+//Este metodo se usa en la etapa de Mostrar Puntos en la opcion Registrar Sesion
+app.get('/tratamientos/:idSindrome', (req, res) => {
+  const { idSindrome } = req.params;
+  const query = `
+    SELECT t.idTratamiento, t.nombre, t.descripcion, t.puntos
+    FROM tratamientos t
+    INNER JOIN sindromes_tratamientos st ON t.idTratamiento = st.idTratamiento
+    WHERE st.idSindrome = ?;
+  `;
+
+  db.query(query, [idSindrome], (err, results) => {
+    if (err) {
+      console.error('Error al obtener tratamientos:', err);
+      res.status(500).json({ error: 'Error al obtener tratamientos' });
+    } else {
+      res.json(results);
+    }
   });
 });
 

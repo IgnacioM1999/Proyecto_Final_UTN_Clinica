@@ -1,0 +1,90 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/especialista" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
+
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Registrar Cuestionario</span>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <h3 class="text-center mb-4">Registro de Cuestionario del Paciente</h3>
+        <!-- Síntomas -->
+        <div class="mb-4">
+            <h5 class="mb-3">Síntomas</h5>
+            <div *ngIf="sintomas.length > 0; else sinSintomas">
+                <div *ngFor="let sintoma of sintomas; let i = index" class="border rounded p-3 mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <strong>{{ sintoma.descripcion }}</strong>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label name="nivelMolestiaSintoma" class="form-label mb-1">Nivel de molestia:</label>
+                            <input type="number" id="nivelMolestiaSintoma" class="form-control"
+                                [(ngModel)]="sintoma.nivelMolestia" (input)="verificarRango(sintoma)"
+                                (change)="onSintomaChange()" min="1" max="10" placeholder="1 a 10"/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label mb-1">Fecha de inicio:</label>
+                            <input type="date" class="form-control" [(ngModel)]="sintoma.fechaInicioSintoma" [max]="hoy"
+                                (change)="onSintomaChange()" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #sinSintomas>
+                <p class="text-muted text-center">No hay síntomas cargados.</p>
+            </ng-template>
+        </div>
+
+        <!-- Descripción general -->
+        <div class="mb-4">
+            <h5>Descripción general</h5>
+            <textarea class="form-control" [(ngModel)]="descripcion" (input)="guardarTemporal()" rows="3"
+                placeholder="Ingrese una descripción general del estado del paciente..."></textarea>
+        </div>
+
+        <!-- Antecedentes -->
+        <div class="mb-4">
+            <h5>Antecedentes del paciente</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Antecedentes personales</label>
+                    <textarea class="form-control" [(ngModel)]="antecedentes.personales" (input)="guardarTemporal()"
+                        rows="2"></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Antecedentes familiares</label>
+                    <textarea class="form-control" [(ngModel)]="antecedentes.familiares" (input)="guardarTemporal()"
+                        rows="2"></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Antecedentes quirúrgicos</label>
+                    <textarea class="form-control" [(ngModel)]="antecedentes.quirurgicos" (input)="guardarTemporal()"
+                        rows="2"></textarea>
+                </div>
+            </div>
+
+        </div>
+        <div class="mt-5 d-flex justify-content-center gap-5">
+            <button (click)="volver()" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Volver
+            </button>
+            <button class="btn btn-primary" (click)="continuar()" [disabled]="!puedeContinuar">
+                Continuar <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<!-- Título -->
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/especialista" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
+
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Historial Clínico</span>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="fechaFiltroTurno" class="form-label fw-bold mb-0">Fecha:</label>
+            <input type="date" id="fechaFiltroTurno" [(ngModel)]="fechaFiltro" class="form-control"
+                style="max-width: 200px;">
+
+            <button class="btn btn-primary" (click)="filtrarSesiones()">Filtrar</button>
+            <button class="btn btn-secondary" (click)="limpiarFiltroSesiones()">Limpiar</button>
+        </div>
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-warning text-center">
+                <tr>
+                    <th style="width: 80px;">Nro Sesion</th>
+                    <th style="width: 120px;">Fecha</th>
+                    <th style="width: 120px;">Hora</th>
+                    <th>Especialista</th>
+                    <th>Sindrome</th>
+                    <th style="width: 100px;">Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let sesion of sesionesFiltradas">
+                    <td>{{ sesion.idSesion }}</td>
+                    <!-- Fecha -->
+                    <td>{{sesion.fecha | date:'dd-MM-yyyy'}}</td>
+                    <!-- Hora -->
+                    <td>{{sesion.horaInicio}}</td>
+                    <!-- Nombre y Apellido del Especialista -->
+                    <td>{{sesion.nombreYApellidoEspecialista}}</td>
+                    <!-- Sindrome presentado -->
+                    <td>{{sesion.descripcionSindrome}}</td>
+                    <!-- Seleccionar -->
+                    <td class="text-center align-middle">
+                        <input class="form-check-input" type="radio" name="pacienteSeleccionado"
+                            (change)="sesionIdSeleccionado = sesion.idSesion">
+                    </td>
+                </tr>
+                <tr *ngIf="sesionesFiltradas.length === 0">
+                    <td colspan="6" class="text-center text-muted">No hay sesiones del paciente</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--Botones-->
+    <div class="mt-5 d-flex justify-content-center gap-5">
+        <button class="btn btn-secondary" routerLink="/especialista/historial-clinico">
+            <i class="bi bi-arrow-left me-2"></i>Atras
+        </button>
+        <button class="btn btn-primary"
+            [routerLink]="['/especialista/historial-clinico',dniPacienteSeleccionado,'detallar-sesion',sesionIdSeleccionado]"
+            [disabled]="!sesionIdSeleccionado">
+            Continuar <i class="bi bi-arrow-right"></i>
+        </button>
+    </div>
+
+</div>

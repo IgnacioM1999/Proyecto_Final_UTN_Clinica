@@ -1,0 +1,79 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/especialista" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
+
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Listar Pasantes</span>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid mt-4">
+  <div class="card shadow p-4">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="dniPacienteFiltro" class="form-label fw-bold mb-0">DNI Paciente:</label>
+      <input type="text" id="dniPacienteFiltro" [(ngModel)]="dniPasanteFiltrado" class="form-control"
+        style="max-width: 200px;">
+
+      <label for="nombrePacienteFiltro" class="form-label fw-bold mb-0">Nombre Paciente:</label>
+      <input type="text" id="nombrePacienteFiltro" [(ngModel)]="nombrePasanteFiltro" class="form-control"
+        style="max-width: 200px;">
+
+      <button class="btn btn-primary" (click)="filtrarPasantes()">Filtrar</button>
+      <button class="btn btn-secondary" (click)="limpiarFiltroPasante()">Limpiar</button>
+    </div>
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-warning text-center">
+        <tr>
+          <th>DNI</th>
+          <th>Nombre y Apellido</th>
+          <th>Telefono</th>
+          <th>Email</th>
+          <th>Usuario</th>
+          <th>Horas</th>
+          <th>Mes</th>
+          <th>Año</th>
+          <th>Docente</th>
+          <th>Mail Docente</th>
+          <th>Categoria</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pasante of pasantesFiltrados">
+          <td>{{ pasante.dniPasante }}</td>
+          <td>{{ pasante.nombreYApellido }}</td>
+          <td>{{ pasante.telefono }}</td>
+          <td>{{ pasante.mail }}</td>
+          <td>{{ pasante.nombreUsuario }}</td>
+          <td>{{ pasante.horasPasante }}</td>
+          <td>{{ pasante.mesInicio }}</td>
+          <td>{{ pasante.anioInicio }}</td>
+          <td>{{ pasante.docente }}</td>
+          <td>{{ pasante.mailDocente }}</td>
+          <td>{{ pasante.categoria }}</td>
+        </tr>
+        <tr *ngIf="pasantes.length === 0">
+          <td colspan="11" class="text-center text-muted">No hay pasantes cargadas</td>
+        </tr>
+        <tr *ngIf="pasantes.length > 0 && pasantesFiltrados.length === 0">
+          <td colspan="11" class="text-center text-muted">No hay pasantes con el filtro ingresado</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Botón Volver -->
+  <div class="mt-3">
+    <a routerLink="/especialista/gestionar-pasantes" class="btn btn-secondary">
+      <i class="bi bi-arrow-left me-2"></i>Volver
+    </a>
+  </div>
+</div>

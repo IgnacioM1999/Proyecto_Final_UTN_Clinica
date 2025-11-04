@@ -78,6 +78,7 @@ export class SesionesServices {
     return this.http.get<Sesion[]>(`${this.apiUrl}/dniPaciente/${dni}`)
   }
 
+  //Es usando para la seccion del Historial CLinico cuando se selecciona una Sesion
   getSesionSintomas(id: number): Observable<Sesion[]> {
     return this.http.get<Sesion[]>(`${this.apiUrl}/${id}`)
   }

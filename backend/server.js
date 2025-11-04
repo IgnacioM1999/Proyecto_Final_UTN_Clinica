@@ -701,7 +701,8 @@ app.get('/sesiones/dniPaciente/:dni', (req, res) => {
   const { dni } = req.params;
   const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.descripcionSesion, 
   s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
-  s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento
+  s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento,
+  s.observacionesSesion, s.duracionSesion
     FROM sesiones s
     INNER JOIN usuarios e ON e.dniUsuario = s.dniEspecialista
     INNER JOIN usuarios p ON p.dniUsuario = s.dniPaciente
@@ -724,10 +725,12 @@ app.get('/sesiones/dniPaciente/:dni', (req, res) => {
 app.get('/sesiones/:idSesion', (req, res) => {
   const { idSesion } = req.params;
   const query = `SELECT se.fecha as fecha, p.nombreYApellido AS nombreYApellidoPaciente, e.nombreYApellido AS nombreYApellidoEspecialista,
-  s.descripcion as descripcionSintoma, t.nombre as descripcionTratamiento
+  s.descripcion as descripcionSintoma, sind.descripcion AS descripcionSindrome,  t.nombre as descripcionTratamiento, se.descripcionSesion, 
+  se.observacionesSesion, se.duracionSesion
     FROM sesiones se
     INNER JOIN sesiones_sintomas ss ON se.idSesion = ss.idSesion
     INNER JOIN sintomas s ON ss.idSintoma = s.idSintoma
+    INNER JOIN sindromes sind ON se.idSindrome = sind.idSindrome
     INNER JOIN usuarios e ON e.dniUsuario = se.dniEspecialista
     INNER JOIN usuarios p ON p.dniUsuario = se.dniPaciente
     INNER JOIN tratamientos t ON t.idTratamiento = se.idTratamiento

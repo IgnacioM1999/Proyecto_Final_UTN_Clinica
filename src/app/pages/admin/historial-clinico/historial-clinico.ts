@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Paciente, PacientesServices } from '../../../services/pacientes';
 
@@ -9,7 +9,7 @@ import { Paciente, PacientesServices } from '../../../services/pacientes';
   templateUrl: './historial-clinico.html',
   styleUrl: './historial-clinico.css'
 })
-export class HistorialClinico {
+export class HistorialClinico implements OnInit {
   /*pacientes = [
     {dni: 16889123, usuario: 'Alex1', nombreYapellido: 'Alexis Rodriguez', email:'alex@gmail.com', contrasenia: '523'},
     {dni: 20555333, usuario: 'MariB', nombreYapellido: 'Maria Benjamin', email:'mariab@gmail.com', contrasenia: 'ppp'},

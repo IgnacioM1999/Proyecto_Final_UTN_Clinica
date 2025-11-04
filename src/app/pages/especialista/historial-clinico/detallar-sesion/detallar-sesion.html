@@ -1,0 +1,75 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<!-- Título -->
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/especialista" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
+
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Historial Clínico</span>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <table class="table table-bordered table-striped align-middle">
+            <tbody>
+                <tr>
+                    <th>Fecha</th>
+                    <td>{{ sesion?.fecha | date: 'dd/MM/yyyy' }}</td>
+                </tr>
+                <tr>
+                    <th>Especialista</th>
+                    <td>{{ sesion?.nombreYApellidoEspecialista}}</td>
+                </tr>
+                <tr>
+                    <th>Paciente</th>
+                    <td>{{ sesion?.nombreYApellidoPaciente }}</td>
+                </tr>
+                <tr>
+                    <th>Sintomas</th>
+                    <td>
+                        <ng-container *ngFor="let sintoma of sintomas; let i = index">
+                            {{ sintoma }}<span *ngIf="i < sintomas.length - 1">, </span>
+                        </ng-container>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Detalle del estado del paciente</th>
+                    <td>{{ sesion?.descripcionSesion}}</td>
+                </tr>
+                <tr>
+                    <th>Sindrome</th>
+                    <td>{{ sesion?.descripcionSindrome}}</td>
+                </tr>
+                <tr>
+                    <th>Tratamiento realizado</th>
+                    <td>{{ sesion?.descripcionTratamiento}}</td>
+                </tr>
+                <tr>
+                    <th>Duracion de la sesion</th>
+                    <td>{{ sesion?.duracionSesion}}</td>
+                </tr>
+                <tr>
+                    <th>Observaciones</th>
+                    <td>{{ sesion?.observacionesSesion}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--Botones-->
+    <div class="mt-5 d-flex justify-content-center gap-5">
+        <button class="btn btn-secondary" [routerLink]="['/especialista/historial-clinico',dniPaciente]">
+            <i class="bi bi-arrow-left me-2"></i>Atras</button>
+        <button class="btn btn-primary" routerLink='/especialista/historial-clinico/'>
+            Volver al menu <i class="bi bi-arrow-counterclockwise"></i></button>
+    </div>
+</div>

@@ -9,3 +9,11 @@
 .tabla-con-scroll table {
   margin-bottom: 0;
 }
+
+/* Limita el ancho de la tabla de pasantes dentro del card */
+.tabla-pasantes {
+  max-width: 600px;    /* define el ancho de la tabla */
+  margin: 0 auto;      /* centra la tabla horizontalmente */
+  width: 100%;         /* asegura que la tabla se adapte dentro de ese ancho */
+}
+

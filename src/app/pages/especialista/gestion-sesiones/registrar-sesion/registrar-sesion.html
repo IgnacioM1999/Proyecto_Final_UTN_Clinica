@@ -41,7 +41,7 @@
                         <th>Hora</th>
                         <th>DNI</th>
                         <th>Paciente</th>
-                        <th>Seleccionar</th>
+                        <th style="width: 150px;">Seleccionar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,13 +81,13 @@
             <button class="btn btn-secondary" (click)="limpiarFiltroPasantes()">Limpiar</button>
         </div>
         <!--<div *ngIf="pasantes.length > 0; else sinPasantes">-->
-        <div id="tablaPasantes" class="tabla-con-scroll">
+        <div id="tablaPasantes" class="tabla-con-scroll tabla-pasantes">
             <table class="table table-bordered table-striped text-center">
                 <thead class="table-warning text-center">
                     <tr>
                         <th>DNI</th>
                         <th>Pasante</th>
-                        <th>Seleccionar</th>
+                        <th style="width: 150px;">Seleccionar</th>
                     </tr>
                 </thead>
                 <tbody>

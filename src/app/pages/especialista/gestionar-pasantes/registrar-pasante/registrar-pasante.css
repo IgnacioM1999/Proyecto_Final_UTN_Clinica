@@ -1,0 +1,58 @@
+html,
+body {
+    height: 100%;
+}
+
+/* Card del formulario */
+form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-top: 20px;
+}
+
+/* Inputs y selects */
+.form-control,
+.form-select {
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Botón */
+button {
+    font-size: 1.1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    width: 100%;
+}
+
+/* Separadores */
+hr {
+    margin: 1.5rem 0;
+}
+
+.icono-ojo {
+  position: absolute;
+  right: 15px;   /* separación a la derecha */
+  top: 50%;      /* punto medio del input */
+  /*transform: translateY(-50%); centra verticalmente */
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* Select y input de tamaño reducido */
+.select-pequeno {
+  width: 180px; /* ajustá según prefieras */
+}
+
+.input-pequeno {
+  width: 120px; /* ajustá según prefieras */
+}
+
+/* Botones más angostos */
+.boton-pequeno {
+  width: 150px; /* o 180px si querés un poco más anchos */
+  font-size: 1rem;
+  padding: 0.6rem;
+}

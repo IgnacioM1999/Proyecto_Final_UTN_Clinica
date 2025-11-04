@@ -28,6 +28,10 @@ export class Especialista {
     this.router.navigate(["/especialista/historial-clinico"])
   }
 
+    gestionarPasantes(){
+    this.router.navigate(["/especialista/gestionar-pasantes"])
+  }
+
   verPerfil() {
   this.router.navigate(['/perfil']); 
 }

@@ -1,0 +1,189 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/especialista" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
+
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Registrar Pasante</span>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="card shadow p-4">
+        <form #registerForm="ngForm" (ngSubmit)="registrar(registerForm)">
+            <!---->
+            <!-- Datos base de usuario -->
+            <div class="mb-3">
+                <label for="dniUsuario">DNI</label>
+                <input type="text" id="dniUsuario" class="form-control" [(ngModel)]="usuario.dniUsuario"
+                    name="dniUsuario" pattern="^[0-9]+$" required #dniCtrl="ngModel" (ngModelChange)="verificarDni()"
+                    [ngClass]="{
+            'is-invalid': dniCtrl.invalid && (dniCtrl.dirty || dniCtrl.touched ) || dniDuplicado,
+            'is-valid': dniCtrl.valid && !dniDuplicado &&  (dniCtrl.dirty || dniCtrl.touched)
+          }">
+                <div class="invalid-feedback" *ngIf="dniCtrl.errors?.['required'] || dniCtrl.errors?.['pattern']">
+                    Introduzca un DNI válido.
+                </div>
+                <div class="invalid-feedback" *ngIf="dniDuplicado">
+                    El DNI ya está registrado en el sistema.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="nombreYApellido">Nombre y Apellido</label>
+                <input type="text" id="nombreYApellido" class="form-control" [(ngModel)]="usuario.nombreYApellido"
+                    name="nombreYApellido" required #nombreCtrl="ngModel" [ngClass]="{
+            'is-invalid': nombreCtrl.invalid && (nombreCtrl.dirty || nombreCtrl.touched),
+            'is-valid': nombreCtrl.valid && (nombreCtrl.dirty || nombreCtrl.touched)
+          }">
+                <div class="invalid-feedback">
+                    Introduza su nombre y apellido.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Teléfono</label>
+                <input type="text" class="form-control" [(ngModel)]="usuario.telefono" name="telefono"
+                    pattern="^[0-9]+$" #telefonoCtrl="ngModel" minlength="10" required [ngClass]="{
+            'is-invalid': telefonoCtrl.invalid && (telefonoCtrl.dirty || telefonoCtrl.touched),
+            'is-valid': telefonoCtrl.valid && (telefonoCtrl.dirty || telefonoCtrl.touched)
+          }"><!--El pattern Valida que solo se ponga entre 0 y 9-->
+                <div class="invalid-feedback">
+                    Introduzca un número de teléfono válido.
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+                <label for="mail">Mail</label>
+                <input type="email" class="form-control" [(ngModel)]="usuario.mail" name="mail"
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$" required #mailCtrl="ngModel" [ngClass]="{
+          'is-invalid': mailCtrl.invalid && (mailCtrl.dirty || mailCtrl.touched),
+          'is-valid': mailCtrl.valid && (mailCtrl.dirty || mailCtrl.touched)}">
+                <div class="invalid-feedback">
+                    Introduzca un mail válido
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="nombreUsuario">Nombre de Usuario</label>
+                <input id="nombreUsuario" type="text" class="form-control" [(ngModel)]="usuario.nombreUsuario"
+                    name="nombreUsuario" required minlength="4" #usuarioCtrl="ngModel"
+                    (ngModelChange)="verificarNombreUsuario()" [ngClass]="{
+            'is-invalid': usuarioCtrl.invalid && (usuarioCtrl.dirty || usuarioCtrl.touched) || nombreUsuarioDuplicado,
+            'is-valid': usuarioCtrl.valid && !nombreUsuarioDuplicado && (usuarioCtrl.dirty || usuarioCtrl.touched)
+          }">
+                <div class="invalid-feedback"
+                    *ngIf="usuarioCtrl.errors?.['required'] || usuarioCtrl.errors?.['pattern']">
+                    Introduza un nombre de usuario con al menos 4 caracteres.
+                </div>
+                <div class="invalid-feedback" *ngIf="nombreUsuarioDuplicado">
+                    Este nombre de usuario ya existe.
+                </div>
+            </div>
+
+            <div class="mb-3 position-relative">
+                <label>Contraseña</label>
+                <input [type]="mostrarContrasenia ? 'text' : 'password'" class="form-control pe-5"
+                    [(ngModel)]="usuario.contrasenia" name="contrasenia" required>
+                <i class="bi" [ngClass]="mostrarContrasenia ? 'bi-eye-slash' : 'bi-eye'" class="icono-ojo"
+                    (click)="toggleMostrarContrasenia()">
+                </i>
+            </div>
+
+            <div class="mb-3">
+                <label>Institución</label>
+                <input type="text" class="form-control is-invalid" [(ngModel)]="pasante.institucion" name="institucion"
+                    required #institucionCtrl="ngModel" [ngClass]="{
+            'is-invalid': institucionCtrl.invalid && (institucionCtrl.dirty || institucionCtrl.touched),
+            'is-valid': institucionCtrl.valid && (institucionCtrl.dirty || institucionCtrl.touched)
+          }">
+                <div class="invalid-feedback">
+                    Introduza una institucion
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col mb-3">
+                    <label>Mes Inicio</label>
+                    <select class="form-select select-pequeno" [(ngModel)]="pasante.mesInicio"
+                        name="mesInicio" required>
+                        <option value="" disabled selected>Seleccione...</option>
+                        <option value="Enero">Enero</option>
+                        <option value="Febrero">Febrero</option>
+                        <option value="Marzo">Marzo</option>
+                        <option value="Abril">Abril</option>
+                        <option value="Mayo">Mayo</option>
+                        <option value="Junio">Junio</option>
+                        <option value="Julio">Julio</option>
+                        <option value="Agosto">Agosto</option>
+                        <option value="Septiembre">Septiembre</option>
+                        <option value="Octubre">Octubre</option>
+                        <option value="Noviembre">Noviembre</option>
+                        <option value="Diciembre">Diciembre</option>
+                    </select>
+                </div>
+                <div class="col mb-3">
+                    <label for="anioInicio">Año Inicio</label>
+                    <input type="number" id="anioInicio" class="form-control input-pequeno"
+                        [(ngModel)]="pasante.anioInicio" name="anioInicio" required #anioInicioCtrl="ngModel"
+                        [min]="anioActual" [ngClass]="{
+            'is-invalid': anioInicioCtrl.invalid && (anioInicioCtrl.dirty || anioInicioCtrl.touched),
+            'is-valid': anioInicioCtrl.valid && (anioInicioCtrl.dirty || anioInicioCtrl.touched)
+          }">
+                    <div class="invalid-feedback">
+                        Introduzca un año valido.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Docente</label>
+                <input type="text" class="form-control is-invalid" [(ngModel)]="pasante.docente" name="docente" required
+                    #docenteCtrl="ngModel" [ngClass]="{
+          'is-invalid': docenteCtrl.invalid && (docenteCtrl.dirty || docenteCtrl.touched),
+          'is-valid': docenteCtrl.valid && (docenteCtrl.dirty || docenteCtrl.touched)
+          }">
+                <div class="invalid-feedback">
+                    Introduzca nombre y apellido del docente
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="mailDocente">Mail Docente</label>
+                <input type="email" id="mailDocente" class="form-control is-invalid" [(ngModel)]="pasante.mailDocente"
+                    name="mailDocente" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$" required
+                    #mailDocenteCtrl="ngModel" [ngClass]="{
+            'is-invalid': mailDocenteCtrl.invalid && (mailDocenteCtrl.dirty || mailDocenteCtrl.touched),
+            'is-valid': mailDocenteCtrl.valid && (mailDocenteCtrl.dirty || mailDocenteCtrl.touched)
+          }">
+                <div class="invalid-feedback">
+                    Ingrese un mail válido con @ y terminado en .com
+                </div>
+            </div>
+
+            <!--<div class="mb-3"> 
+          <label>Categoría</label>
+          <input type="text" class="form-control" [(ngModel)]="pasante.categoria" name="categoria" required>
+        </div>-->
+
+            <!-- Botón de enviar -->
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <button class="btn btn-success boton-pequeno" type="submit"
+                    [disabled]="!registerForm.form.valid || dniDuplicado || nombreUsuarioDuplicado">
+                    Registrarse
+                </button>
+
+                <button class="btn btn-secondary boton-pequeno" (click)="volver()">Volver</button>
+            </div>
+        </form>
+    </div>
+</div>

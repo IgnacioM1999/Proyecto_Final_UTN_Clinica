@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Paciente, PacientesServices } from '../../../services/pacientes';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-historial-clinico',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './historial-clinico.html',
   styleUrl: './historial-clinico.css'
 })
@@ -18,6 +19,8 @@ export class HistorialClinico implements OnInit {
 
   pacienteDniSeleccionado: string | null = null;
   pacientes: Paciente[] = [];
+  pacientesFiltrados: Paciente[] = [];
+  nombrePacienteFiltro: string = '';
 
   constructor(private pacientesServices: PacientesServices) { }
 
@@ -30,6 +33,27 @@ export class HistorialClinico implements OnInit {
       next: (data) => this.pacientes = data,
       error: (err) => console.error('Error al cargar insumos:', err)
     });
+  }
+
+    filtrarPacientes(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los turnos
+    if (!this.nombrePacienteFiltro) {
+      this.pacientesFiltrados = [...this.pacientes];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.pacientesFiltrados = this.pacientes.filter(paciente => {
+      const coincideNombre = this.nombrePacienteFiltro
+        ? paciente.nombreYApellido?.toLowerCase().includes(this.nombrePacienteFiltro.toLowerCase())
+        : true;
+
+      return coincideNombre;
+    });
+  }
+
+  limpiarFiltroPacientes(): void {
+    this.nombrePacienteFiltro = '';
+    this.pacientesFiltrados = [...this.pacientes];
   }
 
 }

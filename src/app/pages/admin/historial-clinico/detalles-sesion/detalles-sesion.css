@@ -1,0 +1,4 @@
+.table th {
+  width: 200px; 
+  white-space: nowrap; /* evita que el texto se corte en varias líneas */
+}

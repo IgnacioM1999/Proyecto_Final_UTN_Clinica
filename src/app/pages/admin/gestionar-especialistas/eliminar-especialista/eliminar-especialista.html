@@ -18,6 +18,18 @@
 </nav>
 <div class="container-fluid mt-4">
   <div class="card shadow p-4">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="dniEspecialistaFiltro" class="form-label fw-bold mb-0">DNI Especialista:</label>
+      <input type="text" id="dniEspecialistaFiltro" [(ngModel)]="dniEspecialistaFiltrado" class="form-control"
+        style="max-width: 200px;">
+
+      <label for="nombreEspecialistaFiltro" class="form-label fw-bold mb-0">Nombre Especialista:</label>
+      <input type="text" id="nombreEspecialistaFiltro" [(ngModel)]="nombreEspecialistaFiltro" class="form-control"
+        style="max-width: 200px;">
+
+      <button class="btn btn-primary" (click)="filtrarEspecialistas()">Filtrar</button>
+      <button class="btn btn-secondary" (click)="limpiarFiltroEspecialista()">Limpiar</button>
+    </div>
     <table class="table table-striped table-bordered">
       <thead class="table-warning text-center">
         <tr>
@@ -32,7 +44,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let especialista of especialistas">
+        <tr *ngFor="let especialista of especialistasFiltrados">
           <td>{{ especialista.dniEspecialista }}</td>
           <td>{{ especialista.nombreYApellido }}</td>
           <td>{{ especialista.telefono }}</td>
@@ -45,6 +57,12 @@
               Dar baja
             </button>
           </td>
+        </tr>
+        <tr *ngIf="especialistas.length === 0">
+          <td colspan="8" class="text-center text-muted">No hay especialistas cargados</td>
+        </tr>
+        <tr *ngIf="especialistas.length > 0 && especialistasFiltrados.length === 0">
+          <td colspan="8" class="text-center text-muted">No hay especialistas con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

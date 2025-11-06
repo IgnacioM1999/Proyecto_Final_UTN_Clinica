@@ -19,6 +19,9 @@ export class ModificarPaciente implements OnInit {
   ];*/
 
   pacientes: Paciente[] = [];
+  pacientesFiltrados: Paciente[] = [];
+  dniPacienteFiltrado: string = '';
+  nombrePacienteFiltro: string = '';
 
   constructor(private pacientesServices: PacientesServices) { }
 
@@ -28,9 +31,11 @@ export class ModificarPaciente implements OnInit {
 
   cargarPacientes(): void {
     this.pacientesServices.getPacientes().subscribe({
-      next: (data) => { this.pacientes = data
+      next: (data) => {
+        this.pacientes = data;
+        this.pacientesFiltrados = [...this.pacientes];
         // 🔹 Convertir las fechas al formato YYYY-MM-DD
-        this.pacientes = data.map((p: any) => {
+        this.pacientesFiltrados = this.pacientes.map((p: any) => {
           if (p.fechaNacimiento) {
             // Asegura que se guarde en formato ISO válido para el input date
             p.fechaNacimiento = new Date(p.fechaNacimiento).toISOString().split('T')[0];
@@ -81,5 +86,31 @@ export class ModificarPaciente implements OnInit {
         });
       }
     });
+  }
+
+  filtrarPacientes(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los pacientes
+    if (!this.nombrePacienteFiltro && !this.dniPacienteFiltrado) {
+      this.pacientesFiltrados = [...this.pacientes];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.pacientesFiltrados = this.pacientes.filter(paciente => {
+      const coincideNombre = this.nombrePacienteFiltro
+        ? paciente.nombreYApellido?.toLowerCase().includes(this.nombrePacienteFiltro.toLowerCase())
+        : true;
+
+      const coincideDni = this.dniPacienteFiltrado
+        ? paciente.dniPaciente?.includes(this.dniPacienteFiltrado)
+        : true;
+
+      return coincideNombre && coincideDni;
+    });
+  }
+
+  limpiarFiltroPaciente(): void {
+    this.dniPacienteFiltrado = '';
+    this.nombrePacienteFiltro = '';
+    this.pacientesFiltrados = [...this.pacientes];
   }
 }

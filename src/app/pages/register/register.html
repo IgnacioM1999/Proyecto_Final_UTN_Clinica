@@ -4,17 +4,7 @@
     <form (ngSubmit)="registrar()" #registerForm="ngForm">
 
       <div class="text-center mb-3">
-        <h1 class="h3 mb-3 fw-normal">Registro</h1>
-      </div>
-
-      <!-- Selección tipo -->
-      <div class="mb-3">
-        <label class="form-label">Tipo de Usuario</label>
-        <select class="form-select" [(ngModel)]="usuario.tipoUsuario" name="tipoUsuario" required>
-          <option value="" disabled selected>Seleccione...</option>
-          <option value="paciente">Paciente</option>
-          <option value="pasante">Pasante</option>
-        </select>
+        <h1 class="h3 mb-3 fw-normal">Registro Nuevo Paciente</h1>
       </div>
 
       <!-- Datos base de usuario -->
@@ -94,125 +84,33 @@
         </i>
       </div>
 
-      <!-- Campos dinámicos: PACIENTE -->
-      <div *ngIf="usuario.tipoUsuario === 'paciente'">
-        <hr>
-        <h5>Datos del Paciente</h5>
-
-        <div class="mb-3">
-          <label>Obra Social</label>
-          <input type="text" class="form-control is-invalid" [(ngModel)]="paciente.obraSocial" name="obraSocial"
-            required minlength="3" #obraSocialCtrl="ngModel" [ngClass]="{
+      <div class="mb-3">
+        <label>Obra Social</label>
+        <input type="text" class="form-control is-invalid" [(ngModel)]="paciente.obraSocial" name="obraSocial" required
+          minlength="3" #obraSocialCtrl="ngModel" [ngClass]="{
             'is-invalid': obraSocialCtrl.invalid && (obraSocialCtrl.dirty || obraSocialCtrl.touched),
             'is-valid': obraSocialCtrl.valid && (obraSocialCtrl.dirty || obraSocialCtrl.touched)
           }">
-          <div class="invalid-feedback">
-            Introduza su obra social válida (mínimo 3 caracteres).
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label>Fecha de Nacimiento</label>
-          <input type="date" class="form-control" [(ngModel)]="paciente.fechaNacimiento" name="fechaNacimiento"
-            required>
-        </div>
-
-        <div class="mb-3">
-          <label>Sexo</label>
-          <select class="form-select" [(ngModel)]="paciente.sexo" name="sexo" required>
-            <option value="" disabled selected>Seleccione...</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
-            <option value="Otro">Otro</option>
-          </select>
+        <div class="invalid-feedback">
+          Introduza su obra social válida (mínimo 3 caracteres).
         </div>
       </div>
 
-      <!-- Campos dinámicos: PASANTE -->
-      <div *ngIf="usuario.tipoUsuario === 'pasante'">
-        <hr>
-        <h5>Datos del Pasante</h5>
-
-        <!--<div class="mb-3"> NO SE PONE PORQUE SE REGISTRA AUTOMATICAMENTE QUE INICIA CON 0HS 
-          <label>Horas Pasante</label>
-          <input type="number" class="form-control" [(ngModel)]="pasante.horasPasante" name="horasPasante" required>
-        </div>-->
-
-        <div class="mb-3">
-          <label>Institución</label>
-          <input type="text" class="form-control is-invalid" [(ngModel)]="pasante.institucion" name="institucion"
-            required #institucionCtrl="ngModel" [ngClass]="{
-            'is-invalid': institucionCtrl.invalid && (institucionCtrl.dirty || institucionCtrl.touched),
-            'is-valid': institucionCtrl.valid && (institucionCtrl.dirty || institucionCtrl.touched)
-          }">
-          <div class="invalid-feedback">
-            Introduza una institucion
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col mb-3">
-            <label>Mes Inicio</label>
-            <select class="form-select" [(ngModel)]="pasante.mesInicio" name="mesInicio" required>
-              <option value="" disabled selected>Seleccione...</option>
-              <option value="Enero">Enero</option>
-              <option value="Febrero">Febrero</option>
-              <option value="Marzo">Marzo</option>
-              <option value="Abril">Abril</option>
-              <option value="Mayo">Mayo</option>
-              <option value="Junio">Junio</option>
-              <option value="Julio">Julio</option>
-              <option value="Agosto">Agosto</option>
-              <option value="Septiembre">Septiembre</option>
-              <option value="Octubre">Octubre</option>
-              <option value="Noviembre">Noviembre</option>
-              <option value="Diciembre">Diciembre</option>
-            </select>
-          </div>
-          <div class="col mb-3">
-            <label for="anioInicio">Año Inicio</label>
-            <input type="number" id="anioInicio" class="form-control is-invalid" [(ngModel)]="pasante.anioInicio"
-              name="anioInicio" required #anioInicioCtrl="ngModel" [min]="anioActual" [ngClass]="{
-            'is-invalid': anioInicioCtrl.invalid && (anioInicioCtrl.dirty || anioInicioCtrl.touched),
-            'is-valid': anioInicioCtrl.valid && (anioInicioCtrl.dirty || anioInicioCtrl.touched)
-          }">
-            <div class="invalid-feedback">
-              Introduzca un año menor.
-            </div>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label>Docente</label>
-          <input type="text" class="form-control is-invalid" [(ngModel)]="pasante.docente" name="docente" required
-            #docenteCtrl="ngModel" [ngClass]="{
-          'is-invalid': docenteCtrl.invalid && (docenteCtrl.dirty || docenteCtrl.touched),
-          'is-valid': docenteCtrl.valid && (docenteCtrl.dirty || docenteCtrl.touched)
-          }">
-          <div class="invalid-feedback">
-            Introduzca nombre y apellido del docente
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="mailDocente">Mail Docente</label>
-          <input type="email" id="mailDocente" class="form-control is-invalid" [(ngModel)]="pasante.mailDocente"
-            name="mailDocente" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$" required #mailDocenteCtrl="ngModel"
-            [ngClass]="{
-            'is-invalid': mailDocenteCtrl.invalid && (mailDocenteCtrl.dirty || mailDocenteCtrl.touched),
-            'is-valid': mailDocenteCtrl.valid && (mailDocenteCtrl.dirty || mailDocenteCtrl.touched)
-          }">
-          <div class="invalid-feedback">
-            Ingrese un mail válido con @ y terminado en .com
-          </div>
-        </div>
-
-        <!--<div class="mb-3"> 
-          <label>Categoría</label>
-          <input type="text" class="form-control" [(ngModel)]="pasante.categoria" name="categoria" required>
-        </div>-->
+      <div class="mb-3">
+        <label>Fecha de Nacimiento</label>
+        <input type="date" class="form-control" [(ngModel)]="paciente.fechaNacimiento" name="fechaNacimiento" required>
       </div>
 
+      <div class="mb-3">
+        <label>Sexo</label>
+        <select class="form-select" [(ngModel)]="paciente.sexo" name="sexo" required>
+          <option value="" disabled selected>Seleccione...</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      
       <!-- Botón de enviar -->
       <button class="btn btn-success w-100 mt-3" type="submit"
         [disabled]="!registerForm.form.valid || dniDuplicado || nombreUsuarioDuplicado">

@@ -18,7 +18,10 @@ export class ModificarPasante implements OnInit {
     { legajo: 3, usuario: 'Marti1', nombreYapellido: 'Martin Martinez', email: 'martin@gmail.com', contrasenia: 'hola' },
   ];*/
 
-  pasantes: Pasante[] =[];
+  pasantesFiltrados: Pasante[] = [];
+  pasantes: Pasante[] = [];
+  dniPasanteFiltrado: string = '';
+  nombrePasanteFiltro: string = '';
 
   constructor(private pasantesServices: PasantesServices) { }
 
@@ -28,7 +31,10 @@ export class ModificarPasante implements OnInit {
 
   cargarPasantes(): void {
     this.pasantesServices.getPasantes().subscribe({
-      next: (data) => this.pasantes = data,
+      next: (data) => { 
+        this.pasantes = data;
+        this.pasantesFiltrados = [...this.pasantes];
+      },
       error: (err) => console.error('Error al cargar pasantes:', err)
     });
   }
@@ -76,5 +82,31 @@ export class ModificarPasante implements OnInit {
         });
       }
     });
+  }
+
+    filtrarPasantes(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los pasantes
+    if (!this.nombrePasanteFiltro && !this.dniPasanteFiltrado) {
+      this.pasantesFiltrados = [...this.pasantes];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.pasantesFiltrados = this.pasantes.filter(pasante => {
+      const coincideNombre = this.nombrePasanteFiltro
+        ? pasante.nombreYApellido?.toLowerCase().includes(this.nombrePasanteFiltro.toLowerCase())
+        : true;
+
+      const coincideDni = this.dniPasanteFiltrado
+        ? pasante.dniPasante?.includes(this.dniPasanteFiltrado)
+        : true;
+
+      return coincideNombre && coincideDni;
+    });
+  }
+
+  limpiarFiltroPasante(): void {
+    this.dniPasanteFiltrado = '';
+    this.nombrePasanteFiltro = '';
+    this.pasantesFiltrados = [...this.pasantes];
   }
 }

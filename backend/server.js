@@ -27,15 +27,15 @@ const db = mysql.createConnection({
 
 //creacion de un insumo
 app.post('/insumos', (req, res) => {
-  const { nombre, descripcion, cantidad } = req.body;
+  const { nombre, descripcion, cantidad, consumible } = req.body;
   const estado = 'activo';
 
   if (!nombre || !cantidad || !descripcion) {
     return res.status(400).json({ error: 'nombre, descripcion y cantidad son obligatorios' });
   }
 
-  const query = 'INSERT INTO insumos (nombre, descripcion, cantidad, estado) VALUES ( ?, ?, ?, ?)';
-  db.query(query, [nombre, descripcion, cantidad, estado], (err, result) => {
+  const query = 'INSERT INTO insumos (nombre, descripcion, cantidad, estado, consumible) VALUES (?, ?, ?, ?, ?)';
+  db.query(query, [nombre, descripcion, cantidad, estado, consumible], (err, result) => {
     if (err) {
       console.error('Error al insertar insumo:', err);
       return res.status(500).json({ error: 'Error al insertar insumo' });
@@ -686,6 +686,7 @@ app.get('/sesiones/listadoSesiones', (req, res) => {
     INNER JOIN usuarios p ON p.dniUsuario = s.dniPaciente
     INNER JOIN sindromes si ON si.idSindrome = s.idSindrome
     INNER JOIN tratamientos t ON t.idTratamiento = s.idTratamiento
+    ORDER BY s.fecha desc
   `;
   db.query(query, (err, results) => {
     if (err) {

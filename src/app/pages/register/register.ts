@@ -18,12 +18,12 @@ export class Register implements OnInit {
   usuarios: Usuario[] = [];
   dniDuplicado: boolean = false;
   nombreUsuarioDuplicado: boolean = false;
-  anioActual: number = new Date().getFullYear();
+  //anioActual: number = new Date().getFullYear();
 
   //Variables para el mensaje de exito/fracaso al registrar un pasante/paciente
-  mensaje: string = '';
+  /*mensaje: string = '';
   tipoMensaje: 'success' | 'danger' | '' = '';
-  mostrarMensaje: boolean = false;
+  mostrarMensaje: boolean = false;*/
 
   usuario: Usuario = {
     dniUsuario: '',
@@ -32,9 +32,9 @@ export class Register implements OnInit {
     mail: '',
     nombreUsuario: '',
     contrasenia: '',
-    tipoUsuario: '',
+    tipoUsuario: 'paciente',
     idLocalidad: 0,
-    estado:'activo'
+    estado: 'activo'
   };
 
   paciente: Paciente = {
@@ -44,18 +44,7 @@ export class Register implements OnInit {
     sexo: ''
   };
 
-  pasante: Pasante = {
-    dniPasante: '',
-    horasPasante: 0,
-    institucion: '',
-    mesInicio: '',
-    anioInicio: 0,
-    docente: '',
-    mailDocente: '',
-    categoria: 'Pasante'
-  };
-
-  constructor(private pacientesService: PacientesServices, private pasantesService: PasantesServices, private router: Router, private usuariosService: UsuariosServices) { }
+  constructor(private pacientesService: PacientesServices, private router: Router, private usuariosService: UsuariosServices) { }
 
   ngOnInit(): void {
     this.usuariosService.getUsuarios().subscribe({
@@ -94,54 +83,29 @@ export class Register implements OnInit {
       });
       return;
     }
-    if (this.usuario.tipoUsuario === 'paciente') {
-      // Combino usuario + paciente en un solo objeto
-      const data = {
-        usuario: this.usuario,
-        paciente: this.paciente
-      };
-      this.pacientesService.createPaciente(data).subscribe({
-        next: (res) => {
-          Swal.fire({
-            icon: 'success',
-            title: 'Éxito',
-            text: 'Usuario registrado con éxito 🎉',
-            confirmButtonText: 'OK'
-          });
-        },
-        error: (err) => {
-          console.error('Error al crear paciente:', err);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo registrar, revise los campos.'
-          });
-        }
-      });
-    }
-    else if (this.usuario.tipoUsuario === 'pasante') {
-      const data = {
-        usuario: this.usuario,
-        pasante: this.pasante
-      };
-      this.pasantesService.createPasante(data).subscribe({
-        next: (res) => {
-          Swal.fire({
+    // Combino usuario + paciente en un solo objeto
+    const data = {
+      usuario: this.usuario,
+      paciente: this.paciente
+    };
+    this.pacientesService.createPaciente(data).subscribe({
+      next: (res) => {
+        Swal.fire({
           icon: 'success',
           title: 'Éxito',
-          text: 'Usuario registrado con éxito 🎉',
+          text: 'Paciente registrado con éxito',
           confirmButtonText: 'OK'
         });
-        },
-        error: (err) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo registrar, revise los campos.'
-          });
-        }
-      });
-    }
+      },
+      error: (err) => {
+        console.error('Error al crear paciente:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo registrar, revise los campos.'
+        });
+      }
+    });
   }
 
   volver() {

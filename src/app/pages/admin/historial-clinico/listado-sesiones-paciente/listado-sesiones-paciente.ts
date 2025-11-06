@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Sesion, SesionesServices } from '../../../../services/sesiones';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-listado-sesiones-paciente',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './listado-sesiones-paciente.html',
   styleUrl: './listado-sesiones-paciente.css'
 })
@@ -18,13 +19,15 @@ export class ListadoSesionesPaciente implements OnInit {
     { idSesion: 4, dni: 37009008, nomApePaciente: "Josefina Martinez", nomApeEspecialista: "Osvaldo Montoya", fecha: "2025-05-25" }
   ]*/
 
-  dniPacienteSeleccionado : string = ''
-  nombrePaciente: string = ''
-  sesionIdSeleccionado: number | null = null
-  sesionesFiltradas: Sesion[] =[]
+  dniPacienteSeleccionado: string = '';
+  nombrePaciente: string = '';
+  sesionIdSeleccionado: number | null = null;
+  sesiones: Sesion[] = [];
+  sesionesFiltradas: Sesion[] = [];
+  fechaFiltro: string = ''; //fecha seleccionada en el input
 
-  
-  constructor(private route: ActivatedRoute, private sesionesServices:SesionesServices) { }
+
+  constructor(private route: ActivatedRoute, private sesionesServices: SesionesServices) { }
 
   ngOnInit(): void {
     // Capturamos el parámetro de la URL
@@ -37,19 +40,37 @@ export class ListadoSesionesPaciente implements OnInit {
     }
   }
 
-  cargarSesionesPaciente(dniPaciente:string): void {
+  cargarSesionesPaciente(dniPaciente: string): void {
     this.sesionesServices.getSesionesPaciente(dniPaciente).subscribe({
       next: (data) => {
-      this.sesionesFiltradas = data;
+        this.sesiones = data;
+        this.sesionesFiltradas = [...this.sesiones]
 
-      // 🔹 Si hay sesiones, guardamos el nombre del paciente desde la primera
-      if (data.length > 0) {
-        this.nombrePaciente = data[0].nombreYApellidoPaciente ?? 'Sin nombre registrado';
-      } else {
-        this.nombrePaciente = 'Sin sesiones registradas';
-      }
-    },
+        // 🔹 Si hay sesiones, guardamos el nombre del paciente desde la primera
+        if (this.sesiones.length > 0) {
+          this.nombrePaciente = this.sesiones[0].nombreYApellidoPaciente ?? 'Sin nombre registrado';
+        } else {
+          this.nombrePaciente = 'Sin sesiones registradas';
+        }
+      },
       error: (err) => console.error('Error al cargar sesiones:', err)
     });
+  }
+    filtrarPorFecha(): void {
+    if (!this.fechaFiltro) {
+      this.sesionesFiltradas = [...this.sesiones];
+      return;
+    }
+
+    // Comparamos fechas en formato ISO (yyyy-MM-dd)
+    this.sesionesFiltradas = this.sesiones.filter(sesion => {
+      const fechaTurno = new Date(sesion.fecha).toISOString().split('T')[0];
+      return fechaTurno === this.fechaFiltro;
+    });
+  }
+
+  limpiarFiltro(): void {
+    this.fechaFiltro = '';
+    this.sesionesFiltradas = [...this.sesiones];
   }
 }

@@ -20,12 +20,25 @@
 </nav>
 <div class="container mt-4">
   <div class="card shadow p-4">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="dniPacienteFiltro" class="form-label fw-bold mb-0">DNI Paciente:</label>
+      <input type="text" id="dniPacienteFiltro" [(ngModel)]="dniPacienteFiltrado" class="form-control"
+        style="max-width: 200px;">
+
+      <label for="nombrePacienteFiltro" class="form-label fw-bold mb-0">Nombre Paciente:</label>
+      <input type="text" id="nombrePacienteFiltro" [(ngModel)]="nombrePacienteFiltro" class="form-control"
+        style="max-width: 200px;">
+
+      <button class="btn btn-primary" (click)="filtrarSesiones()">Filtrar</button>
+      <button class="btn btn-secondary" (click)="limpiarFiltroSesion()">Limpiar</button>
+    </div>
     <table class="table table-bordered table-striped align-middle">
       <thead class="table-warning text-center">
         <tr>
           <th>Id Sesion</th>
-          <th>Especialista</th>
+          <th>DNI Paciente</th>
           <th>Paciente</th>
+          <th>Especialista</th>
           <th>Fecha</th>
           <th>Hora</th>
           <th>Sindrome</th>
@@ -33,13 +46,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let sesion of sesiones">
+        <tr *ngFor="let sesion of sesionesFiltradas">
           <!--Id sesion-->
           <td>{{sesion.idSesion }}</td>
-          <!-- Especialista -->
-          <td>{{sesion.nombreYApellidoEspecialista}}</td>
+          <!-- DNI Paciente-->
+          <td>{{sesion.dniPaciente}}</td>
           <!-- Paciente-->
           <td>{{sesion.nombreYApellidoPaciente}}</td>
+          <!-- Especialista -->
+          <td>{{sesion.nombreYApellidoEspecialista}}</td>
           <!-- Fecha-->
           <td>{{sesion.fecha | date:'dd-MM-yyyy'}}</td>
           <!-- Hora-->
@@ -50,7 +65,10 @@
           <td>{{sesion.descripcionTratamiento}}</td>
         </tr>
         <tr *ngIf="sesiones.length === 0">
-          <td colspan="8" class="text-center text-muted">No hay sesiones cargadas</td>
+          <td colspan="9" class="text-center text-muted">No hay sesiones cargadas</td>
+        </tr>
+        <tr *ngIf="sesiones.length > 0 && sesionesFiltradas.length === 0">
+          <td colspan="9" class="text-center text-muted">No hay sesiones con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

@@ -18,6 +18,14 @@
 </nav>
 <div class="container mt-4">
   <div class="card shadow p-4">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="nombreInsumo" class="form-label fw-bold mb-0">Nombre Insumo:</label>
+      <input type="text" id="nombreInsumo" [(ngModel)]="nombreInsumoFiltro" class="form-control"
+        style="max-width: 200px;">
+
+      <button class="btn btn-primary" (click)="filtrarInsumo()">Filtrar</button>
+      <button class="btn btn-secondary" (click)="limpiarFiltroInsumo()">Limpiar</button>
+    </div>
     <table class="table table-bordered table-striped align-middle">
       <thead class="table-warning text-center">
         <tr>
@@ -28,7 +36,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let insumo of insumosBack">
+        <tr *ngFor="let insumo of insumosFiltrados">
           <td>{{ insumo.idInsumos }}</td>
           <!-- Nombre -->
           <td>{{insumo.nombre}}</td>
@@ -39,6 +47,9 @@
         </tr>
         <tr *ngIf="insumosBack.length === 0">
           <td colspan="4" class="text-center text-muted">No hay insumos cargados</td>
+        </tr>
+        <tr *ngIf="insumosBack.length > 0 && insumosFiltrados.length === 0">
+          <td colspan="4" class="text-center text-muted">No hay insumos con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

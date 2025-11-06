@@ -14,13 +14,15 @@ import Swal from 'sweetalert2';
 })
 export class ModificarInsumo {
 
-  insumos = [
+  /*insumos = [
     { id: 1, nombre: 'Agujas de acupuntura', descripcion: 'Agujas estériles desechables para sesiones de acupuntura', cantidad: 200 },
     { id: 2, nombre: 'Moxa', descripcion: 'Bastones de artemisa seca para terapia de moxibustión', cantidad: 500 },
     { id: 3, nombre: 'Ventosas', descripcion: 'Juego de ventosas de vidrio y plástico para terapia de succión', cantidad: 70 },
-  ];
+  ];*/
 
-  insumosBack: Insumo[] = []
+  insumosBack: Insumo[] = [];
+  insumosFiltrados: Insumo[] = [];
+  nombreInsumoFiltro: string = '';
 
   constructor(private insumosService: InsumosServices) { }
 
@@ -31,7 +33,10 @@ export class ModificarInsumo {
   //Cargar insumos desde el backend
   cargarInsumos(): void {
     this.insumosService.getInsumos().subscribe({
-      next: (data) => this.insumosBack = data,
+      next: (data) =>{
+        this.insumosBack = data
+        this.insumosFiltrados = [...this.insumosBack]
+      },
       error: (err) => console.error('Error al cargar insumos:', err)
     });
   }
@@ -56,5 +61,24 @@ export class ModificarInsumo {
       },
     });
   }
+  filtrarInsumo(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los insumos
+    if (!this.nombreInsumoFiltro) {
+      this.insumosFiltrados = [...this.insumosBack];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.insumosFiltrados = this.insumosBack.filter(insumo => {
+      const coincideNombre = this.nombreInsumoFiltro
+        ? insumo.nombre?.toLowerCase().includes(this.nombreInsumoFiltro.toLowerCase())
+        : true;
 
+      return coincideNombre;
+    });
+  }
+
+  limpiarFiltroInsumo(): void {
+    this.nombreInsumoFiltro = '';
+    this.insumosFiltrados = [...this.insumosBack];
+  }
 }

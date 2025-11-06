@@ -3,11 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Insumo, InsumosServices } from '../../../../services/insumos';
 import Swal from 'sweetalert2';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-eliminar-insumo',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './eliminar-insumo.html',
   styleUrl: './eliminar-insumo.css'
 })
@@ -19,7 +20,9 @@ export class EliminarInsumo implements OnInit {
     { id: 3, nombre: 'Ventosas', descripcion: 'Juego de ventosas de vidrio y plástico para terapia de succión', cantidad: 70 },
   ];*/
 
-  insumosBack: Insumo[] = []
+  insumosBack: Insumo[] = [];
+  insumosFiltrados: Insumo[] = [];
+  nombreInsumoFiltro: string = '';
 
   constructor(private insumosService: InsumosServices) { }
 
@@ -30,7 +33,10 @@ export class EliminarInsumo implements OnInit {
   //Cargar insumos desde el backend
   cargarInsumos(): void {
     this.insumosService.getInsumos().subscribe({
-      next: (data) => this.insumosBack = data,
+      next: (data) =>{
+        this.insumosBack = data
+        this.insumosFiltrados = [...this.insumosBack]
+      },
       error: (err) => console.error('Error al cargar insumos:', err)
     });
   }
@@ -80,6 +86,27 @@ export class EliminarInsumo implements OnInit {
         });
       }
     });
+  }
+
+    filtrarInsumo(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los insumos
+    if (!this.nombreInsumoFiltro) {
+      this.insumosFiltrados = [...this.insumosBack];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.insumosFiltrados = this.insumosBack.filter(insumo => {
+      const coincideNombre = this.nombreInsumoFiltro
+        ? insumo.nombre?.toLowerCase().includes(this.nombreInsumoFiltro.toLowerCase())
+        : true;
+
+      return coincideNombre;
+    });
+  }
+
+  limpiarFiltroInsumo(): void {
+    this.nombreInsumoFiltro = '';
+    this.insumosFiltrados = [...this.insumosBack];
   }
 
 }

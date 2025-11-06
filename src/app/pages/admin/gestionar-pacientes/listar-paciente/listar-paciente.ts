@@ -19,6 +19,9 @@ export class ListarPaciente implements OnInit {
   ];*/
 
   pacientes: Paciente[] = [];
+  pacientesFiltrados: Paciente[] = [];
+  dniPacienteFiltrado: string = '';
+  nombrePacienteFiltro: string = '';
 
   constructor(private pacientesServices: PacientesServices) { }
 
@@ -28,9 +31,38 @@ export class ListarPaciente implements OnInit {
 
   cargarPacientes(): void {
     this.pacientesServices.getPacientes().subscribe({
-      next: (data) => this.pacientes = data,
+      next: (data) =>  {
+        this.pacientes = data;
+        this.pacientesFiltrados = [...this.pacientes];
+      },
       error: (err) => console.error('Error al cargar insumos:', err)
     });
+  }
+
+    filtrarPacientes(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los pacientes
+    if (!this.nombrePacienteFiltro && !this.dniPacienteFiltrado) {
+      this.pacientesFiltrados = [...this.pacientes];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.pacientesFiltrados = this.pacientes.filter(paciente => {
+      const coincideNombre = this.nombrePacienteFiltro
+        ? paciente.nombreYApellido?.toLowerCase().includes(this.nombrePacienteFiltro.toLowerCase())
+        : true;
+
+      const coincideDni = this.dniPacienteFiltrado
+        ? paciente.dniPaciente?.includes(this.dniPacienteFiltrado)
+        : true;
+
+      return coincideNombre && coincideDni;
+    });
+  }
+
+  limpiarFiltroPaciente(): void {
+    this.dniPacienteFiltrado = '';
+    this.nombrePacienteFiltro = '';
+    this.pacientesFiltrados = [...this.pacientes];
   }
 
 }

@@ -21,6 +21,9 @@ export class EliminarEspecialista implements OnInit {
   ];*/
 
   especialistas: Especialista[] = [];
+  especialistasFiltrados: Especialista[] = [];
+  dniEspecialistaFiltrado: string = '';
+  nombreEspecialistaFiltro: string = '';
 
   constructor(private especialistasServices: EspecialistasServices, private usuariosServices: UsuariosServices) { }
 
@@ -30,7 +33,10 @@ export class EliminarEspecialista implements OnInit {
 
   cargarEspecialistas(): void {
     this.especialistasServices.getEspecialistas().subscribe({
-      next: (data) => this.especialistas = data,
+      next: (data) =>{
+        this.especialistas = data;
+        this.especialistasFiltrados = [...this.especialistas];
+      },
       error: (err) => console.error('Error al cargar especialistas:', err)
     });
   }
@@ -78,4 +84,29 @@ export class EliminarEspecialista implements OnInit {
     });
   }
 
+  filtrarEspecialistas(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los especialistas
+    if (!this.nombreEspecialistaFiltro && !this.dniEspecialistaFiltrado) {
+      this.especialistasFiltrados = [...this.especialistas];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.especialistasFiltrados = this.especialistas.filter(especialista => {
+      const coincideNombre = this.nombreEspecialistaFiltro
+        ? especialista.nombreYApellido?.toLowerCase().includes(this.nombreEspecialistaFiltro.toLowerCase())
+        : true;
+
+      const coincideDni = this.dniEspecialistaFiltrado
+        ? especialista.dniEspecialista?.includes(this.dniEspecialistaFiltrado)
+        : true;
+
+      return coincideNombre && coincideDni;
+    });
+  }
+
+  limpiarFiltroEspecialista(): void {
+    this.dniEspecialistaFiltrado = '';
+    this.nombreEspecialistaFiltro = '';
+    this.especialistasFiltrados = [...this.especialistas];
+  }
 }

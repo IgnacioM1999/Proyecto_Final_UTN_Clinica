@@ -14,8 +14,8 @@ import Swal from 'sweetalert2';
 })
 export class EliminarPaciente implements OnInit {
 
-  constructor(private pacientesServices: PacientesServices, private usuariosServices: UsuariosServices){}
-  
+  constructor(private pacientesServices: PacientesServices, private usuariosServices: UsuariosServices) { }
+
   /*pacientes = [
     {dni: 16889123, usuario: 'Alex1', nombreYapellido: 'Alexis Rodriguez', email:'alex@gmail.com', contrasenia: '523'},
     {dni: 20555333, usuario: 'MariB', nombreYapellido: 'Maria Benjamin', email:'mariab@gmail.com', contrasenia: 'ppp'},
@@ -23,6 +23,9 @@ export class EliminarPaciente implements OnInit {
   ];*/
 
   pacientes: Paciente[] = [];
+  pacientesFiltrados: Paciente[] = [];
+  dniPacienteFiltrado: string = '';
+  nombrePacienteFiltro: string = '';
 
   ngOnInit(): void {
     this.cargarPacientes();
@@ -30,7 +33,10 @@ export class EliminarPaciente implements OnInit {
 
   cargarPacientes(): void {
     this.pacientesServices.getPacientes().subscribe({
-      next: (data) => this.pacientes = data,
+      next: (data) =>{
+        this.pacientes = data;
+        this.pacientesFiltrados = [...this.pacientes];
+      },
       error: (err) => console.error('Error al cargar insumos:', err)
     });
   }
@@ -77,4 +83,31 @@ export class EliminarPaciente implements OnInit {
       }
     });
   }
+
+  filtrarPacientes(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los pacientes
+    if (!this.nombrePacienteFiltro && !this.dniPacienteFiltrado) {
+      this.pacientesFiltrados = [...this.pacientes];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.pacientesFiltrados = this.pacientes.filter(paciente => {
+      const coincideNombre = this.nombrePacienteFiltro
+        ? paciente.nombreYApellido?.toLowerCase().includes(this.nombrePacienteFiltro.toLowerCase())
+        : true;
+
+      const coincideDni = this.dniPacienteFiltrado
+        ? paciente.dniPaciente?.includes(this.dniPacienteFiltrado)
+        : true;
+
+      return coincideNombre && coincideDni;
+    });
+  }
+
+  limpiarFiltroPaciente(): void {
+    this.dniPacienteFiltrado = '';
+    this.nombrePacienteFiltro = '';
+    this.pacientesFiltrados = [...this.pacientes];
+  }
+
 }

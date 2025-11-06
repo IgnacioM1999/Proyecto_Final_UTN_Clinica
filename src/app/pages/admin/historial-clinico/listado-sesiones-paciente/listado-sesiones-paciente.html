@@ -20,14 +20,22 @@
 </nav>
 <div class="container mt-4">
     <div class="card shadow p-4">
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="fechaFiltro" class="form-label fw-bold mb-0">Filtrar por fecha:</label>
+            <input type="date" id="fechaFiltro" [(ngModel)]="fechaFiltro" class="form-control"
+                style="max-width: 200px;">
+            <button class="btn btn-primary" (click)="filtrarPorFecha()">Filtrar</button>
+            <button class="btn btn-secondary" (click)="limpiarFiltro()">Limpiar</button>
+        </div>
         <table class="table table-bordered table-striped align-middle">
             <thead class="table-warning text-center">
                 <tr>
-                    <th>Numero Sesion</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
+                    <th style="width: 80px;">Nro Sesion</th>
+                    <th style="width: 120px;">Fecha</th>
+                    <th style="width: 120px;">Hora</th>
                     <th>Especialista</th>
-                    <th>Seleccionar</th>
+                    <th>Sindrome</th>
+                    <th style="width: 100px;">Seleccionar</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,10 +43,12 @@
                     <td>{{ sesion.idSesion }}</td>
                     <!-- Fecha -->
                     <td>{{sesion.fecha | date:'dd-MM-yyyy'}}</td>
-                    <!-- Fecha -->
+                    <!-- Hora -->
                     <td>{{sesion.horaInicio}}</td>
                     <!-- Nombre y Apellido del Especialista -->
                     <td>{{sesion.nombreYApellidoEspecialista}}</td>
+                    <!-- Sindrome presentado -->
+                    <td>{{sesion.descripcionSindrome}}</td>
                     <!-- Seleccionar -->
                     <td class="text-center align-middle">
                         <input class="form-check-input" type="radio" name="pacienteSeleccionado"
@@ -46,7 +56,7 @@
                     </td>
                 </tr>
                 <tr *ngIf="sesionesFiltradas.length === 0">
-                    <td colspan="5" class="text-center text-muted">No hay sesiones del paciente</td>
+                    <td colspan="6" class="text-center text-muted">No hay sesiones del paciente</td>
                 </tr>
             </tbody>
         </table>

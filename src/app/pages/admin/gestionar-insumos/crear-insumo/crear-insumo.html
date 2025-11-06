@@ -44,6 +44,17 @@
                     name="cantidad" required>
             </div>
 
+            <!-- Consumible -->
+            <div class="mb-4">
+                <label for="consumible" class="form-label fw-bold">Consumible</label>
+                <select id="consumible" class="form-select" [(ngModel)]="nuevoInsumo.consumible" name="consumible"
+                    required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+
             <!--Botones-->
             <div class="d-flex justify-content-between">
                 <a routerLink="/admin/gestionar-insumos" class="btn btn-outline-secondary">

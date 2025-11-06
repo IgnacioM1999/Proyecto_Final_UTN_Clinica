@@ -18,6 +18,18 @@
 </nav>
 <div class="container mt-4">
   <div class="card shadow p-4">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="dniPacienteFiltro" class="form-label fw-bold mb-0">DNI Pasante:</label>
+      <input type="text" id="dniPacienteFiltro" [(ngModel)]="dniPacienteFiltrado" class="form-control"
+        style="max-width: 200px;">
+
+      <label for="nombrePacienteFiltro" class="form-label fw-bold mb-0">Nombre Pasante:</label>
+      <input type="text" id="nombrePacienteFiltro" [(ngModel)]="nombrePacienteFiltro" class="form-control"
+        style="max-width: 200px;">
+
+      <button class="btn btn-primary" (click)="filtrarPacientes()">Filtrar</button>
+      <button class="btn btn-secondary" (click)="limpiarFiltroPaciente()">Limpiar</button>
+    </div>
     <table class="table table-striped table-bordered">
       <thead class="table-warning text-center">
         <tr>
@@ -33,7 +45,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let paciente of pacientes">
+        <tr *ngFor="let paciente of pacientesFiltrados">
           <td>{{ paciente.dniPaciente }}</td>
           <td>{{ paciente.nombreYApellido }}</td>
           <td>{{ paciente.telefono }}</td>
@@ -47,6 +59,12 @@
               Dar baja
             </button>
           </td>
+        </tr>
+        <tr *ngIf="pacientes.length === 0">
+          <td colspan="9" class="text-center text-muted">No hay pacientes cargados</td>
+        </tr>
+        <tr *ngIf="pacientes.length > 0 && pacientesFiltrados.length === 0">
+          <td colspan="9" class="text-center text-muted">No hay pacientes con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

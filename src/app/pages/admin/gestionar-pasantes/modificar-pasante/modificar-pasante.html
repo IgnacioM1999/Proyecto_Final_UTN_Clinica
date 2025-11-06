@@ -18,6 +18,18 @@
 </nav>
 <div class="container-fluid mt-4">
   <div class="table-responsive">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="dniPasanteFiltro" class="form-label fw-bold mb-0">DNI Pasante:</label>
+      <input type="text" id="dniPasanteFiltro" [(ngModel)]="dniPasanteFiltrado" class="form-control"
+        style="max-width: 200px;">
+
+      <label for="nombrePasanteFiltro" class="form-label fw-bold mb-0">Nombre Pasante:</label>
+      <input type="text" id="nombrePasanteFiltro" [(ngModel)]="nombrePasanteFiltro" class="form-control"
+        style="max-width: 200px;">
+
+      <button class="btn btn-primary" (click)="filtrarPasantes()">Filtrar</button>
+      <button class="btn btn-secondary" (click)="limpiarFiltroPasante()">Limpiar</button>
+    </div>
     <table class="table table-bordered table-striped align-middle">
       <thead class="table-warning text-center">
         <tr>
@@ -26,7 +38,6 @@
           <th style="min-width: 120px;">Telefono</th>
           <th style="min-width: 250px;">Email</th>
           <th style="min-width: 150px;">Usuario</th>
-          <th style="min-width: 180px;">Contraseña</th>
           <th style="min-width: 100px;">Horas</th>
           <th style="min-width: 150px;">Mes</th>
           <th style="min-width: 100px;">Año</th>
@@ -37,7 +48,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let pasante of pasantes">
+        <tr *ngFor="let pasante of pasantesFiltrados">
           <td>{{ pasante.dniPasante }}</td>
           <!-- Nombre y Apellido -->
           <td>
@@ -54,10 +65,6 @@
           <!-- Usuario -->
           <td>
             <input type="text" [(ngModel)]="pasante.nombreUsuario" class="form-control">
-          </td>
-          <!-- Contraseña -->
-          <td>
-            <input type="text" [(ngModel)]="pasante.contrasenia" class="form-control">
           </td>
           <!-- Hora -->
           <td>
@@ -90,6 +97,12 @@
               Guardar
             </button>
           </td>
+        </tr>
+        <tr *ngIf="pasantes.length === 0">
+          <td colspan="12" class="text-center text-muted">No hay pasantes cargados</td>
+        </tr>
+        <tr *ngIf="pasantes.length > 0 && pasantesFiltrados.length === 0">
+          <td colspan="12" class="text-center text-muted">No hay pasantes con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

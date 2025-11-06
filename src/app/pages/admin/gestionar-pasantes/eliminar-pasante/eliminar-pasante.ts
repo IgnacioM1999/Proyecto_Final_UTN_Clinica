@@ -21,7 +21,10 @@ export class EliminarPasante {
 
   constructor(private pasantesServices: PasantesServices, private usuariosServices: UsuariosServices) { }
 
+  pasantesFiltrados: Pasante[] = [];
   pasantes: Pasante[] = [];
+  dniPasanteFiltrado: string = '';
+  nombrePasanteFiltro: string = '';
 
   ngOnInit(): void {
     this.cargarPasantes();
@@ -29,7 +32,10 @@ export class EliminarPasante {
 
   cargarPasantes(): void {
     this.pasantesServices.getPasantes().subscribe({
-      next: (data) => this.pasantes = data,
+      next: (data) => { 
+        this.pasantes = data;
+        this.pasantesFiltrados = [...this.pasantes];
+      },
       error: (err) => console.error('Error al cargar insumos:', err)
     });
   }
@@ -75,5 +81,31 @@ export class EliminarPasante {
         });
       }
     });
+  }
+
+    filtrarPasantes(): void {
+    // Si no se ingresó ningún filtro, mostrar todos los pasantes
+    if (!this.nombrePasanteFiltro && !this.dniPasanteFiltrado) {
+      this.pasantesFiltrados = [...this.pasantes];
+      return;
+    }
+    // Si se ingresó algún filtro, aplicar el filtrado
+    this.pasantesFiltrados = this.pasantes.filter(pasante => {
+      const coincideNombre = this.nombrePasanteFiltro
+        ? pasante.nombreYApellido?.toLowerCase().includes(this.nombrePasanteFiltro.toLowerCase())
+        : true;
+
+      const coincideDni = this.dniPasanteFiltrado
+        ? pasante.dniPasante?.includes(this.dniPasanteFiltrado)
+        : true;
+
+      return coincideNombre && coincideDni;
+    });
+  }
+
+  limpiarFiltroPasante(): void {
+    this.dniPasanteFiltrado = '';
+    this.nombrePasanteFiltro = '';
+    this.pasantesFiltrados = [...this.pasantes];
   }
 }

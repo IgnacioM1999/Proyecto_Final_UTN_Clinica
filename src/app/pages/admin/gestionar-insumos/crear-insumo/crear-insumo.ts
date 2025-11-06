@@ -19,7 +19,8 @@ export class CrearInsumo {
     nombre: '',
     descripcion: '',
     cantidad: 0,
-    estado: 'activo'
+    estado: 'activo',
+    consumible: ''
   };
 
   constructor(private insumosService: InsumosServices, private router: Router) { }

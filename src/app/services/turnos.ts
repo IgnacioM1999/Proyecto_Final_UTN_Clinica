@@ -63,10 +63,27 @@ export class TurnosServices {
     return this.http.get<Turno[]>(`${this.apiUrl}/${dniEspecialista}`);
   }
 
-  //Actualiza el estado del turno a Ocupado
+  //Actualiza el estado del turno a Concluido
   //Este metodo se usa cuando se registra una sesion en el menu del especialista
   actualizarEstadoTurno(idTurno: number, nuevoEstado: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/${idTurno}/estado`, { nuevoEstado });
+  }
+
+  //Listar todos los turnos con estado Disponible
+  //Este metodo se usa para la opcion Ver Turnos del menu del Paciente
+  getTurnosDisponibles(): Observable<Turno[]> {
+    console.log('Se llego al servicio getTurnosDispobles')
+    return this.http.get<Turno[]>(`${this.apiUrl}Disponibles`);
+  }
+
+  //Actualizar el turno al estado = 'Ocupado' y con el dni del Paciente
+  agendarTurno(idTurno: number, nuevoEstado: string, dniPaciente: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${idTurno}/estadoOcupado`, { nuevoEstado, dniPaciente });
+  }
+
+  getTurnosReservados(dniPaciente: string): Observable<Turno[]> {
+    console.log('Se llego al servicio getTurnosReservados')
+    return this.http.get<Turno[]>(`${this.apiUrl}ReservadosPaciente/${dniPaciente}`);
   }
 
 }

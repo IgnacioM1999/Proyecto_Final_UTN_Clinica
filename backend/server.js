@@ -224,7 +224,7 @@ app.get('/turnos/:dniEspecialista', (req, res) => {
     FROM turnos t
     INNER JOIN usuarios p ON t.dniPaciente = p.dniUsuario
     INNER JOIN usuarios e ON t.dniEspecialista = e.dniUsuario
-    WHERE t.estado = 'Disponible' and dniPaciente is not null and dniEspecialista = ?
+    WHERE t.estado = 'Ocupado' and dniPaciente is not null and dniEspecialista = ?
     ORDER BY t.fecha, t.horario;
   `;
 
@@ -238,11 +238,11 @@ app.get('/turnos/:dniEspecialista', (req, res) => {
   });
 });
 
-//Actualizar el estado del turno a OCUPADO.
-//Esta consulta se usa cuando se registra una Sesion en el proceso Registrar Sesion en el menu del Especialista
+//Actualizar el estado del turno a CONCLUIDO.
+//Esta consulta se usa cuando se registra una Sesion en el proceso Registrar Sesion en el menu del Especialista.
 app.put('/turnos/:idTurno/estado', (req, res) => {
   const { idTurno } = req.params;
-  const { nuevoEstado } = req.body; // Espera algo como { nuevoEstado: 'Ocupado' }
+  const { nuevoEstado } = req.body; // Espera algo como { nuevoEstado: 'Concluido' }
 
   const query = 'UPDATE turnos SET estado = ? WHERE idTurno = ?';
   db.query(query, [nuevoEstado, idTurno], (err, result) => {
@@ -256,6 +256,82 @@ app.put('/turnos/:idTurno/estado', (req, res) => {
     }
 
     res.json({ message: 'Estado del turno actualizado correctamente' });
+  });
+});
+
+//Listado de turnos con estado disponible.
+//Este metodo se usa en la opcion Agentar Turno del menu del Paciente
+app.get('/turnosDisponibles', (req, res) => {
+  const query = `
+    SELECT t.idTurno,
+      t.fecha,
+      t.horario,
+      t.estado,
+      e.dniUsuario AS dniEspecialista,
+      e.nombreYApellido AS nombreEspecialista,
+      p.dniUsuario AS dniPaciente,
+      p.nombreYApellido AS nombrePaciente
+    FROM turnos t
+    JOIN usuarios e ON t.dniEspecialista = e.dniUsuario
+    LEFT JOIN usuarios p ON t.dniPaciente = p.dniUsuario
+    WHERE t.estado = 'Disponible' and t.dniPaciente is null
+  `;
+  console.log('Entra la peticion de turnos/disponibles')
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener turnos:', err);
+      return res.status(500).json({ error: 'Error al obtener turnos' });
+    }
+    res.json(results);
+  });
+});
+
+//Actualiza el turno con el estado = 'Ocupado' y asignandole el dniPaciente que lo selecciono
+//Este metodo se usa en la opcion Agendar Turno del menu del Paciente
+app.put('/turnos/:idTurno/estadoOcupado', (req, res) => {
+  const { idTurno } = req.params;
+  const { nuevoEstado, dniPaciente } = req.body; // ahora recibe también dniPaciente
+
+  const query = 'UPDATE turnos SET estado = ?, dniPaciente = ? WHERE idTurno = ?';
+  db.query(query, [nuevoEstado, dniPaciente, idTurno], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar estado del turno:', err);
+      return res.status(500).json({ error: 'Error al actualizar el turno' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Turno no encontrado' });
+    }
+
+    res.json({ message: 'Turno agendado correctamente' });
+  });
+});
+
+//Listado de turnos con estado Ocupado que fueron reservados por el paciente usando dniUs.
+//Este metodo se usa en la opcion Agentar Turno del menu del Paciente
+app.get('/turnosReservadosPaciente/:dniPaciente', (req, res) => {
+  const { dniPaciente } = req.params;
+  const query = `
+    SELECT t.idTurno,
+      t.fecha,
+      t.horario,
+      t.estado,
+      e.dniUsuario AS dniEspecialista,
+      e.nombreYApellido AS nombreEspecialista,
+      p.dniUsuario AS dniPaciente,
+      p.nombreYApellido AS nombrePaciente
+    FROM turnos t
+    JOIN usuarios e ON t.dniEspecialista = e.dniUsuario
+    LEFT JOIN usuarios p ON t.dniPaciente = p.dniUsuario
+    WHERE t.estado = 'Ocupado' and t.dniPaciente = ? 
+  `;
+  console.log('Entra la peticion de turnosReservadosPaciente')
+  db.query(query, [dniPaciente], (err, results) => {
+    if (err) {
+      console.error('Error al obtener turnos:', err);
+      return res.status(500).json({ error: 'Error al obtener turnos' });
+    }
+    res.json(results);
   });
 });
 

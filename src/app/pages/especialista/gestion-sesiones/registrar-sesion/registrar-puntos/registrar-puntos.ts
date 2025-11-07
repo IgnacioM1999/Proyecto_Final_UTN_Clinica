@@ -138,8 +138,8 @@ export class RegistrarPuntos implements OnInit {
                 this.insumosServices.restarInsumosUsados(insumos).subscribe({
                   next: () => {
                     console.log('Stock de insumos actualizado correctamente.');
-                    // Actualizar estado del turno
-                    this.turnosServices.actualizarEstadoTurno(seleccionTurno.idTurno, 'Ocupado').subscribe({
+                    // Actualizar estado del turno a concluido (finalizo la sesion)
+                    this.turnosServices.actualizarEstadoTurno(seleccionTurno.idTurno, 'Concluido').subscribe({
                       next: () => {
 
                         //Actualizar horas de los pasantes

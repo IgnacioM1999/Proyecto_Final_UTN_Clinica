@@ -67,22 +67,47 @@ export class Password implements OnInit {
   }
 
   confirmar() {
-    this.verificarDni(); //se hace tambien la validacion aca por si alguien hackea en el html
-    if (this.dniDuplicado || this.nombreUsuarioDuplicado) {
-      Swal.fire({
-        icon: 'success', 
-        title: 'Éxito', 
-        text: 'Se ha enviado a su correo la solicitud para recuperar su contraseña',
-        confirmButtonText: 'OK' 
-      });
+    const { mail, nombreUsuario } = this.usuario;
+
+    if (!mail.trim() || !nombreUsuario.trim()) {
+      Swal.fire('Campos incompletos', 'Debe ingresar el mail y el nombre de usuario.', 'warning');
       return;
-    } else {
-      Swal.fire({
-        icon: 'error', 
-        title: 'Error',
-        text: 'Verifique los campos'
-      });
     }
+
+    this.usuariosService.getUsuarioPorMailYNombreUsuario(mail, nombreUsuario).subscribe({
+      next: (usuarioEncontrado) => {
+        if (usuarioEncontrado && usuarioEncontrado.contrasenia) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Contraseña recuperada',
+            html: `<strong>Su contraseña es:</strong> <span style="font-size: 18px;">${usuarioEncontrado.contrasenia}</span>`,
+            confirmButtonText: 'OK'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se encontró un usuario con esos datos.'
+          });
+        }
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Usuario no encontrado',
+            text: 'Verifique los datos ingresados.'
+          });
+        } else {
+          console.error('Error al buscar usuario:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error del servidor',
+            text: 'Ocurrió un problema al intentar recuperar la contraseña.'
+          });
+        }
+      }
+    });
   }
 
   volver() {

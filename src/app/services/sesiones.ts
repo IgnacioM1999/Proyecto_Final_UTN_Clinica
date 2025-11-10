@@ -57,8 +57,6 @@ export class SesionesServices {
     return this.http.post<any>(`${this.apiUrl}/insumos`, payload);
   }
 
-
-
   // Modificar sesiones
   updateSesiones(id: number, sesion: Sesion): Observable<Sesion> {
     return this.http.put<Sesion>(`${this.apiUrl}/${id}`, sesion);
@@ -108,9 +106,20 @@ export class SesionesServices {
     return this.http.put(`${this.apiUrl}/actualizar-estado-turno`, { idTurno });
   }
 
+  //Registrar en sesiones_pasantes los pasantes que estuvieron en la sesion
+  createPasantesSesion(idSesion: number, dniPasantes: string[]) {
+  return this.http.post(`${this.apiUrl}/${idSesion}/pasantes`, { dniPasantes });
+}
+
   //Registrar todo el proceso completo (llama a los otros pasos en el backend)
   updateSesionCompleta(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/registrar-completo`, data);
   }
 
+  //Obtener las sesiones que participo el pasante con el dniPasante.
+  //Este metodo se usa para la opcion Ver Sesiones del menu del Pasante
+  getSesionesPasante(dniPasante: string): Observable<Sesion[]> {
+    console.log('dni pasente recibido:',dniPasante)
+    return this.http.get<Sesion[]>(`${this.apiUrl}ConPasante/${dniPasante}`)
+  }
 }

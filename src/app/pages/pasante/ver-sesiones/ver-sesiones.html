@@ -1,0 +1,91 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <a routerLink="/pasante" class="navbar-brand d-flex align-items-center">
+      <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+        style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+    </a>
+
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <span class="fw-bold fs-4 text-center">Ver Sesiones</span>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <a routerLink="/perfil" class="text-decoration-none">
+        <img src="usuario.png" alt="Perfil" width="60" height="60">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container mt-4">
+  <div class="card shadow p-4" style="width: 800px; margin: 0 auto;">
+    <div class="mb-3 d-flex align-items-center gap-2">
+      <label for="fechaFiltro" class="form-label fw-bold mb-0">Filtrar por fecha:</label>
+      <input type="date" id="fechaFiltro" [(ngModel)]="fechaFiltro" class="form-control" style="max-width: 200px;">
+      <button class="btn btn-primary" (click)="filtrarPorFecha()">Filtrar</button>
+      <button class="btn btn-secondary" (click)="limpiarFiltro()">Limpiar</button>
+    </div>
+    <table class="table table-striped table-bordered">
+      <thead class="table-warning text-center">
+        <tr>
+          <th style="width: 80px;">ID</th>
+          <th>Paciente</th>
+          <th>Especialista</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Detalle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sesion of sesionesFiltradas">
+          <td>{{ sesion.idSesion }}</td>
+          <td>{{ sesion.nombreYApellidoPaciente }}</td>
+          <td>{{ sesion.nombreYApellidoEspecialista }}</td>
+          <td>{{ sesion.fecha | date:'dd-MM-yyyy' }}</td>
+          <td>{{ sesion.horaInicio}}</td>
+          <td class="text-center">
+            <button 
+              class="btn btn-info btn-sm text-white" 
+              (click)="abrirModal(sesion)">
+              Ver detalle
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="sesiones.length === 0">
+          <td colspan="6" class="text-center text-muted">No hay sesiones realizadas por el pasante</td>
+        </tr>
+        <tr *ngIf="sesiones.length > 0 && sesionesFiltradas.length === 0">
+          <td colspan="6" class="text-center text-muted">No hay sesiones realizadas para la fecha seleccionada</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-5 d-flex justify-content-center gap-5">
+    <button class="btn btn-secondary" routerLink="/pasante">
+      <i class="bi bi-arrow-left me-2"></i>Volver
+    </button>
+  </div>
+</div>
+<!-- Modal de Detalle -->
+<div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="detalleModalLabel">Detalle de Sesión</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="fw-bold">Descripción:</h6>
+        <p>{{ sesionSeleccionada?.descripcionSesion }}</p>
+        <hr>
+        <h6 class="fw-bold">Duración:</h6>
+        <p>{{ sesionSeleccionada?.duracionSesion }}</p>
+        <hr>
+        <h6 class="fw-bold">Observaciones:</h6>
+        <p>{{ sesionSeleccionada?.observacionesSesion }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

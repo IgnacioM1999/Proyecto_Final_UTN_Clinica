@@ -16,6 +16,25 @@
         </div>
     </div>
 </nav>
+<!-- Sección de Puntos a tratar -->
+<div class="container mt-4">
+  <div class="card shadow-sm p-3" *ngIf="puntos && puntos.length > 0">
+    <h4 class="text-center mb-3 fw-bold text-primary">Puntos a tratar</h4>
+    <div class="d-flex flex-wrap justify-content-center gap-3">
+      <span
+        *ngFor="let punto of puntos"
+        class="badge bg-warning text-dark fs-6 px-3 py-2 shadow-sm"
+        style="border-radius: 12px;"
+      >
+        {{ punto.trim() }}
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="!puntos || puntos.length === 0" class="text-center mt-3 text-muted">
+    No se encontraron puntos asignados para este tratamiento.
+  </div>
+</div>
 <div class="container-principal mt-4 text-center">
     <div class="zoom-container" #zoomContainer (wheel)="onWheel($event)" (mousedown)="startDragging($event)"
         (mouseup)="stopDragging()" (mouseleave)="stopDragging()" (mousemove)="onDrag($event)">

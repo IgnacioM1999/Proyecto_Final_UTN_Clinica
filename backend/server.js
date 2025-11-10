@@ -482,6 +482,53 @@ app.put('/pacientes/:dni', (req, res) => {
   );
 });
 
+//Actualizar la contraseña del usuario.
+//Este metodo se usa en el componente Perfil
+app.put('/usuarios/:dniUsuario/contrasenia', (req, res) => {
+  const { dniUsuario } = req.params;
+  const { nuevaContrasenia } = req.body;
+
+  if (!nuevaContrasenia) {
+    return res.status(400).json({ error: 'La nueva contraseña es requerida' });
+  }
+
+  const sql = 'UPDATE usuarios SET contrasenia = ? WHERE dniUsuario = ?';
+  db.query(sql, [nuevaContrasenia, dniUsuario], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar la contraseña:', err);
+      return res.status(500).json({ error: 'Error al actualizar la contraseña' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.json({ message: 'Contraseña actualizada correctamente' });
+  });
+});
+
+//Recuperar la contraseña del usuario (mostrando la contraseña desde la pagina)
+//Este endpoint se usa en el componente Password
+app.get('/usuarios/:mail/:nombreUsuario', (req, res) => {
+  const { mail, nombreUsuario } = req.params;
+  const query = 'SELECT * FROM usuarios WHERE mail = ? AND nombreUsuario = ?';
+  console.log('Se llego a la llamada');
+  db.query(query, [mail, nombreUsuario], (err, results) => {
+    if (err) {
+      console.error('Error al buscar usuario:', err);
+      res.status(500).send('Error al buscar usuario');
+      return;
+    }
+
+    if (results.length > 0) {
+      res.json(results[0]); // Devuelve el usuario encontrado
+    } else {
+      res.status(404).send('Usuario no encontrado');
+    }
+  });
+});
+
+
 //PASANTE
 // insertar en la tabla usuarios y pasantes el Registro de USUARIO + PASANTE
 // ==============================================================================
@@ -588,6 +635,42 @@ app.put('/pasantes/:dni/horasPasante', (req, res) => {
       return res.status(500).json({ error: 'Error al actualizar horas del pasante' });
     }
     res.json({ message: 'Horas actualizadas correctamente' });
+  });
+});
+
+//Obtener al pasante  (informacion de la tabla usuarios y pasantes)
+//Este metodo se usa en la opcion de Ver estado del menu Pasante
+app.get('/pasantes/:dniPasante', (req, res) => {
+  const { dniPasante } = req.params;
+  const query = `SELECT u.dniUsuario as dniPasante, u.nombreYApellido, u.telefono, u.mail, 
+                u.nombreUsuario, u.contrasenia, p.horasPasante, p.institucion, p.mesInicio,
+                p.anioInicio, p.docente, p.mailDocente, p.categoria
+                 FROM usuarios u 
+                 INNER JOIN pasantes p ON p.dniPasante = u.dniUsuario
+                 WHERE dniPasante = ?`;
+  db.query(query, [dniPasante], (err, results) => {
+    if (err) {
+      console.error('Error al obtener el pasante:', err);
+      return res.status(500).json({ error: 'Error al obtener al pasante' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Pasante no encontrado' });
+    }
+    const pasante = results[0]; // se guarda solo el objeto, no el array ya que el resultado de db.query es un array
+
+    // Si el pasante completó las 525 horas y no está marcado como Finalizado, actualizamos su categoría
+    if (pasante.horasPasante >= 525 && pasante.categoria !== 'Finalizado') {
+      const updateQuery = `UPDATE pasantes SET categoria = 'Finalizado' WHERE dniPasante = ?`;
+      db.query(updateQuery, [dniPasante], (updateErr) => {
+        if (updateErr) {
+          console.error('Error al actualizar la categoría del pasante:', updateErr);
+        }
+      });
+
+      pasante.categoria = 'Finalizado';
+    }
+
+    res.json(pasante);
   });
 });
 
@@ -702,8 +785,8 @@ app.post('/sesiones', (req, res) => {
 });
 
 //creacion de un registro en sesiones_sintomas
-app.post('/sesiones/sintomas', (req, res)=>{
-    const { idSesion, sintomas } = req.body;
+app.post('/sesiones/sintomas', (req, res) => {
+  const { idSesion, sintomas } = req.body;
 
   if (!idSesion || !Array.isArray(sintomas)) {
     return res.status(400).json({ error: 'Datos inválidos' });
@@ -748,6 +831,28 @@ app.post('/sesiones/insumos', (req, res) => {
     res.json({ message: 'Insumos registrados correctamente' });
   });
 });
+
+// Registrar en sesiones_pasantes los pasantes que estuvieron involucrados en la sesion
+app.post('/sesiones/:idSesion/pasantes', (req, res) => {
+  const idSesion = req.params.idSesion;
+  const dniPasantes = req.body.dniPasantes;
+
+  if (!Array.isArray(dniPasantes) || dniPasantes.length === 0) {
+    return res.status(400).json({ error: 'No se recibieron pasantes válidos' });
+  }
+
+  const sql = 'INSERT INTO sesiones_pasantes (idSesion, dniPasante) VALUES ?';
+  const values = dniPasantes.map(dni => [idSesion, dni]);
+
+  db.query(sql, [values], (err, result) => {
+    if (err) {
+      console.error('Error al registrar pasantes de la sesión:', err);
+      return res.status(500).json({ error: 'Error al registrar pasantes de la sesión' });
+    }
+    res.json({ message: 'Pasantes registrados correctamente', result });
+  });
+});
+
 
 
 //HISTORIAL CLINICO
@@ -817,6 +922,33 @@ app.get('/sesiones/:idSesion', (req, res) => {
     if (err) {
       console.error('Error al obtener sesion con los sintomas:', err);
       return res.status(500).json({ error: 'Error al obtener sesion con los sintomas' });
+    }
+    res.json(results);
+  });
+});
+
+//Traer las sesiones en las que participo el pasante con dniPasante
+//Este metodo se usa en la opcion Ver Sesiones del menu del Pasante
+app.get('/sesionesConPasante/:dniPasante', (req, res) => {
+  const { dniPasante } = req.params;
+  const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.descripcionSesion, 
+  s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
+  s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento,
+  s.observacionesSesion, s.duracionSesion 
+    FROM sesiones s
+    INNER JOIN usuarios e ON e.dniUsuario = s.dniEspecialista
+    INNER JOIN usuarios p ON p.dniUsuario = s.dniPaciente
+    INNER JOIN sindromes si ON si.idSindrome = s.idSindrome
+    INNER JOIN tratamientos t ON t.idTratamiento = s.idTratamiento
+    INNER JOIN sesiones_pasantes sp ON sp.idSesion = s.idSesion
+    INNER JOIN pasantes pas ON pas.dniPasante = sp.dniPasante
+    WHERE pas.dniPasante = ? 
+    ORDER BY s.fecha desc;
+  `;
+  db.query(query, [dniPasante], (err, results) => {
+    if (err) {
+      console.error('Error al obtener sesiones:', err);
+      return res.status(500).json({ error: 'Error al obtener sesiones' });
     }
     res.json(results);
   });

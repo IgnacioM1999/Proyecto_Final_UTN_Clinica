@@ -54,4 +54,10 @@ export class PasantesServices {
     return this.http.put<any>(`${this.apiUrl}/${dni}/horasPasante`, { horasExtra });
   }
 
+  //Obtener a un pasante por el dni
+  //Este metodo se usa en Ver Estado del menu Pasante
+  getPasante(dniPasante: string): Observable<Pasante> {
+    return this.http.get<Pasante>(`${this.apiUrl}/${dniPasante}`);
+  }
+
 }

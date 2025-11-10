@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3" style="background-color: rgb(252, 195, 73);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a routerLink="/pasante" class="navbar-brand d-flex align-items-center">
+            <img src="https://gwongzaukungfu.com/wp-content/uploads/2018/06/Tai-Ji-Tu-350x348.jpg" alt="Logo"
+                style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+        </a>
+
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <span class="fw-bold fs-4 text-center">Ver Estado</span>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <a routerLink="/perfil" class="text-decoration-none">
+                <img src="usuario.png" alt="Perfil" width="60" height="60">
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="card shadow p-4" style="width: 800px; margin: 0 auto;">
+        <div class="pasante-info text-center">
+            <h3 class="titulo">Datos del Pasante</h3>
+
+            <div class="info-item">
+                <span class="label">Categoría:</span>
+                <span class="valor">{{ categoriaPasante }}</span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">Horas acumuladas:</span>
+                <span class="valor">{{ horasPasante }} hs</span>
+            </div>
+
+            <div class="mensaje">
+                Falta <strong>{{ 525 - horasPasante }}</strong> horas para completar las prácticas supervisadas.
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-5 d-flex justify-content-center gap-5">
+    <button class="btn btn-secondary" routerLink="/pasante">
+        <i class="bi bi-arrow-left me-2"></i>Volver
+    </button>
+</div>

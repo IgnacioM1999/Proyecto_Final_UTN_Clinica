@@ -52,6 +52,9 @@ import { ListarPasanteEsp } from './pages/especialista/gestionar-pasantes/listar
 import { Paciente } from './pages/paciente/paciente';
 import { VerTurnos } from './pages/paciente/ver-turnos/ver-turnos';
 import { AgendarTurno } from './pages/paciente/agendar-turno/agendar-turno';
+import { Pasante } from './pages/pasante/pasante';
+import { VerEstado } from './pages/pasante/ver-estado/ver-estado';
+import { VerSesiones } from './pages/pasante/ver-sesiones/ver-sesiones';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -108,5 +111,8 @@ export const routes: Routes = [
     { path: 'especialista/gestionar-pasantes/listar-pasante', component: ListarPasanteEsp },
     { path: 'paciente', component: Paciente },
     { path: 'paciente/ver-turnos', component: VerTurnos},
-    { path: 'paciente/agendar-turno', component: AgendarTurno}
+    { path: 'paciente/agendar-turno', component: AgendarTurno},
+    { path: 'pasante', component: Pasante},
+    { path: 'pasante/ver-estado', component: VerEstado},
+    { path: 'pasante/ver-sesiones', component: VerSesiones},
 ];

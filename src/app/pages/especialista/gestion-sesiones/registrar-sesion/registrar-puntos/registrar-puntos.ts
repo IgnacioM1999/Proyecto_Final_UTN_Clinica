@@ -142,36 +142,51 @@ export class RegistrarPuntos implements OnInit {
                     this.turnosServices.actualizarEstadoTurno(seleccionTurno.idTurno, 'Concluido').subscribe({
                       next: () => {
 
-                        //Actualizar horas de los pasantes
-                        const duracionHoras = parseFloat(this.duracionSesion); // si es "2", "1.5", etc.
-                        const dniPasantes = seleccionTurno.dniPasantes || [];
+                        const [horas, minutos] = this.duracionSesion.split(':').map(Number);
+                        const duracionHoras = horas + minutos / 60;
+                        const dniPasantes = seleccionTurno.dniPasantes || []; //ej: si se pone que duro 1:15, entonces hace 1 + 15/60 = 1.25
 
                         if (dniPasantes.length > 0) {
-                          const actualizaciones = dniPasantes.map((dni: string) =>
-                            this.pasantesServices.actualizarHorasPasante(dni, duracionHoras)
-                          );
-
-                          // Ejecutamos todas las actualizaciones en paralelo
-                          forkJoin(actualizaciones).subscribe({
+                          // Nuevo paso: registrar pasantes en la tabla sesiones_pasantes
+                          this.sesionesServices.createPasantesSesion(idSesionCreada, dniPasantes).subscribe({
                             next: () => {
-                              Swal.fire({
-                                icon: 'success',
-                                title: 'Registro exitoso',
-                                text: 'La sesión ha sido registrada correctamente.',
-                                confirmButtonColor: '#198754'
-                              }).then(() => {
-                                //Remueve las keys del localStorage tras el exito del registro
-                                ['seleccionTurnoParaSesion', 'cuestionarioSesion', 'sindromeSeleccionado', 'tratamientoSeleccionado']
-                                  .forEach(key => localStorage.removeItem(key));
-                                this.router.navigate(['/especialista/gestion-sesiones/registrar-sesion']);
+                              // Luego de registrar los pasantes, actualizamos sus horas
+                              const actualizaciones = dniPasantes.map((dni: string) =>
+                                this.pasantesServices.actualizarHorasPasante(dni, duracionHoras)
+                              );
+
+                              // Ejecutamos todas las actualizaciones en paralelo
+                              forkJoin(actualizaciones).subscribe({
+                                next: () => {
+                                  Swal.fire({
+                                    icon: 'success',
+                                    title: 'Registro exitoso',
+                                    text: 'La sesión ha sido registrada correctamente.',
+                                    confirmButtonColor: '#198754'
+                                  }).then(() => {
+                                    //Remueve las keys del localStorage tras el exito del registro
+                                    ['seleccionTurnoParaSesion', 'cuestionarioSesion', 'sindromeSeleccionado', 'tratamientoSeleccionado']
+                                      .forEach(key => localStorage.removeItem(key));
+                                    this.router.navigate(['/especialista/gestion-sesiones/registrar-sesion']);
+                                  });
+                                },
+                                error: (error) => {
+                                  console.error('Error al actualizar horas de pasantes:', error);
+                                  Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Atención',
+                                    text: 'La sesión se registró correctamente, pero hubo un problema al actualizar las horas de los pasantes.',
+                                    confirmButtonColor: '#ffc107'
+                                  });
+                                }
                               });
                             },
                             error: (error) => {
-                              console.error('Error al actualizar horas de pasantes:', error);
+                              console.error('Error al registrar pasantes en la sesión:', error);
                               Swal.fire({
                                 icon: 'warning',
                                 title: 'Atención',
-                                text: 'La sesión se registró correctamente, pero hubo un problema al actualizar las horas de los pasantes.',
+                                text: 'La sesión se registró correctamente, pero hubo un problema al registrar los pasantes asociados.',
                                 confirmButtonColor: '#ffc107'
                               });
                             }

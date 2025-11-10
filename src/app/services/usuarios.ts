@@ -10,7 +10,7 @@ export interface Usuario {
   mail: string;
   nombreUsuario: string;
   contrasenia: string;
-  tipoUsuario?: string;  
+  tipoUsuario?: string;
   idLocalidad?: number;
   estado?: string;
 }
@@ -54,9 +54,24 @@ export class UsuariosServices {
     return this.http.get<Usuario[]>(`${this.apiUrl}/especialistas`);
   }
 
-  // Servicio para recuperar contraseña
-  recuperarPassword(nombreUsuario: string, email: string){
-    
+  // Servicio para recuperar contraseña X AHORA NO SE USA ESTE METODO
+  recuperarPassword(nombreUsuario: string, email: string) {
+
   }
+
+  //Actualizar la contraseña del usuario
+  //Este metodo se usa en el componente perfil
+  actualizarContrasenia(dniUsuario: string, nuevaContrasenia: string): Observable<any> {
+    const body = { nuevaContrasenia };
+    return this.http.put(`${this.apiUrl}/${dniUsuario}/contrasenia`, body);
+  }
+
+  //Obtener la contrasela del usuario por email y nombre usuario.
+  //Este metodo es usando en el componente Password
+  getUsuarioPorMailYNombreUsuario(mail: string, nombreUsuario: string): Observable<Usuario | null> {
+  console.log('Se llego a llamar al servicio');
+  return this.http.get<Usuario | null>(`${this.apiUrl}/${mail}/${nombreUsuario}`);
+}
+
 
 }

@@ -31,10 +31,59 @@
     <ng-template #noDatos>
       <p>No se encontraron datos de usuario.</p>
     </ng-template>
+
+    <button class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#modalCambiarContrasenia">
+      <i class="bi bi-key me-2"></i> Cambiar Contraseña
+    </button>
+
   </div>
 </div>
 <div class="text-center mt-4 mb-5">
   <a [routerLink]="rutaInicio" class="btn btn-secondary">
     <i class="bi bi-arrow-left me-2"></i> Volver
   </a>
+</div>
+
+<!-- Modal Cambiar Contraseña -->
+<div class="modal fade" id="modalCambiarContrasenia" tabindex="-1" aria-labelledby="modalCambiarContraseniaLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCambiarContraseniaLabel">Cambiar Contraseña</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-start">
+        <div class="mb-3">
+          <label for="contraseniaActual" class="form-label">Contraseña Actual</label>
+          <input [type]="mostrarActual ? 'text' : 'password'" class="form-control" [(ngModel)]="contraseniaActual"
+            readonly>
+          <span class="input-group-text" style="cursor: pointer;" (click)="mostrarActual = !mostrarActual">
+            <i class="bi" [ngClass]="mostrarActual ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </span>
+        </div>
+
+        <div class="mb-3">
+          <label for="nuevaContrasenia" class="form-label">Nueva Contraseña</label>
+          <input [type]="mostrarNueva ? 'text' : 'password'" class="form-control" [(ngModel)]="nuevaContrasenia">
+          <span class="input-group-text" style="cursor: pointer;" (click)="mostrarNueva = !mostrarNueva">
+            <i class="bi" [ngClass]="mostrarNueva ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </span>
+        </div>
+
+        <div class="mb-3">
+          <label for="verificarContrasenia" class="form-label">Verificar Contraseña</label>
+          <input [type]="mostrarVerificar ? 'text' : 'password'" class="form-control"
+            [(ngModel)]="verificarContrasenia">
+          <span class="input-group-text" style="cursor: pointer;" (click)="mostrarVerificar = !mostrarVerificar">
+            <i class="bi" [ngClass]="mostrarVerificar ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="guardarNuevaContrasenia()">Guardar</button>
+      </div>
+    </div>
+  </div>
 </div>

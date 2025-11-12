@@ -38,7 +38,7 @@
           <th style="width: 130px;">Telefono </th>
           <th>Email</th>
           <th style="width: 130px;">Usuario</th>
-          <th style="width: 80px;">Horas Supervisor</th>
+          <!--<th style="width: 80px;">Horas Supervisor</th>-->
           <th>Titulos</th>
           <th>Accion</th>
         </tr>
@@ -68,9 +68,9 @@
           </td>
 
           <!-- Horas supervisor -->
-          <td style="width: 80px;">
+         <!-- <td style="width: 80px;">
             <input type="number" [(ngModel)]="especialista.horasSupervisor" class="form-control">
-          </td>
+          </td>-->
 
           <!-- Titulos -->
           <td>
@@ -85,10 +85,10 @@
           </td>
         </tr>
         <tr *ngIf="especialistas.length === 0">
-          <td colspan="8" class="text-center text-muted">No hay especialistas cargados</td>
+          <td colspan="7" class="text-center text-muted">No hay especialistas cargados</td>
         </tr>
         <tr *ngIf="especialistas.length > 0 && especialistasFiltrados.length === 0">
-          <td colspan="8" class="text-center text-muted">No hay especialistas con el filtro ingresado</td>
+          <td colspan="7" class="text-center text-muted">No hay especialistas con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

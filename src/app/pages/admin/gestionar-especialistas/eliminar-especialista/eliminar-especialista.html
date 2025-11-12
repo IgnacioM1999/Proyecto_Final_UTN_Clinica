@@ -38,7 +38,7 @@
           <th>Telefono</th>
           <th>Email</th>
           <th>Usuario</th>
-          <th>Horas Supervisor</th>
+          <!--<th>Horas Supervisor</th>-->
           <th>Titulos</th>
           <th>Accion</th>
         </tr>
@@ -50,7 +50,7 @@
           <td>{{ especialista.telefono }}</td>
           <td>{{ especialista.mail }}</td>
           <td>{{ especialista.nombreUsuario }}</td>
-          <td>{{ especialista.horasSupervisor }}</td>
+          <!--<td>{{ especialista.horasSupervisor }}</td>-->
           <td>{{ especialista.titulos }}</td>
           <td>
             <button class="btn btn-danger btn-sm" (click)="eliminarEspecialista(especialista.dniEspecialista)">
@@ -59,10 +59,10 @@
           </td>
         </tr>
         <tr *ngIf="especialistas.length === 0">
-          <td colspan="8" class="text-center text-muted">No hay especialistas cargados</td>
+          <td colspan="7" class="text-center text-muted">No hay especialistas cargados</td>
         </tr>
         <tr *ngIf="especialistas.length > 0 && especialistasFiltrados.length === 0">
-          <td colspan="8" class="text-center text-muted">No hay especialistas con el filtro ingresado</td>
+          <td colspan="7" class="text-center text-muted">No hay especialistas con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

@@ -25,12 +25,17 @@ export class LoginComponent {
       const user = usuarios.find(u => u.nombreUsuario === this.usuario && u.contrasenia === this.password);
 
       if (user) {
+        // Verificar si el usuario está inactivo
+        if (user.estado === 'inactivo') {
+          this.errorMessage = 'Esta dado de baja';
+          return; // detenemos la ejecución
+        }
         this.errorMessage = '';
 
         //Guardo el nombreUsuario y la contraseña en el localStorage, propiedad de un navegador web que 
         //permite almacenar pares de clave-valor en el navegador del usuario, de forma persistente y local
         localStorage.setItem('usuario', JSON.stringify(user));
-        
+
         switch (user.tipoUsuario) {
           case 'administrador':
             this.router.navigate(['/admin']);

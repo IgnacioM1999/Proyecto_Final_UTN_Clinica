@@ -73,8 +73,21 @@ export class Password implements OnInit {
       Swal.fire('Campos incompletos', 'Debe ingresar el mail y el nombre de usuario.', 'warning');
       return;
     }
+    /*this.usuariosService.enviarLinkRecuperacion(mail, nombreUsuario).subscribe({
+      next: (response: any) => {
+        // Si la respuesta viene como texto, simplemente mostramos éxito
+        Swal.fire('Correo enviado', 'Revisa tu correo para recuperar la contraseña.', 'success');
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          Swal.fire('Error', 'No se encontró un usuario con esos datos.', 'error');
+        } else {
+          Swal.fire('Error', 'No se pudo enviar el correo.', 'error');
+        }
+      }
+    });*/
 
-    this.usuariosService.getUsuarioPorMailYNombreUsuario(mail, nombreUsuario).subscribe({
+    /**/this.usuariosService.getUsuarioPorMailYNombreUsuario(mail, nombreUsuario).subscribe({
       next: (usuarioEncontrado) => {
         if (usuarioEncontrado && usuarioEncontrado.contrasenia) {
           Swal.fire({
@@ -107,7 +120,7 @@ export class Password implements OnInit {
           });
         }
       }
-    });
+    });/**/
   }
 
   volver() {

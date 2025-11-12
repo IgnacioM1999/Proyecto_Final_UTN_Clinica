@@ -55,15 +55,16 @@ import { AgendarTurno } from './pages/paciente/agendar-turno/agendar-turno';
 import { Pasante } from './pages/pasante/pasante';
 import { VerEstado } from './pages/pasante/ver-estado/ver-estado';
 import { VerSesiones } from './pages/pasante/ver-sesiones/ver-sesiones';
+import { RecuperarPassword } from './pages/recuperar-password/recuperar-password';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
-    { path: '', redirectTo: '', pathMatch: 'full' },
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'admin', component: Admin },
     { path: 'register', component: Register },
     { path: 'perfil', component: Perfil },
     { path: 'password', component: Password },
-
+    { path: 'recuperar-password/:token', component: RecuperarPassword},
     { path: 'admin/gestionar-turnos', component: GestionarTurnos },
     { path: 'admin/gestionar-turnos/crear-turno', component: CrearTurno },
     { path: 'admin/gestionar-turnos/modificar-turno', component: ModificarTurno },

@@ -38,7 +38,7 @@
           <th>Telefono</th>
           <th>Email</th>
           <th>Usuario</th>
-          <th style="width: 70px;">Horas</th>
+         <!-- <th style="width: 70px;">Horas</th>-->
           <th>Titulos</th>
         </tr>
       </thead>
@@ -55,15 +55,15 @@
           <!--Usuario-->
           <td>{{especialista.nombreUsuario}}</td>
           <!--Horas-->
-          <td style="text-align: center;">{{especialista.horasSupervisor}}</td>
+          <!--<td style="text-align: center;">{{especialista.horasSupervisor}}</td>-->
           <!--Titulos-->
           <td>{{especialista.titulos}}</td>
         </tr>
         <tr *ngIf="especialistas.length === 0">
-          <td colspan="7" class="text-center text-muted">No hay especialistas cargados</td>
+          <td colspan="6" class="text-center text-muted">No hay especialistas cargados</td>
         </tr>
         <tr *ngIf="especialistas.length > 0 && especialistasFiltrados.length === 0">
-          <td colspan="7" class="text-center text-muted">No hay especialistas con el filtro ingresado</td>
+          <td colspan="6" class="text-center text-muted">No hay especialistas con el filtro ingresado</td>
         </tr>
       </tbody>
     </table>

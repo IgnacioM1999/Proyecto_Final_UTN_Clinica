@@ -29,8 +29,10 @@ export class HistorialClinico implements OnInit {
   }
 
   cargarPacientes(): void {
-    this.pacientesServices.getPacientes().subscribe({
-      next: (data) => this.pacientes = data,
+    this.pacientesServices.getPacientesHistorialClinico().subscribe({
+      next: (data) =>{ 
+        this.pacientes = data
+        this.pacientesFiltrados = [...this.pacientes]},
       error: (err) => console.error('Error al cargar insumos:', err)
     });
   }

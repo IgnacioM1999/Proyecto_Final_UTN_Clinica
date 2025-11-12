@@ -32,7 +32,12 @@
             </div>
 
             <div class="mensaje">
-                Falta <strong>{{ 525 - horasPasante }}</strong> horas para completar las prácticas supervisadas.
+                <ng-container *ngIf="horasPasante < 525; else practicasConcluidas">
+                    Falta <strong>{{ 525 - horasPasante }}</strong> horas para completar las prácticas supervisadas.
+                </ng-container>
+                <ng-template #practicasConcluidas>
+                    <strong>Prácticas Concluidas</strong>
+                </ng-template>
             </div>
         </div>
     </div>

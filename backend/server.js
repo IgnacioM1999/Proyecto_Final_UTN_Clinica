@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
@@ -340,7 +342,7 @@ app.get('/turnosReservadosPaciente/:dniPaciente', (req, res) => {
 //Obtener usuarios 
 app.get('/usuarios', (req, res) => {
   const query = `
-    SELECT dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario
+    SELECT dniUsuario, nombreYApellido, telefono, mail, nombreUsuario, contrasenia, tipoUsuario, estado
     FROM usuarios 
   `;
 
@@ -856,6 +858,22 @@ app.post('/sesiones/:idSesion/pasantes', (req, res) => {
 
 
 //HISTORIAL CLINICO
+//Traer a todos los pacientes (ya sean en estado activo o inactivo)
+app.get('/pacientesHistorialClinico', (req, res) => {
+  const query = `SELECT u.dniUsuario as dniPaciente, u.nombreYApellido, u.telefono, u.mail, 
+                u.nombreUsuario, u.contrasenia, p.obraSocial, p.fechaNacimiento, p.sexo
+                 FROM usuarios u 
+                 INNER JOIN pacientes p ON p.dniPaciente = u.dniUsuario
+                `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener pacientes:', err);
+      return res.status(500).json({ error: 'Error al obtener pacientes' });
+    }
+    res.json(results);
+  });
+});
+
 //Traer las sesiones con los especialistas, pacientes, sindromes y tratamiento
 //Tambien se usa este metodo en la opcion Listado-Sesiones en el menu del Administrador 
 app.get('/sesiones/listadoSesiones', (req, res) => {
@@ -1026,3 +1044,105 @@ app.get('/tratamientos/:idSindrome', (req, res) => {
   });
 });
 
+//RECUPERAR CONTRASEÑA
+// Generar token y enviar email
+app.post('/usuarios/enviar-link-recuperacion', (req, res) => {
+  const { mail, nombreUsuario } = req.body;
+
+  const buscarUsuario = 'SELECT dniUsuario FROM usuarios WHERE mail = ? AND nombreUsuario = ?';
+  db.query(buscarUsuario, [mail, nombreUsuario], (err, resultados) => {
+    if (err) return res.status(500).send('Error al buscar usuario');
+    if (resultados.length === 0) return res.status(404).send('Usuario no encontrado');
+
+    const dniUsuario = resultados[0].dniUsuario;
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiracion = new Date(Date.now() + 1000 * 60 * 15); // 15 minutos
+
+    const insertarToken = `
+      INSERT INTO tokens_recuperacion (dniUsuario, token, expiracion)
+      VALUES (?, ?, ?)
+    `;
+    db.query(insertarToken, [dniUsuario, token, expiracion], (err) => {
+      if (err) return res.status(500).send('Error al guardar token');
+
+      // URL de recuperación (localhost)
+      const link = `http://localhost:4200/recuperar-password/${token}`;
+
+      // Configurar envío de correo con Nodemailer
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.USER, // tu gmail
+          pass: process.env.PASSWORD // app password o clave generada
+        }
+      });
+
+      const mailOptions = {
+        from: process.env.USER,
+        to: mail,
+        subject: 'Recuperación de contraseña',
+        html: `
+          <h3>Recuperación de contraseña</h3>
+          <p>Hola ${nombreUsuario}, haz clic en el siguiente enlace para cambiar tu contraseña:</p>
+          <a href="${link}">${link}</a>
+          <p>El enlace expira en 15 minutos.</p>
+        `
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error al enviar el correo:', error);
+          return res.status(500).json({ message: 'No se pudo enviar el correo' });
+        }
+
+        console.log('Correo enviado:', info.response);
+        return res.status(200).json({ message: 'Correo enviado correctamente' });
+      });
+    });
+  });
+});
+
+// 🔹 Validar token
+app.get('/usuarios/validar-token/:token', (req, res) => {
+  const { token } = req.params;
+  const query = 'SELECT * FROM tokens_recuperacion WHERE token = ? AND expiracion > NOW()';
+  db.query(query, [token], (err, resultados) => {
+    if (err) return res.status(500).send('Error al validar token');
+    if (resultados.length === 0) return res.status(404).send('Token inválido o expirado');
+    res.json(resultados[0]);
+  });
+});
+
+// Cambiar contraseña
+app.post('/usuarios/actualizar-password', (req, res) => {
+  const { token, nuevaPassword } = req.body;
+
+  if (!token || !nuevaPassword) {
+    return res.status(400).json({ message: 'Datos incompletos' });
+  }
+
+  // Verificar que el token exista y no haya expirado
+  const queryToken = 'SELECT dniUsuario FROM tokens_recuperacion WHERE token = ? AND expiracion > NOW()';
+  db.query(queryToken, [token], (err, resultados) => {
+    if (err) return res.status(500).json({ message: 'Error al validar token' });
+    if (resultados.length === 0) return res.status(404).json({ message: 'Token inválido o expirado' });
+
+    const dniUsuario = resultados[0].dniUsuario;
+
+    //Actualizar la contraseña del usuario
+    const update = 'UPDATE usuarios SET contrasenia = ? WHERE dniUsuario = ?';
+    db.query(update, [nuevaPassword, dniUsuario], (err) => {
+      if (err) return res.status(500).json({ message: 'Error al actualizar contraseña' });
+
+      // Eliminar token usado para que no pueda reutilizarse
+      db.query('DELETE FROM tokens_recuperacion WHERE token = ?', [token], (delErr) => {
+        if (delErr) {
+          console.error('Error al eliminar token usado:', delErr);
+          // No detenemos el flujo por este error
+        }
+      });
+      console.log(`Contraseña actualizada correctamente para el usuario con DNI: ${dniUsuario}`);
+      res.status(200).json({ message: 'Contraseña actualizada correctamente' });
+    });
+  });
+});

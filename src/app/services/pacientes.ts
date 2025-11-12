@@ -34,7 +34,7 @@ export class PacientesServices {
     return this.http.delete(`${this.apiUrl}/${dni}`);
   }
 
-  //Obtener todos los pacientes
+  //Obtener todos los pacientes (solo con estado activo)
   getPacientes(): Observable<Paciente[]> {
     return this.http.get<Paciente[]>(this.apiUrl)
   }
@@ -43,4 +43,10 @@ export class PacientesServices {
   updatePacientes(dni: string, data: { usuario: Usuario, paciente: Paciente }): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${dni}`, data);
   }
+
+    //Obtener todos los pacientes
+  getPacientesHistorialClinico(): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>(`${this.apiUrl}HistorialClinico`)
+  }
+
 }

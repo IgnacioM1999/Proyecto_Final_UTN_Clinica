@@ -27,7 +27,7 @@ export class HistorialClinicoEsp implements OnInit {
   }
 
   cargarPacientes(): void {
-    this.pacientesServices.getPacientes().subscribe({
+    this.pacientesServices.getPacientesHistorialClinico().subscribe({
       next: (data) => {
         this.pacientes = data;
         this.pacientesFiltrados = [...this.pacientes];

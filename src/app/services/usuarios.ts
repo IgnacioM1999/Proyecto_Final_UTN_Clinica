@@ -69,9 +69,23 @@ export class UsuariosServices {
   //Obtener la contrasela del usuario por email y nombre usuario.
   //Este metodo es usando en el componente Password
   getUsuarioPorMailYNombreUsuario(mail: string, nombreUsuario: string): Observable<Usuario | null> {
-  console.log('Se llego a llamar al servicio');
-  return this.http.get<Usuario | null>(`${this.apiUrl}/${mail}/${nombreUsuario}`);
-}
+    console.log('Se llego a llamar al servicio');
+    return this.http.get<Usuario | null>(`${this.apiUrl}/${mail}/${nombreUsuario}`);
+  }
+  //--------------------------------------------------------------------------------------------------------
+  //Metodos para RECUPERAR CONTRASEÑA
+  //En el componente password
+  enviarLinkRecuperacion(mail: string, nombreUsuario: string) {
+    return this.http.post(`${this.apiUrl}/enviar-link-recuperacion`, { mail, nombreUsuario });
+  }
 
+  //En el componente recuperar password
+  validarToken(token: string) {
+    return this.http.get(`${this.apiUrl}/validar-token/${token}`);
+  }
+
+  actualizarPassword(token: string, nuevaPassword: string) {
+    return this.http.post(`${this.apiUrl}/actualizar-password`, { token, nuevaPassword });
+  }
 
 }

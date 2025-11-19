@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Pasante, PasantesServices } from '../../../../services/pasantes';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-listar-pasante',
@@ -64,5 +66,43 @@ export class ListarPasante implements OnInit {
     this.nombrePasanteFiltro = '';
     this.pasantesFiltrados = [...this.pasantes];
   }
+
+  generarPDF(): void {
+  const doc = new jsPDF();
+
+  // TÍTULO
+  doc.setFontSize(16);
+  doc.text('Listado de Pasantes', 14, 15);
+
+  // ARMAR TABLA
+  const columnas = [
+    { header: 'DNI', dataKey: 'dniPasante' },
+    { header: 'Nombre y Apellido', dataKey: 'nombreYApellido' },
+    { header: 'Horas', dataKey: 'horasPasante' },
+    { header: 'Mes Inicio', dataKey: 'mesInicio' },
+    { header: 'Año Inicio', dataKey: 'anioInicio' },
+    { header: 'Estado', dataKey: 'estado' }
+  ];
+
+  const filas = this.pasantesFiltrados.map(p => ({
+    dniPasante: p.dniPasante,
+    nombreYApellido: p.nombreYApellido,
+    horasPasante: p.horasPasante,
+    mesInicio: p.mesInicio,
+    anioInicio: p.anioInicio,
+    estado: p.categoria
+  }));
+
+  autoTable(doc, {
+    startY: 25,
+    head: [columnas.map(c => c.header)],
+    body: filas.map(f => columnas.map(c => (f as any)[c.dataKey])),
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [255, 193, 7] } // Amarillo estilo Bootstrap table-warning
+  });
+
+  // GUARDAR PDF
+  doc.save('Listado_Pasantes.pdf');
+}
 
 }

@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 export interface Tratamiento {
   idTratamiento: number;
   nombre: string;
-  descripcion: string;
-  puntos: string;
+  descripcion?: string;
+  puntos?: string;
 }
 
 @Injectable({
@@ -22,6 +22,11 @@ export class TratamientosServices {
   // Obtener tratamientos por ID de un sindrome
   getTratamientos(id: number): Observable<Tratamiento[]> {
     return this.http.get<Tratamiento[]>(`${this.apiUrl}/${id}`);
+  }
+
+  // Crear un nuevo tratamiento
+  createTratamiento(tratamiento: Tratamiento): Observable<Tratamiento> {
+    return this.http.post<Tratamiento>(this.apiUrl, tratamiento);
   }
 
 }

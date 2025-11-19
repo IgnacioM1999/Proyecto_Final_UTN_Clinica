@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Pasante, PasantesServices } from '../../../../services/pasantes';
+import { Sesion, SesionesServices } from '../../../../services/sesiones';
 
 @Component({
   selector: 'app-registrar-sesion',
@@ -29,7 +30,11 @@ export class RegistrarSesion implements OnInit {
   nombrePacienteFiltro: string = '';
   nombrePasanteFiltro: string = '';
 
-  constructor(private turnoService: TurnosServices, private router: Router, private pasanteService: PasantesServices) { }
+  // para el modal de historial
+  sesionesPaciente: Sesion[] = [];
+  pacienteHistorial: string = '';
+
+  constructor(private turnoService: TurnosServices, private router: Router, private pasanteService: PasantesServices, private sesionesService: SesionesServices) { }
 
   ngOnInit(): void {
     const especialista = localStorage.getItem('usuario');
@@ -47,10 +52,20 @@ export class RegistrarSesion implements OnInit {
   cargarTurnos(): void {
     this.turnoService.getTurnosEsp(this.dniEspecialista).subscribe({
       next: (data) => {
-        this.turnos = data;
-        this.turnosFiltrados = [...this.turnos];
-        console.log('Consultando turnos para:', this.dniEspecialista);
+        console.log('Datos recibidos del backend:', data);
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // eliminamos las horas, minutos y segundos
 
+        // Función auxiliar para comparar fechas sin tener en cuenta la hora
+        const esMismoODiaPosterior = (fechaTurno: Date, hoy: Date): boolean => {
+          const fTurno = new Date(fechaTurno.getFullYear(), fechaTurno.getMonth(), fechaTurno.getDate());
+          const fHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+          return fTurno >= fHoy;
+        };
+
+        // Filtramos solo los turnos con fecha >= hoy
+        this.turnos = data.filter(t => esMismoODiaPosterior(new Date(t.fecha), hoy));
+        this.turnosFiltrados = [...this.turnos];
       },
       error: (err) => {
         console.error('Error al obtener turnos:', err);
@@ -67,6 +82,18 @@ export class RegistrarSesion implements OnInit {
         console.error('Error al obtener pasantes:', err)
       }
     })
+  }
+
+  abrirHistorialPaciente(dniPaciente: string): void {
+    this.pacienteHistorial = dniPaciente;
+    this.sesionesService.getSesionesPaciente(dniPaciente).subscribe({
+      next: (data) => {
+        this.sesionesPaciente = data;
+        console.log(`Sesiones cargadas para el paciente ${dniPaciente}:`, data);
+        // El modal se abre automáticamente por Bootstrap
+      },
+      error: (err) => console.error('Error al obtener sesiones del pasante:', err)
+    });
   }
 
   filtrarTurnos(): void {

@@ -39,10 +39,12 @@
                 </tr>
             </tbody>
         </table>
+        <div class="text-center mt-4">
+            <button class="btn btn-warning" (click)="abrirModal()">Otra opción</button>
+        </div>
     </div>
     <div class="mt-5 d-flex justify-content-center gap-5">
-        <button (click)="volver()"
-            class="btn btn-secondary">
+        <button (click)="volver()" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-2"></i>Volver
         </button>
         <button class="btn btn-primary"
@@ -51,4 +53,29 @@
             Continuar <i class="bi bi-arrow-right"></i>
         </button>
     </div>
+</div>
+<!-- Modal para ingresar síndrome y tratamiento -->
+<div class="modal fade" tabindex="-1"  #modalSindrome id="modalSindrome" aria-labelledby="modalSindromeLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="modalSindromeLabel">Agregar otro síndrome</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="sindromeDescripcion" class="form-label fw-bold">Descripción del síndrome:</label>
+          <textarea id="sindromeDescripcion" class="form-control" [(ngModel)]="nuevoSindrome" rows="2"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="tratamientoDescripcion" class="form-label fw-bold">Tratamiento sugerido:</label>
+          <textarea id="tratamientoDescripcion" class="form-control" [(ngModel)]="nuevoTratamiento" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn btn-success" (click)="confirmarSindrome()">Confirmar</button>
+      </div>
+    </div>
+  </div>
 </div>

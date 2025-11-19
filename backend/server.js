@@ -1022,6 +1022,21 @@ app.post('/sindromes/sintomas', (req, res) => {
   });
 });
 
+//Crear un sindrome
+//Usado cuando se va a la seccion de Registrar Puntos apretando el boton "Otro Sindrome" en Mostrar Sindromes
+app.post('/sindromes', (req, res) => {
+  const { descripcion } = req.body;
+  const sql = 'INSERT INTO sindromes (descripcion) VALUES (?)';
+
+  db.query(sql, [descripcion], (err, result) => {
+    if (err) {
+      console.error('Error al crear síndrome:', err);
+      return res.status(500).json({ error: 'Error al crear síndrome' });
+    }
+    res.json({ idSindrome: result.insertId }); //devolvemos el id generado
+  });
+});
+
 //TRATAMIENTOS
 //Obtener tratamientos para el sindrome seleccionado
 //Este metodo se usa en la etapa de Mostrar Puntos en la opcion Registrar Sesion
@@ -1042,6 +1057,62 @@ app.get('/tratamientos/:idSindrome', (req, res) => {
       res.json(results);
     }
   });
+});
+
+//Crear un nuevo tratamiento
+//Usado cuando se va a la seccion de Registrar Puntos apretando el boton "Otro Sindrome" en Mostrar Sindromes
+app.post('/tratamientos', (req, res) => {
+  const { nombre, descripcion, puntos } = req.body;
+  const sql = 'INSERT INTO tratamientos (nombre, descripcion, puntos) VALUES (?, ?, ?)';
+
+  db.query(sql, [nombre, descripcion, puntos], (err, result) => {
+    if (err) {
+      console.error('Error al crear tratamiento:', err);
+      return res.status(500).json({ error: 'Error al crear tratamiento' });
+    }
+    res.json({ idTratamiento: result.insertId }); //devolvemos el id generado
+  });
+});
+
+// =============================
+// ANTECEDENTES DEL PACIENTE
+// =============================
+//Crear los antecedentes
+app.post('/antecedentes', (req, res) => {
+  const { tipoAntecedente, descripcion, dniPaciente } = req.body;
+
+  const sql = `INSERT INTO antecedentes 
+               (tipoAntecedente, descripcion, dniPaciente) 
+               VALUES (?, ?, ?)`;
+
+  db.query(sql, [tipoAntecedente, descripcion, dniPaciente], (err, result) => {
+    if (err) {
+      console.error('Error al crear antecedente:', err);
+      return res.status(500).json({ error: "Error al crear antecedente" });
+    }
+    res.json({ idAntecedente: result.insertId }); // devolvemos el id generado
+  });
+});
+
+//Obtener los antecedentes del paciente con dniPaciente
+app.get('/antecedentes/:dniPaciente', (req, res) => {
+  console.log('Entra a la peticion del antecedentes/:dniPaciente para obtener los antecedentes')
+    const dniPaciente = req.params.dniPaciente;
+
+    const query = `
+        SELECT idAntecedentes, tipoAntecedente, descripcion, dniPaciente
+        FROM antecedentes 
+        WHERE dniPaciente = ?
+    `;
+
+    db.query(query, [dniPaciente], (err, results) => {
+        if (err) {
+            console.error("Error al obtener antecedentes:", err);
+            return res.status(500).json({ error: "Error en la base de datos." });
+        }
+
+        return res.json(results);
+    });
 });
 
 //RECUPERAR CONTRASEÑA

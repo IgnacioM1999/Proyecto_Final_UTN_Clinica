@@ -7,7 +7,7 @@ export interface Sindrome {
   idSindrome: number;
   descripcion: string;
   coincidencia?: number;
-  porcentajeCoincidencia?:number;
+  porcentajeCoincidencia?: number;
 }
 
 @Injectable({
@@ -22,6 +22,11 @@ export class SindromesServices {
   //Obtener Sindromes segun la lista de sintomas enviadas
   getSindromesPorSintomas(idsSintomas: number[]): Observable<Sindrome[]> {
     return this.http.post<Sindrome[]>(`${this.apiUrl}/sintomas`, { idsSintomas });
+  }
+
+  // Crear un nuevo sindrome
+  createSindrome(sindrome: Sindrome): Observable<Sindrome> {
+    return this.http.post<Sindrome>(this.apiUrl, sindrome);
   }
 
 }

@@ -28,13 +28,15 @@
 
             <div class="info-item">
                 <span class="label">Horas acumuladas:</span>
-                <span class="valor">{{ horasPasante }} hs</span>
+                <span class="valor">{{ totalAcumulado }} hs</span>
             </div>
 
             <div class="mensaje">
-                <ng-container *ngIf="horasPasante < 525; else practicasConcluidas">
-                    Falta <strong>{{ 525 - horasPasante }}</strong> horas para completar las prácticas supervisadas.
+                <ng-container *ngIf="faltanteSegundos > 0; else practicasConcluidas">
+                    Falta <strong>{{ faltanteHH }}h {{ faltanteMM }}m {{ faltanteSS }}s</strong>
+                    para completar las prácticas supervisadas.
                 </ng-container>
+
                 <ng-template #practicasConcluidas>
                     <strong>Prácticas Concluidas</strong>
                 </ng-template>

@@ -30,8 +30,20 @@ export class AgendarTurno {
     this.turnosServices.getTurnosDisponibles().subscribe({
       next: (data) => {
         console.log('Datos recibidos del backend:', data);
-        this.turnos = data;
-        this.turnosFiltrados = [...this.turnos]; // inicializa con todos los turnos
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // eliminamos las horas, minutos y segundos
+
+        // Función auxiliar para comparar fechas sin tener en cuenta la hora
+        const esMismoODiaPosterior = (fechaTurno: Date, hoy: Date): boolean => {
+          const fTurno = new Date(fechaTurno.getFullYear(), fechaTurno.getMonth(), fechaTurno.getDate());
+          const fHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+          return fTurno >= fHoy;
+        };
+
+        // Filtramos solo los turnos con fecha >= hoy
+        this.turnos = data.filter(t => esMismoODiaPosterior(new Date(t.fecha), hoy));
+
+        this.turnosFiltrados = [...this.turnos];
       },
       error: (err) => console.error('Error al cargar turnos:', err)
     }

@@ -33,7 +33,7 @@
                             <label name="nivelMolestiaSintoma" class="form-label mb-1">Nivel de molestia:</label>
                             <input type="number" id="nivelMolestiaSintoma" class="form-control"
                                 [(ngModel)]="sintoma.nivelMolestia" (input)="verificarRango(sintoma)"
-                                (change)="onSintomaChange()" min="1" max="10" placeholder="1 a 10"/>
+                                (change)="onSintomaChange()" min="1" max="10" placeholder="1 a 10" />
                         </div>
 
                         <div class="col-md-4">
@@ -59,19 +59,38 @@
         <!-- Antecedentes -->
         <div class="mb-4">
             <h5>Antecedentes del paciente</h5>
+
             <div class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">Antecedentes personales</label>
+                    <div *ngIf="antecedentesPersonales.length > 0" class="mb-2 p-2 bg-light border rounded">
+                        <strong>Previos:</strong>
+                        <ul>
+                            <li *ngFor="let a of antecedentesPersonales">{{ a.descripcion }}</li>
+                        </ul>
+                    </div>
                     <textarea class="form-control" [(ngModel)]="antecedentes.personales" (input)="guardarTemporal()"
                         rows="2"></textarea>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Antecedentes familiares</label>
+                    <div *ngIf="antecedentesFamiliares.length > 0" class="mb-2 p-2 bg-light border rounded">
+                        <strong>Previos:</strong>
+                        <ul>
+                            <li *ngFor="let a of antecedentesFamiliares">{{ a.descripcion }}</li>
+                        </ul>
+                    </div>
                     <textarea class="form-control" [(ngModel)]="antecedentes.familiares" (input)="guardarTemporal()"
                         rows="2"></textarea>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Antecedentes quirúrgicos</label>
+                    <div *ngIf="antecedentesQuirurgicos.length > 0" class="mb-2 p-2 bg-light border rounded">
+                        <strong>Previos:</strong>
+                        <ul>
+                            <li *ngFor="let a of antecedentesQuirurgicos">{{ a.descripcion }}</li>
+                        </ul>
+                    </div>
                     <textarea class="form-control" [(ngModel)]="antecedentes.quirurgicos" (input)="guardarTemporal()"
                         rows="2"></textarea>
                 </div>

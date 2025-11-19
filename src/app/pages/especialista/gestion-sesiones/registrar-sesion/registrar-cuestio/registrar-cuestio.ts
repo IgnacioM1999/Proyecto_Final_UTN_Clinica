@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Sintoma, SintomasServices } from '../../../../../services/sintomas';
 import { Sesion, SesionesServices } from '../../../../../services/sesiones';
+import { Antecedente, AntecedentesServices } from '../../../../../services/antecedentes';
 
 @Component({
   selector: 'app-registrar-cuestio',
@@ -29,25 +30,42 @@ export class RegistrarCuestio implements OnInit {
   hoy: string = new Date().toISOString().split('T')[0];
   errorRangoMolestia: boolean = false;
 
+  antecedentesBD: Antecedente[] = [];
+  antecedentesPersonales: Antecedente[] = [];
+  antecedentesFamiliares: Antecedente[] = [];
+  antecedentesQuirurgicos: Antecedente[] = [];
 
   constructor(
     private router: Router,
     private sesionesService: SesionesServices,
-    private sintomasServices: SintomasServices
+    private sintomasServices: SintomasServices,
+    private antecedentesServices: AntecedentesServices
   ) { }
 
   ngOnInit(): void {
-    const seleccionSesion = localStorage.getItem('seleccionSesion');
+    const seleccionSesion = localStorage.getItem('seleccionTurnoParaSesion');
     if (seleccionSesion) {
       const seleccion = JSON.parse(seleccionSesion);
       this.dniPaciente = seleccion.dniPaciente;
+
       this.dniPasante = seleccion.dniPasante;
       this.dniEspecialista = seleccion.dniEspecialista;
     }
+    console.log('el dni del paciente es:', this.dniPaciente)
+    console.log('el dni del especialista es:',this.dniEspecialista)
     // Obtener síntomas
     this.sintomasServices.getSintomas().subscribe((data) => {
       this.sintomas = data;
       this.verificarContinuar();
+    });
+
+    //Obtener antecedentes del paciente desde la BD
+    this.antecedentesServices.getAntecedentesPorPaciente(this.dniPaciente).subscribe(data => {
+      this.antecedentesBD = data;
+
+      this.antecedentesPersonales = data.filter(a => a.tipoAntecedente === 'Personales');
+      this.antecedentesFamiliares = data.filter(a => a.tipoAntecedente === 'Familiares');
+      this.antecedentesQuirurgicos = data.filter(a => a.tipoAntecedente === 'Quirúrgicos');
     });
   }
 
@@ -82,7 +100,7 @@ export class RegistrarCuestio implements OnInit {
   verificarRango(sintoma: Sintoma): void {
     const nivel = sintoma.nivelMolestia ?? 0;
     this.errorRangoMolestia = nivel < 1 || nivel > 10;
-    this.verificarContinuar(); 
+    this.verificarContinuar();
   }
 
 
@@ -91,7 +109,7 @@ export class RegistrarCuestio implements OnInit {
     const haySintomaCompleto = this.sintomas.some(
       s => s.nivelMolestia && s.fechaInicioSintoma
     );
-    this.puedeContinuar = haySintomaCompleto && this.descripcion.trim() !== '' &&!this.errorRangoMolestia;
+    this.puedeContinuar = haySintomaCompleto && this.descripcion.trim() !== '' && !this.errorRangoMolestia;
   }
 
   continuar(): void {

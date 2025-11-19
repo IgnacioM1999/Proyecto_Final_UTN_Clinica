@@ -42,6 +42,7 @@
                         <th>DNI</th>
                         <th>Paciente</th>
                         <th style="width: 150px;">Seleccionar</th>
+                        <th>Historial</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,11 @@
                             <input class="form-check-input" type="radio" name="pacienteSeleccionado"
                                 [checked]="pacienteDniSeleccionado === turno.dniPaciente && idTurnoSeleccionado === turno.idTurno"
                                 (click)="togglePaciente(turno.dniPaciente, turno.idTurno, $event)">
+                        </td>
+                        <td class="text-center"> 
+                            <button class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalHistorial" (click)="abrirHistorialPaciente(turno.dniPaciente)">
+                                Historial
+                            </button>
                         </td>
                     </tr>
                     <tr *ngIf="turnos.length === 0">
@@ -123,4 +129,45 @@
     <button class="btn btn-primary" [disabled]="!pacienteDniSeleccionado" (click)="continuar()">
         Continuar <i class="bi bi-arrow-right"></i>
     </button>
+</div>
+<!-- Modal de Historial del Paciente -->
+<div class="modal fade" id="modalHistorial" tabindex="-1" aria-labelledby="modalHistorialLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalHistorialLabel">
+            Historial del paciente {{ pacienteHistorial }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="sesionesPaciente.length > 0; else sinSesiones">
+          <table class="table table-bordered text-center align-middle">
+            <thead class="table-warning">
+              <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Duración</th>
+                <th>Observaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sesion of sesionesPaciente">
+                <td>{{ sesion.fecha | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ sesion.descripcionSesion }}</td>
+                <td>{{ sesion.duracionSesion }}</td>
+                <td>{{ sesion.observacionesSesion }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #sinSesiones>
+          <p class="text-center text-muted">No hay sesiones registradas para este paciente.</p>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>

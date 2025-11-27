@@ -19,6 +19,9 @@ export interface Sesion {
   descripcionSintoma?: string;
   observacionesSesion?: string;
   duracionSesion?: string;
+  dniPasante?: string;
+  nombreYApellidoPasante?: string;
+  pasantes?: string[]; //Para que muestre 
 }
 
 @Injectable({
@@ -108,8 +111,8 @@ export class SesionesServices {
 
   //Registrar en sesiones_pasantes los pasantes que estuvieron en la sesion
   createPasantesSesion(idSesion: number, dniPasantes: string[]) {
-  return this.http.post(`${this.apiUrl}/${idSesion}/pasantes`, { dniPasantes });
-}
+    return this.http.post(`${this.apiUrl}/${idSesion}/pasantes`, { dniPasantes });
+  }
 
   //Registrar todo el proceso completo (llama a los otros pasos en el backend)
   updateSesionCompleta(data: any): Observable<any> {
@@ -119,7 +122,7 @@ export class SesionesServices {
   //Obtener las sesiones que participo el pasante con el dniPasante.
   //Este metodo se usa para la opcion Ver Sesiones del menu del Pasante
   getSesionesPasante(dniPasante: string): Observable<Sesion[]> {
-    console.log('dni pasente recibido:',dniPasante)
+    console.log('dni pasente recibido:', dniPasante)
     return this.http.get<Sesion[]>(`${this.apiUrl}ConPasante/${dniPasante}`)
   }
 }

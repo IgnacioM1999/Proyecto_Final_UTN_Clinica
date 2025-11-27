@@ -88,7 +88,29 @@ export class RegistrarSesion implements OnInit {
     this.pacienteHistorial = dniPaciente;
     this.sesionesService.getSesionesPaciente(dniPaciente).subscribe({
       next: (data) => {
-        this.sesionesPaciente = data;
+        console.log('sesiones traidas:',data);
+        // Agrupamos sesiones por idSesion
+        const sesionesMap = new Map<number, Sesion>();
+
+        data.forEach(row => {
+          if (!sesionesMap.has(row.idSesion)) {
+            sesionesMap.set(row.idSesion, {
+              ...row,
+              pasantes: row.nombreYApellidoPasante
+                ? [row.nombreYApellidoPasante]
+                : []
+            });
+          } else {
+            const sesion = sesionesMap.get(row.idSesion)!;
+
+            if (row.nombreYApellidoPasante) {
+              sesion.pasantes!.push(row.nombreYApellidoPasante);
+            }
+          }
+        });
+
+        this.sesionesPaciente = Array.from(sesionesMap.values());
+
         console.log(`Sesiones cargadas para el paciente ${dniPaciente}:`, data);
         // El modal se abre automáticamente por Bootstrap
       },

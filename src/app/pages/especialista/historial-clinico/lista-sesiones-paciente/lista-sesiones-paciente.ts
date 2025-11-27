@@ -37,7 +37,30 @@ export class ListaSesionesPaciente implements OnInit {
   cargarSesionesPaciente(dniPaciente: string): void {
     this.sesionesServices.getSesionesPaciente(dniPaciente).subscribe({
       next: (data) => {
-        this.sesiones = data;
+        console.log('Sesiones recibidas:', data);
+
+        const sesionesMap = new Map<number, Sesion>();
+
+        data.forEach(row => {
+
+          if (!sesionesMap.has(row.idSesion)) {
+            sesionesMap.set(row.idSesion, {
+              ...row,
+              pasantes: row.nombreYApellidoPasante
+                ? [row.nombreYApellidoPasante]
+                : [] // puede estar vacío (ningún pasante)
+            });
+          } else {
+            const sesion = sesionesMap.get(row.idSesion)!;
+
+            if (row.nombreYApellidoPasante) {
+              sesion.pasantes!.push(row.nombreYApellidoPasante);
+            }
+          }
+
+        });
+
+        this.sesiones = Array.from(sesionesMap.values());
         this.sesionesFiltradas = [...this.sesiones]
 
         // 🔹 Si hay sesiones, guardamos el nombre del paciente desde la primera
@@ -51,7 +74,7 @@ export class ListaSesionesPaciente implements OnInit {
     });
   }
 
-    filtrarSesiones(): void {
+  filtrarSesiones(): void {
     // Si no se ingresó ningún filtro, mostrar todas las sesiones
     if (!this.fechaFiltro) {
       this.sesionesFiltradas = [...this.sesiones];

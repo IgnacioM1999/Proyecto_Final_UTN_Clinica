@@ -897,17 +897,20 @@ app.get('/sesiones/listadoSesiones', (req, res) => {
 });
 
 //Traer las sesiones correspondientes de un paciente
+//Este endpoint se usa en el modal VER HISTORIAL al seleccionar un turno en la opcion Registrar Sesion
 app.get('/sesiones/dniPaciente/:dni', (req, res) => {
   const { dni } = req.params;
   const query = `SELECT s.idSesion, s.fecha, s.horaInicio, s.descripcionSesion, 
   s.idSindrome, si.descripcion AS descripcionSindrome, s.dniPaciente, p.nombreYApellido AS nombreYApellidoPaciente, 
   s.dniEspecialista, e.nombreYApellido AS nombreYApellidoEspecialista, s.idTratamiento, t.nombre AS descripcionTratamiento,
-  s.observacionesSesion, s.duracionSesion
+  s.observacionesSesion, s.duracionSesion, pas.nombreYApellido as nombreYApellidoPasante
     FROM sesiones s
     INNER JOIN usuarios e ON e.dniUsuario = s.dniEspecialista
     INNER JOIN usuarios p ON p.dniUsuario = s.dniPaciente
     INNER JOIN sindromes si ON si.idSindrome = s.idSindrome
     INNER JOIN tratamientos t ON t.idTratamiento = s.idTratamiento
+    INNER JOIN sesiones_pasantes ps ON ps.idSesion = s.idSesion
+    INNER JOIN usuarios pas ON pas.dniUsuario = ps.dniPasante
     WHERE s.dniPaciente = ? 
     ORDER BY s.fecha desc;
   `;
